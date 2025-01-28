@@ -11,6 +11,15 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+
+        // 🎨 Brand colour palette
+        primary: "#FFE2E2", // Custom Pink
+        secondary: "#547756", // Custom Green
+        tertiary: "#CD6A6A", // Custom Red
+        accent: "#FDF8D0", // Custom Yellow
+        muted: "#FFCFCF", // Custom Pink
+        container: "#F2FBF3", // Custom Yellow
+        black: "#101010", // Custom Black
       },
     },
   },
