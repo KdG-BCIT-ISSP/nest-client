@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useState } from "react";
+=======
 import Footer from "../app/components/footer";
 
 const colors = [
@@ -11,7 +15,20 @@ const colors = [
 ];
 
 export default function Home() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Home Page</h1>
+=======
     <div className="flex flex-col min-h-screen">
       <main className="flex-grow grid items-center justify-items-center p-8 pb-20 gap-16 sm:p-20 bg-white font-[family-name:var(--font-geist-sans)]">
         <div className="flex flex-col gap-8 items-center sm:items-start">
