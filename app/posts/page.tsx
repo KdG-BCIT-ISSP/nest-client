@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export default function Home() {
+export default function PostsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ export default function Home() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Home Page</h1>
+      <h1 className="text-2xl font-bold mb-4">Posts Page</h1>
     </div>
   );
 }
