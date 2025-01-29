@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-=======
-import Footer from "../app/components/footer";
+import Footer from "@/components/Footer";
 
 const colors = [
   { name: "Primary", value: "bg-primary text-black" },
@@ -22,26 +21,26 @@ export default function Home() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen text-lg font-semibold">
+        Loading...
+      </div>
+    );
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Home Page</h1>
-=======
     <div className="flex flex-col min-h-screen">
-      <main className="flex-grow grid items-center justify-items-center p-8 pb-20 gap-16 sm:p-20 bg-white font-[family-name:var(--font-geist-sans)]">
-        <div className="flex flex-col gap-8 items-center sm:items-start">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 w-full max-w-md">
-            {colors.map((color) => (
-              <div
-                key={color.name}
-                className={`p-4 rounded-sm ${color.value} text-center font-semibold`}
-              >
-                {color.name}
-              </div>
-            ))}
-          </div>
+      <main className="flex-grow flex flex-col items-center justify-center p-8 sm:p-20 bg-white font-[family-name:var(--font-geist-sans)]">
+        <h1 className="text-2xl font-bold mb-6">Home Page</h1>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 w-full max-w-md text-center">
+          {colors.map((color) => (
+            <div
+              key={color.name}
+              className={`p-4 rounded-sm ${color.value} font-semibold`}
+            >
+              {color.name}
+            </div>
+          ))}
         </div>
       </main>
       <Footer />
