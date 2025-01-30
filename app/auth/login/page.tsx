@@ -105,7 +105,7 @@ export default function LoginPage() {
                 Don’t have an account yet?
                 <a
                   href="#"
-                  className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                  className="ml-2 font-medium text-primary-600 hover:underline dark:text-primary-500"
                 >
                   Sign up
                 </a>
