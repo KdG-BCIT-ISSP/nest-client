@@ -51,7 +51,7 @@ export default function Home() {
             onClick={handleClick}
             className="inline-block w-auto px-4 py-2 bg-blue-500 text-white rounded"
           />
-          <Button
+          {/* <Button
             onClick={handleClick}
             className="px-4 py-2 bg-green-500 text-white rounded"
           >
@@ -60,7 +60,7 @@ export default function Home() {
               <li className="text-sm">Children</li>
               <li className="text-sm">Buttons</li>
             </ul>
-          </Button>
+          </Button> */}
         </div>
       </main>
       <Footer />
