@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@/components/Button";
 import { useEffect, useState } from "react";
 
 const colors = [
