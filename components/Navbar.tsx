@@ -1,4 +1,6 @@
 import SearchBar from "./SearchBar";
+import "flowbite";
+import Image from "next/image";
 
 export default function Navbar() {
   return (
@@ -19,15 +21,17 @@ export default function Navbar() {
             data-dropdown-placement="bottom"
           >
             <span className="sr-only">Open user menu</span>
-            <img
+            <Image
               className="w-8 h-8 rounded-full"
-              src="images/default_profile_image.png"
+              src="/images/default_profile_image.png"
               alt="user photo"
+              width={32}
+              height={32}
             />
           </button>
 
           <div
-            className="z-50 hidden my-4 text-base list-none divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 dark:divide-gray-600"
+            className="z-50 border-tertiary bg-white hidden my-4 text-base list-none divide-y divide-gray-100 rounded-sm shadow-sm dark:bg-gray-700 dark:divide-gray-600"
             id="user-dropdown"
           >
             <div className="px-4 py-3">
@@ -44,7 +48,7 @@ export default function Navbar() {
                   href="#"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                 >
-                  Dashboard
+                  Profile
                 </a>
               </li>
               <li>
@@ -52,7 +56,7 @@ export default function Navbar() {
                   href="#"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                 >
-                  Settings
+                  Saved Posts
                 </a>
               </li>
               <li>
@@ -60,13 +64,13 @@ export default function Navbar() {
                   href="#"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                 >
-                  Earnings
+                  Notification
                 </a>
               </li>
               <li>
                 <a
                   href="#"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                  className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                 >
                   Sign out
                 </a>
