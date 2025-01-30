@@ -30,6 +30,8 @@ export default function Home() {
           top_post_text="Sleepless nights can be one of the most challenging parts of being a new mom. 
                          It’s essential to find moments to rest, even when it feels impossible."
           href={"/posts"}
+          likes={322}
+          comments={123}
         />
         <Carousel cardsData={cardsData} />
       </main>
@@ -41,6 +43,8 @@ export default function Home() {
           top_post_text="Sleepless nights can be one of the most challenging parts of being a new mom. 
                          It’s essential to find moments to rest, even when it feels impossible."
           href="/posts"
+          likes={322}
+          comments={123}
         />
         <Carousel cardsData={cardsData} />
       </main>

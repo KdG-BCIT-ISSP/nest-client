@@ -34,13 +34,13 @@ export default function Carousel({ cardsData }: { cardsData: CardType[] }) {
   return (
     <div className="relative mt-8">
       <button
-        className="absolute left-10 top-1/2 -translate-y-1/2 z-10"
+        className="absolute xl:left-24 top-1/2 -translate-y-1/2 z-10"
         onClick={handlePrev}
       >
         <ArrowLeft onClick={handlePrev} />
       </button>
       <button
-        className="absolute right-10 top-1/2 -translate-y-1/2 z-10"
+        className="absolute right-[0%] md:right-[0%] lg:right-[0%] xl:right-24 top-1/2 -translate-y-1/2 z-10"
         onClick={handleNext}
       >
         <ArrowRight onClick={handleNext} />

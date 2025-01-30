@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { HomePageContainer } from "@/types/HomePageContainer";
 import MoreButton from "@/public/svg/MoreButton";
+import ThumbsUp from "@/public/svg/Post/ThumbsUp";
+import Comments from "@/public/svg/Post/Comment";
 
 export default function Container({
   section_title,
@@ -11,6 +13,8 @@ export default function Container({
   top_post_header,
   top_post_text,
   href,
+  likes,
+  comments,
 }: HomePageContainer) {
   return (
     <div className="max-w-screen-lg mx-auto px-4">
@@ -38,6 +42,14 @@ export default function Container({
               {top_post_header}
             </h3>
             <p className="font-normal text-lg text-white/90">{top_post_text}</p>
+            <div className="flex justify-end gap-2 pt-10">
+              <span className="text-gray-600 dark:text-gray-300">
+                <ThumbsUp count={likes} container />
+              </span>
+              <span className="text-gray-600 dark:text-gray-300">
+                <Comments count={comments} container />
+              </span>
+            </div>
           </div>
         </div>
       </div>
