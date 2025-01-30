@@ -2,6 +2,7 @@
 
 import Button from "@/components/Button";
 import { useEffect, useState } from "react";
+import Container from "@/components/Container";
 
 const colors = [
   { name: "Primary", value: "bg-primary text-black" },
@@ -59,6 +60,7 @@ export default function Home() {
             </ul>
           </Button> */}
         </div>
+        <Container></Container>
       </main>
     </div>
   );
