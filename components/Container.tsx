@@ -19,7 +19,7 @@ export default function Container({
             <Image
               src={top_post_image}
               alt="pregnancy photo"
-              className="w-full h-auto object-cover h-full"
+              className="w-full h-full object-cover"
               width={400}
               height={400}
               priority
