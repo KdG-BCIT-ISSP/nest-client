@@ -60,7 +60,14 @@ export default function Home() {
             </ul>
           </Button> */}
         </div>
-        <Container></Container>
+        <Container
+          section_title={"Most Liked Tips"}
+          top_post_image={"/images/pregnancy1.jpg"}
+          top_post_header={"Surviving Sleepless Nights: Tips for New Mothers"}
+          top_post_text={
+            "Sleepless nights can be one of the most challenging parts of being a new mom. It’s essential to find moments to rest, even when it feels impossible."
+          }
+        ></Container>
       </main>
     </div>
   );
