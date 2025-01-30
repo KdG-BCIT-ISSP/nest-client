@@ -13,7 +13,7 @@ export default function ThumbsUp({ count, post, onClick }: SvgPost) {
         border: post ? "2px solid #CD6A6A" : "none",
         borderRadius: post ? "8px" : "0",
         cursor: post ? "pointer" : "",
-        width: "80px",
+        width: post ? "80px" : "40px",
       }}
     >
       <svg

@@ -1,13 +1,8 @@
 import { MouseEventHandler } from "react";
 
-export default function MoreButton({
-  onClick,
-}: {
-  onClick: MouseEventHandler<SVGSVGElement>;
-}) {
+export default function MoreButton() {
   return (
     <svg
-      onClick={onClick}
       width={76}
       height={23}
       viewBox="0 0 76 23"

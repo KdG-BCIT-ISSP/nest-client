@@ -7,6 +7,7 @@ import Share from "@/public/svg/Post/Share";
 import ArrowLeft from "@/public/svg/ArrowLeft";
 import ArrowRight from "@/public/svg/ArrowRight";
 import MoreButton from "@/public/svg/MoreButton";
+import Button from "@/components/Button";
 
 const colors = [
   { name: "Primary", value: "bg-primary text-black" },
@@ -19,6 +20,10 @@ const colors = [
 ];
 
 export default function StorybookPage() {
+  const handleClick = () => {
+    alert("Button was clicked!");
+  };
+
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 bg-white font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
@@ -32,6 +37,11 @@ export default function StorybookPage() {
             </div>
           ))}
         </div>
+        <Button
+          label="Button"
+          onClick={handleClick}
+          className="inline-block w-auto px-4 py-2 bg-blue-500 text-white rounded"
+        />
         <div className="flex flex-row gap-5">
           <ThumbsUp count={32} />
           <Comments count={12} />

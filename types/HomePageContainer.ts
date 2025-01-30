@@ -3,4 +3,5 @@ export type HomePageContainer = {
   top_post_image: string;
   top_post_header: string;
   top_post_text: string;
+  href: string;
 };
