@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
 import Button from "@/components/Button";
+import { useEffect, useState } from "react";
 
 const colors = [
   { name: "Primary", value: "bg-primary text-black" },
@@ -31,8 +29,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
+    <div className="flex flex-col">
       <main className="flex-grow flex flex-col items-center justify-center p-8 sm:p-20 bg-white font-[family-name:var(--font-geist-sans)]">
         <h1 className="text-2xl font-bold mb-6">Home Page</h1>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 w-full max-w-md text-center">
@@ -63,7 +60,6 @@ export default function Home() {
           </Button> */}
         </div>
       </main>
-      <Footer />
     </div>
   );
 }
