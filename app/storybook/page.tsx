@@ -1,3 +1,13 @@
+"use client";
+
+import ThumbsUp from "@/public/svg/Post/ThumbsUp";
+import Comments from "@/public/svg/Post/Comment";
+import Bookmark from "@/public/svg/Post/Bookmark";
+import Share from "@/public/svg/Post/Share";
+import ArrowLeft from "@/public/svg/ArrowLeft";
+import ArrowRight from "@/public/svg/ArrowRight";
+import MoreButton from "@/public/svg/MoreButton";
+
 const colors = [
   { name: "Primary", value: "bg-primary text-black" },
   { name: "Secondary", value: "bg-secondary text-black" },
@@ -22,6 +32,19 @@ export default function StorybookPage() {
             </div>
           ))}
         </div>
+        <div className="flex flex-row gap-5">
+          <ThumbsUp count={32} />
+          <Comments count={12} />
+          <ThumbsUp count={40} post onClick={() => alert(1)} />
+          <Comments count={60} post onClick={() => alert(1)} />
+          <Bookmark count={33} onClick={() => alert(1)} />
+          <Share count={66} onClick={() => alert(1)} />
+        </div>
+        <div className="flex flex-row gap-5">
+          <ArrowLeft onClick={() => alert("arrowleft")} />
+          <ArrowRight onClick={() => alert("arrowright")} />
+        </div>
+        <MoreButton onClick={() => alert("arrowright")} />
       </main>
     </div>
   );
