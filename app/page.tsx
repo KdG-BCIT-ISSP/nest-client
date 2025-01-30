@@ -41,7 +41,29 @@ export default function Home() {
             </div>
           ))}
         </div>
+        <div className="flex space-x-2 mt-6">
+          <Button
+            label="Button"
+            onClick={handleClick}
+            className="inline-block w-auto px-4 py-2 bg-blue-500 text-white rounded"
+          />
+          {/* <Button
+            onClick={handleClick}
+            className="px-4 py-2 bg-green-500 text-white rounded"
+          >
+            <ul className="list-disc pl-4">
+              <li className="text-sm">Testing</li>
+              <li className="text-sm">Children</li>
+              <li className="text-sm">Buttons</li>
+            </ul>
+          </Button> */}
+        </div>
       </main>
     </div>
   );
 }
+
+// test button
+const handleClick = () => {
+  alert("Button was clicked!");
+};
