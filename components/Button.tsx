@@ -1,11 +1,5 @@
-import React, { ReactNode } from "react";
-
-type ButtonProps = {
-  label?: string;
-  onClick: () => void;
-  className?: string;
-  children?: ReactNode;
-};
+import React from "react";
+import { ButtonProps } from "@/types/ButtonProps";
 
 export default function Button({
   label,
