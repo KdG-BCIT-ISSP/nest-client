@@ -7,7 +7,7 @@ export default function ArrowLeft({
 }) {
   return (
     <svg
-      width={47}
+      width={35}
       height={59}
       viewBox="0 0 47 59"
       fill="none"

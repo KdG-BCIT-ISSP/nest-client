@@ -10,6 +10,9 @@ export function middleware(req: NextRequest) {
   }
 }
 
+// access - private
+// refresh - cookie
+
 export const config = {
   matcher: ["/admin/:path*"],
 };
