@@ -1,4 +1,3 @@
-// api/auth/register/route.ts
 import axios from "axios";
 
 export const join = async (
