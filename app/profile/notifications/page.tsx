@@ -15,8 +15,8 @@ export default function NotificationsPage() {
 
   return (
     <div className="p-4 sm:ml-64">
-              <SideMenu></SideMenu>
-              <h1 className="text-2xl font-bold mb-4">Notification Page</h1>
-            </div>
+      <SideMenu></SideMenu>
+      <h1 className="text-2xl font-bold mb-4">Notification Page</h1>
+    </div>
   );
 }

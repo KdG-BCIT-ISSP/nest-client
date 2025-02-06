@@ -89,7 +89,7 @@ export default function ProfileInputField({
 
       <div className="p-6 border-t border-gray-200 flex justify-end">
         <button
-          className="text-white bg-secondary hover:bg-tertiary focus:ring-4 focus:ring-cyan-200 font-medium rounded-md text-sm px-5 py-2.5 text-center"
+          className="text-white bg-secondary hover:bg-tertiary font-medium rounded-md text-sm px-5 py-2.5 text-center"
           type="submit"
         >
           Save all
