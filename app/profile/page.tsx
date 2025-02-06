@@ -19,6 +19,7 @@ export default function ProfilePage() {
   return (
     <div className="p-4 sm:ml-64">
       <SideMenu></SideMenu>
+      <div className="container mr-auto max-w-5xl">
       <div className="flex items-center gap-3 py-2 pl-10">
         {/* Avatar Section */}
         <div className="flex flex-col items-center">
@@ -46,6 +47,7 @@ export default function ProfilePage() {
         email="123@gmail.com"
         region="north-america"
       ></ProfileInputField>
+    </div>
     </div>
   );
 }
