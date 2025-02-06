@@ -1,24 +1,57 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+
+import { login } from "@/app/api/auth/login/route";
 
 export default function LoginPage() {
-  const [loading, setLoading] = useState(true);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-  useEffect(() => {
-    setLoading(false);
-  }, []);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const response = await login(formData.email, formData.password);
+      console.log("Login response:", response);
+
+      setSuccess("Login successful! Redirecting...");
+
+      localStorage.setItem("token", response.accessToken);
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1500);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <section className="pt-5">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
-        <a
-          href="#"
+        <Link
+          href="/"
           className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
         >
           <Image
@@ -29,13 +62,22 @@ export default function LoginPage() {
             height={32}
           />
           NEST
-        </a>
-        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+        </Link>
+
+        <div className="w-full bg-white rounded-lg shadow dark:border sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white text-center">
               Login
             </h1>
-            <form className="space-y-4 md:space-y-6" action="#">
+
+            {error && (
+              <p className="text-red-500 text-sm text-center">{error}</p>
+            )}
+            {success && (
+              <p className="text-green-500 text-sm text-center">{success}</p>
+            )}
+
+            <form className="space-y-4 md:space-y-6" onSubmit={handleLogin}>
               <div>
                 <label
                   htmlFor="email"
@@ -47,8 +89,14 @@ export default function LoginPage() {
                   type="email"
                   name="email"
                   id="email"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 
+                             rounded-lg focus:ring-primary-600 focus:border-primary-600
+                             block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 
+                             dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 
+                             dark:focus:border-blue-500"
                   placeholder="name@company.com"
+                  value={formData.email}
+                  onChange={handleChange}
                   required
                 />
               </div>
@@ -64,19 +112,27 @@ export default function LoginPage() {
                   name="password"
                   id="password"
                   placeholder="••••••••"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 
+                             rounded-lg focus:ring-primary-600 focus:border-primary-600
+                             block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 
+                             dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 
+                             dark:focus:border-blue-500"
+                  value={formData.password}
+                  onChange={handleChange}
                   required
                 />
               </div>
+
               <div className="flex items-center justify-between">
                 <div className="flex items-start">
                   <div className="flex items-center h-5">
                     <input
                       id="remember"
-                      aria-describedby="remember"
                       type="checkbox"
-                      className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                      required
+                      className="w-4 h-4 border border-gray-300 rounded bg-gray-50 
+                                 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 
+                                 dark:border-gray-600 dark:focus:ring-primary-600 
+                                 dark:ring-offset-gray-800"
                     />
                   </div>
                   <div className="ml-3 text-sm">
@@ -95,20 +151,27 @@ export default function LoginPage() {
                   Forgot password?
                 </a>
               </div>
+
               <button
                 type="submit"
-                className="w-full text-black bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                className="w-full text-black bg-primary-600 hover:bg-primary-700 
+                           focus:ring-4 focus:outline-none focus:ring-primary-300 
+                           font-medium rounded-lg text-sm px-5 py-2.5 text-center 
+                           dark:bg-primary-600 dark:hover:bg-primary-700 
+                           dark:focus:ring-primary-800 disabled:opacity-50"
+                disabled={isLoading}
               >
-                Sign in
+                {isLoading ? "Logging in..." : "Sign in"}
               </button>
+
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Don’t have an account yet?
-                <a
-                  href="signup"
+                <Link
+                  href="/auth/signup"
                   className="ml-2 font-medium text-primary-600 hover:underline dark:text-primary-500"
                 >
                   Sign up
-                </a>
+                </Link>
               </p>
             </form>
           </div>
