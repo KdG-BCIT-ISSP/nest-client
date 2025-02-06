@@ -12,12 +12,13 @@ const axiosInterceptor: AxiosInstance = axios.create({
 
 // adds auth header if a token is available
 axiosInterceptor.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
+  (config: InternalAxiosRequestConfig & { requiresAuth?: boolean }) => {
     const token = localStorage.getItem("accessToken");
-    if (token) {
-      config.headers = config.headers || {};
+
+    if (config.requiresAuth && token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
     return config;
   },
   (error: AxiosError) => Promise.reject(error)
