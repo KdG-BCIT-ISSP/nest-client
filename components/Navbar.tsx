@@ -2,7 +2,8 @@ import MenuIcon from "@/public/svg/Menu";
 import SearchBar from "./SearchBar";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useCookies } from "react-cookie";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -14,11 +15,17 @@ const USER_DROPDOWN_LINKS = [
   { href: "/profile", label: "Profile" },
   { href: "/profile/saved-posts", label: "Saved Posts" },
   { href: "/profile/notifications", label: "Notification" },
-  { href: "#", label: "Sign out", className: "text-red-600" },
+  { href: "/auth/logout", label: "Sign out", className: "text-red-600" },
 ];
 
 export default function Navbar() {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [cookies] = useCookies(["token"]); // change to use state later
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    setIsAuthenticated(!!cookies.token); // user is logged in if token exists
+  }, [cookies]);
 
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen((prev) => !prev);
@@ -50,54 +57,68 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center space-x-3">
-          <div className="relative">
-            <button
-              onClick={toggleUserDropdown}
-              type="button"
-              className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-              id="user-menu-button"
-            >
-              <span className="sr-only">Open user menu</span>
-              <Image
-                className="w-8 h-8 rounded-full"
-                src="/images/default_profile_image.png"
-                alt="User profile"
-                width={32}
-                height={32}
-                priority
-              />
-            </button>
-
-            {isUserDropdownOpen && (
-              <div
-                className="z-50 absolute right-0 mt-2 w-48 bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg dark:bg-gray-700 dark:border-gray-600 dark:divide-gray-600"
-                id="user-dropdown"
+          {isAuthenticated ? (
+            <div className="relative">
+              <button
+                onClick={toggleUserDropdown}
+                type="button"
+                className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
               >
-                <div className="px-4 py-3">
-                  <span className="block text-sm text-gray-900 dark:text-white">
-                    Bonnie Green
-                  </span>
-                  <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
-                    name@flowbite.com
-                  </span>
+                <span className="sr-only">Open user menu</span>
+                <Image
+                  className="w-8 h-8 rounded-full"
+                  src="/images/default_profile_image.png"
+                  alt="User profile"
+                  width={32}
+                  height={32}
+                  priority
+                />
+              </button>
+
+              {isUserDropdownOpen && (
+                <div className="z-50 absolute right-0 mt-2 w-48 bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg dark:bg-gray-700 dark:border-gray-600 dark:divide-gray-600">
+                  <div className="px-4 py-3">
+                    <span className="block text-sm text-gray-900 dark:text-white">
+                      Bonnie Green
+                    </span>
+                    <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
+                      name@flowbite.com
+                    </span>
+                  </div>
+                  <ul className="py-2">
+                    {USER_DROPDOWN_LINKS.map((link) => (
+                      <li key={link.href}>
+                        <Link
+                          href={link.href}
+                          className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 ${
+                            link.className || ""
+                          }`}
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="py-2" aria-labelledby="user-menu-button">
-                  {USER_DROPDOWN_LINKS.map((link) => (
-                    <li key={link.href}>
-                      <Link
-                        href={link.href}
-                        className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 ${
-                          link.className || ""
-                        }`}
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          ) : (
+            // not logged in
+            <div className="flex items-center space-x-4">
+              <Link
+                href="/auth/login"
+                className="px-4 py-2 text-sm font-medium text-white bg-secondary rounded-md"
+              >
+                Log In
+              </Link>
+              <Link
+                href="/auth/signup"
+                className="px-4 py-2 text-sm font-medium text-white bg-tertiary rounded-md "
+              >
+                Sign Up
+              </Link>
+            </div>
+          )}
 
           <button
             data-collapse-toggle="navbar-user"
