@@ -1,4 +1,5 @@
 "use client";
+import SideMenu from "@/components/SideMenu";
 
 import { useEffect, useState } from "react";
 
@@ -14,8 +15,9 @@ export default function SavedPostsPage() {
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Saved Posts Page</h1>
-    </div>
+    <div className="p-4 sm:ml-64">
+          <SideMenu></SideMenu>
+          <h1 className="text-2xl font-bold mb-4">Saved Posts Page</h1>
+        </div>
   );
 }

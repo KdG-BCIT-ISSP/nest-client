@@ -1,3 +1,5 @@
+
+
 export default function SideMenu() {
     return (
     
@@ -12,7 +14,7 @@ export default function SideMenu() {
 
                         <li>
                             <a
-                                href="#"
+                                href="/profile"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                             >
                                 <svg
@@ -25,14 +27,12 @@ export default function SideMenu() {
                                 <path d="M16 0H4a2 2 0 0 0-2 2v1H1a1 1 0 0 0 0 2h1v2H1a1 1 0 0 0 0 2h1v2H1a1 1 0 0 0 0 2h1v2H1a1 1 0 0 0 0 2h1v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4.5a3 3 0 1 1 0 6 3 3 0 0 1 0-6ZM13.929 17H7.071a.5.5 0 0 1-.5-.5 3.935 3.935 0 1 1 7.858 0 .5.5 0 0 1-.5.5Z"></path>
                                 </svg>
                                 <span className="flex-1 ms-3 whitespace-nowrap">Profile</span>
-                                <span className="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">
-                                    Pro
-                                </span>
+                                
                             </a>
                         </li>
                         <li>
                             <a
-                                href="#"
+                            href="/profile/saved-posts"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                             >
                                 <svg
@@ -52,7 +52,7 @@ export default function SideMenu() {
                         </li>
                         <li>
                             <a
-                                href="#"
+                                href="/profile/notifications"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                             >
                                 <svg
@@ -66,9 +66,7 @@ export default function SideMenu() {
                                 </svg>
                             
                                 <span className="flex-1 ms-3 whitespace-nowrap">Notifications</span>
-                                <span className="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
-                                    3
-                                </span>
+                                
                             </a>
                         </li>
 
