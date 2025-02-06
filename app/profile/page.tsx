@@ -35,7 +35,7 @@ export default function ProfilePage() {
 
           {/* Text Info Section */}
           <div className="flex flex-col justify-center ml-3">
-            <h5 className="text-md">userName</h5>
+            <h5 className="text-md text-gray-600">userName</h5>
             <p className="text-gray-500 text-sm">23456@gmail.com</p>
             <button className="mt-2 border-secondary border-2 rounded-md text-sm text-secondary hover:text-white hover:bg-secondary">
               Upload Image

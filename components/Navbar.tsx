@@ -104,7 +104,7 @@ export default function Navbar() {
             </div>
           ) : (
             // not logged in
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4 px-2">
               <Link
                 href="/auth/login"
                 className="px-4 py-2 text-sm font-medium text-white bg-secondary rounded-md"
