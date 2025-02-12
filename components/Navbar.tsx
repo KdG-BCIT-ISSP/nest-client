@@ -2,8 +2,10 @@ import MenuIcon from "@/public/svg/Menu";
 import SearchBar from "./SearchBar";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useCookies } from "react-cookie";
+import { useAtom } from "jotai";
+import { isAuthenticatedAtom } from "@/atoms/auth/atom";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -19,15 +21,9 @@ const USER_DROPDOWN_LINKS = [
 
 export default function Navbar() {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
 
   const [, , removeCookie] = useCookies(["refreshToken"]);
-
-  useEffect(() => {
-    if (localStorage.getItem("accessToken")) {
-      setIsAuthenticated(true);
-    }
-  }, []);
 
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen((prev) => !prev);
