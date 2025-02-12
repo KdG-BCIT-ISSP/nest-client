@@ -5,8 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { login } from "@/app/api/auth/login/route";
+import { useCookies } from "react-cookie";
 
 export default function LoginPage() {
+  const [, setCookie] = useCookies(["refreshToken"]);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -28,14 +31,16 @@ export default function LoginPage() {
 
     try {
       const response = await login(formData.email, formData.password);
-      console.log("Login response:", response);
 
-      setSuccess("Login successful! Redirecting...");
-
-      localStorage.setItem("token", response.accessToken);
+      setSuccess("Login successful!");
+      localStorage.setItem("accessToken", response.accessToken);
+      setCookie("refreshToken", response.refreshToken, {
+        path: "/",
+        // maxAge: 3600,
+      });
       setTimeout(() => {
         window.location.href = "/";
-      }, 1500);
+      }, 500);
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
