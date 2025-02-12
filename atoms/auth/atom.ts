@@ -1,4 +1,8 @@
 import { atom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 
-export const accessTokenAtom = atom<string | null>(null);
-export const refreshTokenAtom = atom<string | null>(null);
+export const accessTokenAtom = atomWithStorage<string | null>(
+  "accessToken",
+  null
+);
+export const isAuthenticatedAtom = atom((get) => !!get(accessTokenAtom));
