@@ -1,14 +1,28 @@
+"use client";
+
 import Link from "next/link";
+import { useCookies } from "react-cookie";
 
 const SIDE_MENU_LINKS = [
   { href: "/profile", label: "Profile" },
   { href: "/profile/saved-posts", label: "Saved Posts" },
   { href: "/profile/notifications", label: "Notifications" },
   { href: "reset", label: "Reset Password" },
-  { href: "home", label: "Log out" },
 ];
 
 export default function SideMenu() {
+  const [, , removeCookie] = useCookies(["refreshToken"]);
+
+  const handleLogout = async () => {
+    try {
+      removeCookie("refreshToken", { path: "/" });
+      localStorage.removeItem("accessToken");
+      window.location.href = "/";
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+  };
+
   return (
     <aside
       id="default-sidebar"
@@ -21,7 +35,8 @@ export default function SideMenu() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white
+                           hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <span className="flex-1 ms-3 whitespace-nowrap">
                   {link.label}
@@ -29,6 +44,16 @@ export default function SideMenu() {
               </Link>
             </li>
           ))}
+
+          <li>
+            <button
+              onClick={handleLogout}
+              className="w-full text-left flex items-center p-2 text-gray-900 rounded-lg
+                         dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+            >
+              <span className="flex-1 ms-3 whitespace-nowrap">Log out</span>
+            </button>
+          </li>
         </ul>
       </div>
     </aside>

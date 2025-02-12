@@ -15,20 +15,28 @@ const USER_DROPDOWN_LINKS = [
   { href: "/profile", label: "Profile" },
   { href: "/profile/saved-posts", label: "Saved Posts" },
   { href: "/profile/notifications", label: "Notification" },
-  { href: "/auth/logout", label: "Sign out", className: "text-red-600" },
 ];
 
 export default function Navbar() {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  const [cookies] = useCookies(["token"]); // change to use state later
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  const [, , removeCookie] = useCookies(["refreshToken"]);
+
   useEffect(() => {
-    setIsAuthenticated(!!cookies.token); // user is logged in if token exists
-  }, [cookies]);
+    if (localStorage.getItem("accessToken")) {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen((prev) => !prev);
+  };
+
+  const handleLogout = () => {
+    removeCookie("refreshToken", { path: "/" });
+    localStorage.removeItem("accessToken");
+    window.location.href = "/";
   };
 
   return (
@@ -90,14 +98,22 @@ export default function Navbar() {
                       <li key={link.href}>
                         <Link
                           href={link.href}
-                          className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 ${
-                            link.className || ""
-                          }`}
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100
+                                     dark:hover:bg-gray-600 dark:text-gray-200"
                         >
                           {link.label}
                         </Link>
                       </li>
                     ))}
+                    <li>
+                      <button
+                        onClick={handleLogout}
+                        className="block px-4 py-2 w-full text-left text-sm text-red-600
+                                   hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200"
+                      >
+                        Sign out
+                      </button>
+                    </li>
                   </ul>
                 </div>
               )}
