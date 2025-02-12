@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { CreatePostType } from "@/types/CreatePostType";
+import Button from "@/components/Button";
 
 export default function CreatePost({
   title,
@@ -140,12 +141,11 @@ export default function CreatePost({
 
         {/* Submit Button */}
         <div className="mt-6 border-t border-gray-200 flex justify-end pt-4">
-          <button
-            className="text-white bg-red-500 hover:bg-red-600 font-medium rounded-md text-sm px-5 py-2.5 text-center"
-            type="submit"
-          >
-            Post
-          </button>
+          <Button
+            label="Post"
+            onClick={handleSubmit}
+            className="text-white bg-red-500 hover:bg-red-600 font-medium rounded-md text-sm px-5 py-2.5"
+          />
         </div>
       </form>
     </div>
