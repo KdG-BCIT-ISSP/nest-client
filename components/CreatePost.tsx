@@ -14,20 +14,14 @@ const AVAILABLE_TAGS = [
   "Technology",
 ];
 
-export default function CreatePost({
-  title,
-  subtitle,
-  content,
-}: CreatePostType) {
+export default function CreatePost({ title, content }: CreatePostType) {
   const [post, setPost] = useState<CreatePostType>({
-    title: title ?? "",
-    subtitle: subtitle ?? "",
-    content: content ?? "",
+    title: "",
+    content: "",
   });
 
   const [errors, setErrors] = useState({
     title: "",
-    subtitle: "",
     content: "",
   });
 
@@ -39,10 +33,9 @@ export default function CreatePost({
   useEffect(() => {
     setPost({
       title: title ?? "",
-      subtitle: subtitle ?? "",
       content: content ?? "",
     });
-  }, [title, subtitle, content]);
+  }, [title, content]);
 
   // Cleans up temporary object URLs created for image previews.
   useEffect(() => {
@@ -53,25 +46,21 @@ export default function CreatePost({
 
   const validateForm = () => {
     let isValid = true;
-    const newErrors = { title: "", subtitle: "", content: "" };
+    const newErrors = { title: "", content: "" };
 
-    if (!post.title.trim()) {
-      newErrors.title = "Title cannot be empty";
+    if (!post.title?.trim()) {
+      newErrors.title = "Title is required.";
       isValid = false;
     }
-    if (!post.subtitle.trim()) {
-      newErrors.subtitle = "Subtitle cannot be empty";
-      isValid = false;
-    }
-    if (!post.content.trim()) {
-      newErrors.content = "Content cannot be empty";
+
+    if (!post.content?.trim()) {
+      newErrors.content = "Content is required.";
       isValid = false;
     }
 
     setErrors(newErrors);
     return isValid;
   };
-
   // Dynamically updates the post state whenever the user types something.
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -128,23 +117,6 @@ export default function CreatePost({
             />
             {errors.title && (
               <p className="text-red-500 text-sm">{errors.title}</p>
-            )}
-          </div>
-
-          {/* Subtitle Input */}
-          <div className="col-span-6">
-            <label className="text-sm font-medium text-gray-900 block mb-2">
-              Subtitle
-            </label>
-            <input
-              type="text"
-              name="subtitle"
-              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-              value={post.subtitle}
-              onChange={handleChange}
-            />
-            {errors.subtitle && (
-              <p className="text-red-500 text-sm">{errors.subtitle}</p>
             )}
           </div>
 
