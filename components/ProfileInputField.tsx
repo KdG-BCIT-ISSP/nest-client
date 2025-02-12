@@ -1,5 +1,13 @@
+
+"use client";
+
 import { ProfileDataType } from "@/types/ProfileDataType";
+import { updateProfile } from "@/app/api/profile/update/route";
 import { useState } from "react";
+import React from 'react';
+
+import Image from "next/image";
+
 
 const REGION_VALUES = [
   { value: "", label: "Select a region" },
@@ -13,28 +21,35 @@ export default function ProfileInputField({
   email,
   region,
 }: ProfileDataType) {
-  const [inputUsername, setInputUsername] = useState(username);
-  const [inputRegion, setInputRegion] = useState(region);
 
-  const [errors, setErrors] = useState({
-    username: "",
-    region: "",
+  const [formData, setFormData] = useState({
+    username: username || "",
+    email: email || "",
+    region: region || "",
+    avatar: "", 
   });
+
+  const [errors, setErrors] = useState<{ username: string; region: string }>({ username: "", region: "" });
+  const [message, setMessage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [image, setImage] = useState<File | null>(null); 
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const validateForm = () => {
     let isValid = true;
     const newErrors = { username: "", region: "" };
 
-    if (!inputUsername) {
+    if (!formData.username) {
       newErrors.username = "Username can not be empty";
       isValid = false;
     }
-    if (inputUsername.length > 30) {
+    if (formData.username.length > 30) {
       newErrors.username = "Characters can not exceed 30";
       isValid = false;
     }
 
-    if (!inputRegion) {
+    if (!formData.region  ) {
       newErrors.region = "Please select a region";
       isValid = false;
     }
@@ -43,26 +58,83 @@ export default function ProfileInputField({
     return isValid;
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
 
-    if (validateForm()) {
-      console.log("Form is valid!");
-    } else {
-      console.log("Form is invalid.");
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    if (file) {
+      setImage(file);
+      setImagePreview(URL.createObjectURL(file)); 
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (reader.result) {
+          setImagePreview(reader.result as string); 
+          setFormData({ ...formData, avatar: reader.result as string }); 
+        }
+      };
+      reader.readAsDataURL(file); 
+    
+    }
+
+    
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setMessage(null);
+
+    if (!validateForm()) return;
+    
+
+    try {
+      const response = await updateProfile(formData.username, formData.region, formData.avatar);
+      setMessage("Profile updated successfully!");
+    } catch (error) {
+      console.error("Update failed:", error);
+      setMessage("Failed to update profile.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputUsername(event.target.value);
-  };
-
-  const handleRegionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setInputRegion(event.target.value);
-  };
-
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
   return (
     <div className="bg-white border border-2 rounded-md relative m-10">
+      <div className="flex items-center gap-3 py-2 pl-10 pt-10">
+        {/* Avatar Section */}
+        <div className="flex flex-col items-center">
+          <Image
+            src={imagePreview || "/images/default_profile_image.png"}
+            className="object-cover rounded-full shrink-0 md:w-16 md:h-16 dark:border-none"
+            alt="avatar"
+            width={70}
+            height={70}
+            priority
+          />
+        </div>
+
+        {/* Text Info Section */}
+        <div className="flex flex-col justify-center ml-3">
+          <h5 className="text-md text-gray-600">{username}</h5>
+          <p className="text-gray-500 text-sm">{email}</p>
+          <button className="mt-2 border-secondary border-2 rounded-md text-sm text-secondary hover:text-white hover:bg-secondary"
+            onClick={() => document.getElementById("imageInput")?.click()}>
+            Upload Image
+          </button>
+          <input
+            type="file"
+            id="imageInput"
+            className="hidden"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
+        </div>
+      </div>
       <div className="p-6 space-y-6">
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-6 gap-6">
@@ -78,8 +150,8 @@ export default function ProfileInputField({
                 name="product-name"
                 id="product-name"
                 className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-                value={inputUsername}
-                onChange={handleUsernameChange}
+                value={username}
+                onChange={handleChange}
               />
               {errors.username && (
                 <p className="text-red-500 text-sm">{errors.username}</p>
@@ -112,8 +184,8 @@ export default function ProfileInputField({
                 name="region"
                 id="region"
                 className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-                value={inputRegion}
-                onChange={handleRegionChange}
+                value={formData.region}
+                onChange={handleChange}
               >
                 {REGION_VALUES.map((region) => (
                   <option key={region.value} value={region.value}>
