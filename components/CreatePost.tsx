@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { CreatePostType } from "@/types/CreatePostType";
 import Button from "@/components/Button";
+import Image from "next/image";
+
+const AVAILABLE_TAGS = [
+  "Tips",
+  "Baby",
+  "Travel",
+  "Food",
+  "Health",
+  "Education",
+  "Fitness",
+  "Technology",
+];
 
 export default function CreatePost({
   title,
@@ -20,7 +32,10 @@ export default function CreatePost({
   });
 
   const [images, setImages] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
+  // Listens for changes in title, subtitle, and content props and updates accordingly.
   useEffect(() => {
     setPost({
       title: title ?? "",
@@ -28,6 +43,13 @@ export default function CreatePost({
       content: content ?? "",
     });
   }, [title, subtitle, content]);
+
+  // Cleans up temporary object URLs created for image previews.
+  useEffect(() => {
+    return () => {
+      imagePreviews.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [imagePreviews]);
 
   const validateForm = () => {
     let isValid = true;
@@ -50,6 +72,7 @@ export default function CreatePost({
     return isValid;
   };
 
+  // Dynamically updates the post state whenever the user types something.
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -57,22 +80,38 @@ export default function CreatePost({
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setImages([...images, ...Array.from(e.target.files)]);
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0]; // Only take the first file
+
+      // Update state to store only the latest file
+      setImages([file]);
+
+      // Update preview, replacing the previous one
+      const imageUrl = URL.createObjectURL(file);
+      setImagePreviews([imageUrl]);
     }
   };
 
+  const handleTagClick = (tag: string) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tag)); // Remove tag if clicked again
+    } else {
+      setSelectedTags([...selectedTags, tag]); // Add tag if not already selected
+    }
+  };
+
+  // handle post submission (WIP)
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (validateForm()) {
-      console.log("Post submitted:", post, images);
+      console.log("Post submitted:", { ...post, tags: selectedTags, images });
     } else {
       console.log("Form is invalid.");
     }
   };
 
   return (
-    <div className="bg-white border border-2 rounded-md relative m-10 p-6">
+    <div className="bg-white border rounded-md relative m-10 p-6">
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-6 gap-6">
           {/* Title Input */}
@@ -125,17 +164,70 @@ export default function CreatePost({
             )}
           </div>
 
-          {/* Image Upload */}
-          <div className="col-span-6">
-            <label className="text-sm font-medium text-gray-900 block mb-2">
-              Upload Images
-            </label>
-            <input
-              type="file"
-              multiple
-              onChange={handleImageUpload}
-              className="block w-full"
-            />
+          <div className="col-span-6 flex flex-wrap items-start gap-4">
+            {/* Tag Selection */}
+            <div className="w-full md:w-1/2">
+              <label className="text-sm font-medium text-gray-900 block mb-2">
+                Tags:
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {AVAILABLE_TAGS.map((tag) => (
+                  <Button
+                    key={tag}
+                    onClick={() => handleTagClick(tag)}
+                    type="button"
+                    className={`px-3 py-1 rounded-lg text-sm border flex items-center gap-1 ${
+                      selectedTags.includes(tag)
+                        ? "bg-red-300 border-red-500"
+                        : "bg-gray-200 border-gray-400"
+                    } text-black`}
+                  >
+                    {tag}{" "}
+                    {selectedTags.includes(tag) && (
+                      <span className="ml-1">✖</span>
+                    )}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* Image Upload */}
+            <div className="w-full md:w-1/2 flex justify-end md:ml-auto">
+              <div className="text-right">
+                {/* Upload Image Button */}
+                <div className="relative inline-block">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    id="fileUpload"
+                  />
+                  <Button
+                    label="Add image"
+                    onClick={() =>
+                      document.getElementById("fileUpload")?.click()
+                    }
+                    type="button"
+                    className="bg-gray-200 hover:bg-gray-300 text-black px-4 py-2 rounded-md border border-gray-400"
+                  />
+                </div>
+
+                {/* Display Image Preview */}
+                {imagePreviews.length > 0 && (
+                  <div className="mt-4 relative">
+                    <Image
+                      src={imagePreviews[0]}
+                      alt="Preview"
+                      width={100}
+                      height={100}
+                      className="w-24 h-24 object-cover rounded-lg border border-gray-300"
+                      unoptimized
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
