@@ -23,6 +23,12 @@ export default function CreateArticle() {
   // Handle Title Change
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setArticle({ ...article, title: e.target.value });
+
+    // Live validation
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      title: e.target.value.trim() ? "" : "Title is required.",
+    }));
   };
 
   // Handle Image Upload
@@ -40,7 +46,7 @@ export default function CreateArticle() {
   const handleContentChange = (value: string) => {
     setArticle({ ...article, content: value });
 
-    // Live validation for content
+    // Live validation for quill content
     setErrors((prevErrors) => ({
       ...prevErrors,
       content: value.trim() ? "" : "Content is required.",
