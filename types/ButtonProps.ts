@@ -9,4 +9,5 @@ export type ButtonProps = {
   ) => void;
   className?: string;
   children?: ReactNode;
+  type?: "button" | "submit" | "reset";
 };
