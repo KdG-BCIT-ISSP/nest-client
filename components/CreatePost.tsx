@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { CreatePostType } from "@/types/CreatePostType";
+import { PostType } from "@/types/PostType";
 import Button from "@/components/Button";
 import Image from "next/image";
 
@@ -14,8 +14,8 @@ const AVAILABLE_TAGS = [
   "Technology",
 ];
 
-export default function CreatePost({ title, content }: CreatePostType) {
-  const [post, setPost] = useState<CreatePostType>({
+export default function CreatePost({ title, content }: PostType) {
+  const [post, setPost] = useState<PostType>({
     title: "",
     content: "",
   });
@@ -93,7 +93,11 @@ export default function CreatePost({ title, content }: CreatePostType) {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (validateForm()) {
-      console.log("Post submitted:", { ...post, tags: selectedTags, images });
+      const newPost = { ...post, tags: selectedTags, images };
+      if (!newPost.id) {
+        newPost.id = `post-${Date.now()}`; // Unique ID timestamp? Crypto?
+      }
+      console.log("Post submitted:", newPost);
     } else {
       console.log("Form is invalid.");
     }
