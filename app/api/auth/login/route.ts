@@ -1,4 +1,4 @@
-import axiosInterceptor from "../../axioInterceptor";
+import axiosInterceptor from "../../axiosInterceptor";
 
 export const login = async (email: string, password: string) => {
   const response = await axiosInterceptor.post("/member/login", {

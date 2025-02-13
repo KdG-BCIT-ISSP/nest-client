@@ -1,4 +1,4 @@
-import axiosInterceptor from "../../axioInterceptor";
+import axiosInterceptor from "../../axiosInterceptor";
 
 export const join = async (
   username: string,

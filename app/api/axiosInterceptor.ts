@@ -1,10 +1,13 @@
+import { accessTokenAtom } from "@/atoms/auth/atom";
 import axios, {
   AxiosError,
   AxiosInstance,
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
+import { getDefaultStore } from "jotai";
 
+const store = getDefaultStore();
 const axiosInterceptor: AxiosInstance = axios.create({
   baseURL: "/api",
   timeout: 10000,
@@ -13,7 +16,7 @@ const axiosInterceptor: AxiosInstance = axios.create({
 // adds auth header if a token is available
 axiosInterceptor.interceptors.request.use(
   (config: InternalAxiosRequestConfig & { requiresAuth?: boolean }) => {
-    const token = localStorage.getItem("accessToken");
+    const token = store.get(accessTokenAtom);
 
     if (config.requiresAuth && token) {
       config.headers.Authorization = `Bearer ${token}`;

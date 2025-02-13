@@ -1,14 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(req: NextRequest) {
-  const isAuthenticated = req.cookies.get("token");
-  console.log(isAuthenticated, "isAuth");
+  const refreshToken = req.cookies.get("refreshToken")?.value;
 
-  if (req.nextUrl.pathname.startsWith("/admin") && !isAuthenticated) {
+  const isProtectedRoute =
+    req.nextUrl.pathname.startsWith("/admin") ||
+    req.nextUrl.pathname.startsWith("/profile") ||
+    req.nextUrl.pathname.startsWith("/create-post");
+
+  if (isProtectedRoute && !refreshToken) {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
-  const url = req.nextUrl.clone();
 
+  const url = req.nextUrl.clone();
   if (url.pathname.startsWith("/api/")) {
     url.hostname = "localhost";
     url.port = "8080";
@@ -19,9 +23,10 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-// access - private
-// refresh - cookie
-
 export const config = {
-  matcher: ["/admin/:path*", "/api/:path*", "/oauth2/:path*"],
+  matcher: [
+    "/(admin|profile|create-post)/:path*",
+    "/api/:path*",
+    "/oauth2/:path*",
+  ],
 };
