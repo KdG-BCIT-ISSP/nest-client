@@ -3,14 +3,11 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { join } from "@/app/api/auth/join/route";
+import { join } from "@/app/api/member/join/route";
 import { useCookies } from "react-cookie";
-import { useAtom } from "jotai";
-import { accessTokenAtom } from "@/atoms/auth/atom";
 
 export default function SignupPage() {
   const [, setCookie] = useCookies(["refreshToken"]);
-  const [, setAccessToken] = useAtom(accessTokenAtom);
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -46,7 +43,7 @@ export default function SignupPage() {
       );
 
       setSuccess("Account created successfully!");
-      setAccessToken(response.accessToken);
+      localStorage.setItem("accessToken", response.accessToken);
       setCookie("refreshToken", response.refreshToken, {
         path: "/",
         // maxAge: 3600,
