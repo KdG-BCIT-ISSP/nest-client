@@ -5,6 +5,8 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
+import { getNewAccessToken } from "./auth/accessToken/route";
+import { getCookie, deleteCookie, setCookie } from "cookies-next";
 
 const axiosInterceptor: AxiosInstance = axios.create({
   baseURL: "/api",
@@ -31,6 +33,33 @@ axiosInterceptor.interceptors.request.use(
     return config;
   },
   (error: AxiosError) => Promise.reject(error)
+);
+
+// first response interceptor for handling 401 errors
+axiosInterceptor.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    const refreshToken = getCookie("refreshToken")?.toString() || "";
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        const response = await getNewAccessToken(refreshToken);
+        localStorage.setItem("accessToken", response.accessToken);
+        setCookie("refreshToken", response.refreshToken);
+        return axiosInterceptor(originalRequest);
+      } catch (refreshError) {
+        deleteCookie("refreshToken", { path: "/" });
+        localStorage.removeItem("accessToken");
+        window.location.href = "/";
+        return Promise.reject(refreshError);
+      }
+    }
+
+    return Promise.reject(error);
+  }
 );
 
 // response interceptor
