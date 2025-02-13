@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import ViewPost from "@/components/ViewPost";
+import PostCard from "@/components/PostCard";
 
 export default function CreateViewPostPage() {
   const [loading, setLoading] = useState(true);
@@ -18,6 +19,7 @@ export default function CreateViewPostPage() {
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">View Post</h1>
       <ViewPost />
+      <PostCard />
     </div>
   );
 }
