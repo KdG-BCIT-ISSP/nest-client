@@ -4,19 +4,32 @@ import Image from "next/image";
 import SideMenu from "@/components/SideMenu";
 import ProfileInputField from "@/components/ProfileInputField";
 import { useEffect, useState } from "react";
+import { getProfile } from "../api/profile/get/route";
 
 export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
 
   const [userData, setUserData] = useState({
-    username: "Alice",
-    email: "123@gmail.com",
-    region: "north-america",
+    username: "",
+    email: "",
+    region: "",
     avatar: "/images/default_profile_image.png",
   });
 
   useEffect(() => {
-    setLoading(false);
+    const fetchData = async () => {
+      try {
+        const data = await getProfile();
+        console.log(data);
+        setUserData(data);
+      } catch (error) {
+        console.error("Failed to fetch profile data:", error);
+      } finally {
+        setLoading(false);  
+      }
+    };
+
+    fetchData();
   }, []);
 
   if (loading) {

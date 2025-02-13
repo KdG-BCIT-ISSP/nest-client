@@ -5,7 +5,6 @@ import { ProfileDataType } from "@/types/ProfileDataType";
 import { updateProfile } from "@/app/api/profile/update/route";
 import { useState } from "react";
 import React from 'react';
-
 import Image from "next/image";
 
 
@@ -26,14 +25,14 @@ export default function ProfileInputField({
     username: username || "",
     email: email || "",
     region: region || "",
-    avatar: "", 
+    avatar: "",
   });
 
   const [errors, setErrors] = useState<{ username: string; region: string }>({ username: "", region: "" });
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [image, setImage] = useState<File | null>(null); 
+  const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const validateForm = () => {
@@ -49,7 +48,7 @@ export default function ProfileInputField({
       isValid = false;
     }
 
-    if (!formData.region  ) {
+    if (!formData.region) {
       newErrors.region = "Please select a region";
       isValid = false;
     }
@@ -67,20 +66,20 @@ export default function ProfileInputField({
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
       setImage(file);
-      setImagePreview(URL.createObjectURL(file)); 
+      setImagePreview(URL.createObjectURL(file));
 
       const reader = new FileReader();
       reader.onloadend = () => {
         if (reader.result) {
-          setImagePreview(reader.result as string); 
-          setFormData({ ...formData, avatar: reader.result as string }); 
+          setImagePreview(reader.result as string);
+          setFormData({ ...formData, avatar: reader.result as string });
         }
       };
-      reader.readAsDataURL(file); 
-    
+      reader.readAsDataURL(file);
+
     }
 
-    
+
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -89,14 +88,17 @@ export default function ProfileInputField({
     setMessage(null);
 
     if (!validateForm()) return;
-    
+
 
     try {
       const response = await updateProfile(formData.username, formData.region, formData.avatar);
+      console.log(response)
       setMessage("Profile updated successfully!");
+      window.alert("Profile updated successfully!");
     } catch (error) {
       console.error("Update failed:", error);
       setMessage("Failed to update profile.");
+      window.alert("Profile updated failed!");
     } finally {
       setIsLoading(false);
     }
@@ -120,8 +122,8 @@ export default function ProfileInputField({
 
         {/* Text Info Section */}
         <div className="flex flex-col justify-center ml-3">
-          <h5 className="text-md text-gray-600">{username}</h5>
-          <p className="text-gray-500 text-sm">{email}</p>
+          <h5 className="text-md text-gray-600">{formData.username}</h5>
+          <p className="text-gray-500 text-sm">{formData.email}</p>
           <button className="mt-2 border-secondary border-2 rounded-md text-sm text-secondary hover:text-white hover:bg-secondary"
             onClick={() => document.getElementById("imageInput")?.click()}>
             Upload Image
@@ -140,17 +142,17 @@ export default function ProfileInputField({
           <div className="grid grid-cols-6 gap-6">
             <div className="col-span-6 sm:col-span-3">
               <label
-                htmlFor="product-name"
+                htmlFor="username"
                 className="text-sm font-medium text-gray-900 block mb-2"
               >
                 Username
               </label>
               <input
                 type="text"
-                name="product-name"
-                id="product-name"
+                name="username"
+                id="username"
                 className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-                value={username}
+                value={formData.username}
                 onChange={handleChange}
               />
               {errors.username && (
@@ -168,8 +170,8 @@ export default function ProfileInputField({
                 type="text"
                 name="category"
                 id="category"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-                value={email}
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-500 sm:text-sm rounded-lg block w-full p-2.5  bg-gray-100"
+                value={formData.email}
                 readOnly
               />
             </div>
