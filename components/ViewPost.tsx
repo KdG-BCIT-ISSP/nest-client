@@ -10,12 +10,7 @@ export default function ViewPost({
   images,
   author,
   timestamp,
-}: PostType & {
-  tags?: string[];
-  images?: File[];
-  author?: string;
-  timestamp?: string;
-}) {
+}: PostType) {
   // Initialize comments state
   const [comments, setComments] = useState<CommentType[]>([]);
 
