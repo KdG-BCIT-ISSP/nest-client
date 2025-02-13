@@ -18,7 +18,11 @@ export default function CreateViewPostPage() {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">View Post</h1>
-      <ViewPost />
+      <ViewPost
+        author="Jane Doe"
+        title="Surviving Sleepless Nights: Tips for New Mothers"
+        content="Sleepless nights can be one of the most challenging parts of being a new mom. It's essential to find moments to rest, even when it feels impossible."
+      />
       <PostCard />
     </div>
   );
