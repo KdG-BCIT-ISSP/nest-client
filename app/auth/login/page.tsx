@@ -4,14 +4,11 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { login } from "@/app/api/auth/login/route";
+import { login } from "@/app/api/member/login/route";
 import { useCookies } from "react-cookie";
-import { useAtom } from "jotai";
-import { accessTokenAtom } from "@/atoms/auth/atom";
 
 export default function LoginPage() {
   const [, setCookie] = useCookies(["refreshToken"]);
-  const [, setAccessToken] = useAtom(accessTokenAtom);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -36,7 +33,7 @@ export default function LoginPage() {
       const response = await login(formData.email, formData.password);
 
       setSuccess("Login successful!");
-      setAccessToken(response.accessToken);
+      localStorage.setItem("accessToken", response.accessToken);
       setCookie("refreshToken", response.refreshToken, {
         path: "/",
         // maxAge: 3600,

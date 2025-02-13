@@ -1,30 +1,65 @@
-import { accessTokenAtom } from "@/atoms/auth/atom";
 import axios, {
   AxiosError,
   AxiosInstance,
+  AxiosRequestConfig,
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
-import { getDefaultStore } from "jotai";
+import { getNewAccessToken } from "./auth/accessToken/route";
+import { getCookie, deleteCookie, setCookie } from "cookies-next";
 
-const store = getDefaultStore();
 const axiosInterceptor: AxiosInstance = axios.create({
   baseURL: "/api",
   timeout: 10000,
 });
 
+export interface CustomAxiosRequestConfig extends AxiosRequestConfig {
+  requiresAuth?: boolean;
+}
+
 // adds auth header if a token is available
 axiosInterceptor.interceptors.request.use(
   (config: InternalAxiosRequestConfig & { requiresAuth?: boolean }) => {
-    const token = store.get(accessTokenAtom);
+    if (config.requiresAuth) {
+      const token = localStorage.getItem("accessToken");
 
-    if (config.requiresAuth && token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      if (token) {
+        const sanitizedToken = token.replace(/"/g, "");
+        config.headers.Authorization = `Bearer ${sanitizedToken}`;
+        config.headers["Content-Type"] = "application/json";
+      }
     }
 
     return config;
   },
   (error: AxiosError) => Promise.reject(error)
+);
+
+// first response interceptor for handling 401 errors
+axiosInterceptor.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    const refreshToken = getCookie("refreshToken")?.toString() || "";
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        const response = await getNewAccessToken(refreshToken);
+        localStorage.setItem("accessToken", response.accessToken);
+        setCookie("refreshToken", response.refreshToken);
+        return axiosInterceptor(originalRequest);
+      } catch (refreshError) {
+        deleteCookie("refreshToken", { path: "/" });
+        localStorage.removeItem("accessToken");
+        window.location.href = "/";
+        return Promise.reject(refreshError);
+      }
+    }
+
+    return Promise.reject(error);
+  }
 );
 
 // response interceptor
