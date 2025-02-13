@@ -14,10 +14,14 @@ const AVAILABLE_TAGS = [
   "Technology",
 ];
 
-export default function CreatePost({ title, content }: PostType) {
+export default function CreatePost({
+  title = "",
+  content = "",
+  author = "Anonymous",
+}: PostType) {
   const [post, setPost] = useState<PostType>({
-    title: "",
-    content: "",
+    title,
+    content,
   });
 
   const [errors, setErrors] = useState({
@@ -93,11 +97,18 @@ export default function CreatePost({ title, content }: PostType) {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (validateForm()) {
-      const newPost = { ...post, tags: selectedTags, images };
+      const newPost = {
+        ...post,
+        tags: selectedTags,
+        images,
+        author: author,
+        timestamp: new Date().toLocaleString(),
+      };
       if (!newPost.id) {
         newPost.id = `post-${Date.now()}`; // Unique ID timestamp? Crypto?
       }
       console.log("Post submitted:", newPost);
+      // TODO: Add redirect to post
     } else {
       console.log("Form is invalid.");
     }
