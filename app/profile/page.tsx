@@ -1,40 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import SideMenu from "@/components/SideMenu";
 import ProfileInputField from "@/components/ProfileInputField";
-import { useEffect, useState } from "react";
-import { getProfile } from "../api/profile/get/route";
+import { useAtom } from "jotai";
+import { userAtom } from "@/atoms/user/atom";
 
 export default function ProfilePage() {
-  const [loading, setLoading] = useState(true);
-
-  const [userData, setUserData] = useState({
-    username: "",
-    email: "",
-    region: "",
-    avatar: "/images/default_profile_image.png",
-  });
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getProfile();
-        console.log(data);
-        setUserData(data);
-      } catch (error) {
-        console.error("Failed to fetch profile data:", error);
-      } finally {
-        setLoading(false);  
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const [userData] = useAtom(userAtom);
 
   return (
     <div className="p-4 sm:ml-64">
