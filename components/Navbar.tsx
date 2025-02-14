@@ -76,8 +76,8 @@ export default function Navbar() {
                   className="w-8 h-8 rounded-full"
                   src={userData.avatar || "/images/default_profile_image.png"}
                   alt="User profile"
-                  width={32}
-                  height={32}
+                  width={70}
+                  height={70}
                   priority
                 />
               </button>

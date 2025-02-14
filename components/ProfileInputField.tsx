@@ -9,6 +9,7 @@ import Image from "next/image";
 import { getProfile } from "@/app/api/profile/get/route";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
+import imageCompression from "browser-image-compression";
 
 
 const REGION_VALUES = [
@@ -42,12 +43,6 @@ export default function ProfileInputField({
 
   console.log(avatar)
 
-  // 2 things
-  // 1. validate form - username should be at least 4 characters and not exceed 13 characters
-  // 2. optimize image before uploading or sending to the server
-  // 3. Make sure to display the imagePreview over the avatar image when user selects an image from folder
-  // 4. email field should not be editable - means it should not be clickable
-
 
   const validateForm = () => {
     let isValid = true;
@@ -76,20 +71,34 @@ export default function ProfileInputField({
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
       setImage(file);
       setImagePreview(URL.createObjectURL(file));
 
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (reader.result) {
-          setImagePreview(reader.result as string);
-          setFormData({ ...formData, avatar: reader.result as string });
-        }
-      };
-      reader.readAsDataURL(file);
+      try{
+        const options = {
+          maxSizeMB: 1, 
+          maxWidthOrHeight: 500, 
+          useWebWorker: true,
+        };
+
+        const compressedFile = await imageCompression(file, options);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (reader.result) {
+            setImagePreview(reader.result as string);
+            setFormData({ ...formData, avatar: reader.result as string });
+          }
+        };
+        reader.readAsDataURL(file);
+
+      }catch(error){
+        console.error("Failed to upload image", error);
+      }
+
+
 
     }
 
