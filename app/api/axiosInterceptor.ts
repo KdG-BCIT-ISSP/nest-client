@@ -24,7 +24,9 @@ axiosInterceptor.interceptors.request.use(
       const token = localStorage.getItem("accessToken");
 
       if (token) {
-        const sanitizedToken = token.replace(/"/g, "");
+        const sanitizedToken = token
+          .replace(/^(\\|")+/g, "")
+          .replace(/(\\|")+$/g, "");
         config.headers.Authorization = `Bearer ${sanitizedToken}`;
         config.headers["Content-Type"] = "application/json";
       }
