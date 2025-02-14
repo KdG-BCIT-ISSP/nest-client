@@ -1,3 +1,4 @@
+
 import MenuIcon from "@/public/svg/Menu";
 import SearchBar from "./SearchBar";
 import Image from "next/image";
@@ -6,6 +7,7 @@ import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { useAtom } from "jotai";
 import { isAuthenticatedAtom } from "@/atoms/auth/atom";
+import { userAtom } from "@/atoms/user/atom";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -20,6 +22,7 @@ const USER_DROPDOWN_LINKS = [
 ];
 
 export default function Navbar() {
+  const [userData] = useAtom(userAtom);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
 
@@ -71,10 +74,10 @@ export default function Navbar() {
                 <span className="sr-only">Open user menu</span>
                 <Image
                   className="w-8 h-8 rounded-full"
-                  src="/images/default_profile_image.png"
+                  src={userData.avatar || "/images/default_profile_image.png"}
                   alt="User profile"
-                  width={32}
-                  height={32}
+                  width={70}
+                  height={70}
                   priority
                 />
               </button>
@@ -83,10 +86,10 @@ export default function Navbar() {
                 <div className="z-50 absolute right-0 mt-2 w-48 bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg dark:bg-gray-700 dark:border-gray-600 dark:divide-gray-600">
                   <div className="px-4 py-3">
                     <span className="block text-sm text-gray-900 dark:text-white">
-                      Bonnie Green
+                      {userData.username}
                     </span>
                     <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
-                      name@flowbite.com
+                      {userData.email}
                     </span>
                   </div>
                   <ul className="py-2">
@@ -94,8 +97,7 @@ export default function Navbar() {
                       <li key={link.href}>
                         <Link
                           href={link.href}
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100
-                                     dark:hover:bg-gray-600 dark:text-gray-200"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200"
                         >
                           {link.label}
                         </Link>
