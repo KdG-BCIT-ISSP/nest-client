@@ -13,6 +13,10 @@ const axiosInterceptor: AxiosInstance = axios.create({
   timeout: 10000,
 });
 
+// response error types
+const INVALID_TOKEN_ERROR = "Invalid token";
+const EXPIRED_TOKEN_ERROR = "Expired token";
+
 export interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   requiresAuth?: boolean;
 }
@@ -44,19 +48,27 @@ axiosInterceptor.interceptors.response.use(
     const originalRequest = error.config;
     const refreshToken = getCookie("refreshToken")?.toString() || "";
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+    const responseType = error.response?.data?.error;
 
-      try {
-        const response = await getNewAccessToken(refreshToken);
-        localStorage.setItem("accessToken", response.accessToken);
-        setCookie("refreshToken", response.refreshToken);
-        return axiosInterceptor(originalRequest);
-      } catch (refreshError) {
-        deleteCookie("refreshToken", { path: "/" });
-        localStorage.removeItem("accessToken");
-        window.location.href = "/";
-        return Promise.reject(refreshError);
+    if (error.response?.status === 401) {
+      if (!originalRequest._retry) {
+        originalRequest._retry = true;
+
+        if (responseType === EXPIRED_TOKEN_ERROR) {
+          try {
+            const response = await getNewAccessToken(refreshToken);
+            localStorage.setItem("accessToken", response.accessToken);
+            setCookie("refreshToken", response.refreshToken);
+            return axiosInterceptor(originalRequest);
+          } catch (refreshError) {
+            handleLogout();
+            return Promise.reject(refreshError);
+          }
+        }
+
+        if (responseType === INVALID_TOKEN_ERROR) {
+          handleLogout();
+        }
       }
     }
 
@@ -86,5 +98,13 @@ axiosInterceptor.interceptors.response.use(
     return Promise.reject(new Error(errorMessage));
   }
 );
+
+// function to handle logout
+const handleLogout = () => {
+  deleteCookie("refreshToken", { path: "/" });
+  localStorage.removeItem("accessToken");
+  window.location.href = "/auth/login";
+  alert("Invalid token. Please log in again.");
+};
 
 export default axiosInterceptor;
