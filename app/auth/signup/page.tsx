@@ -29,6 +29,25 @@ export default function SignupPage() {
     setError(null);
     setSuccess(null);
 
+    if (formData.username.trim().length < 4) {
+      setError("Username must be at least 4 characters long.");
+      setIsLoading(false);
+      return;
+    }
+
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError("Please enter a valid email address.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      setIsLoading(false);
+      return;
+    }
+
     if (formData.password !== formData.repassword) {
       setError("Passwords do not match.");
       setIsLoading(false);
