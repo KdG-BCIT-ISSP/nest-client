@@ -6,6 +6,9 @@ import { updateProfile } from "@/app/api/profile/update/route";
 import { useState } from "react";
 import React from 'react';
 import Image from "next/image";
+import { getProfile } from "@/app/api/profile/get/route";
+import { useAtom } from "jotai";
+import { userAtom } from "@/atoms/user/atom";
 
 
 const REGION_VALUES = [
@@ -19,13 +22,14 @@ export default function ProfileInputField({
   username,
   email,
   region,
+  avatar,
 }: ProfileDataType) {
 
   const [formData, setFormData] = useState({
     username: username || "",
     email: email || "",
     region: region || "",
-    avatar: "",
+    avatar: avatar || "",
   });
 
   const [errors, setErrors] = useState<{ username: string; region: string }>({ username: "", region: "" });
@@ -34,6 +38,16 @@ export default function ProfileInputField({
 
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [, setUserData] = useAtom(userAtom);
+
+  console.log(avatar)
+
+  // 2 things
+  // 1. validate form - username should be at least 4 characters and not exceed 13 characters
+  // 2. optimize image before uploading or sending to the server
+  // 3. Make sure to display the imagePreview over the avatar image when user selects an image from folder
+  // 4. email field should not be editable - means it should not be clickable
+
 
   const validateForm = () => {
     let isValid = true;
@@ -43,8 +57,8 @@ export default function ProfileInputField({
       newErrors.username = "Username can not be empty";
       isValid = false;
     }
-    if (formData.username.length > 30) {
-      newErrors.username = "Characters can not exceed 30";
+    if (formData.username.length > 13 || formData.username.length < 4) {
+      newErrors.username = "Characters can not less than 4 and exceed 13";
       isValid = false;
     }
 
@@ -92,6 +106,23 @@ export default function ProfileInputField({
 
     try {
       const response = await updateProfile(formData.username, formData.region, formData.avatar);
+
+      if (response) {
+        setFormData((prev) => ({
+          ...prev,
+          username: response.username || prev.username,
+          region: response.region || prev.region,
+          avatar: response.avatar !== undefined ? response.avatar : prev.avatar,
+        }));
+
+        if (response.avatar) {
+          setImagePreview(response.avatar);
+        }
+      }
+
+      const data = await getProfile();
+      console.log(data);
+      setUserData(data);
       console.log(response)
       setMessage("Profile updated successfully!");
       window.alert("Profile updated successfully!");
@@ -111,7 +142,7 @@ export default function ProfileInputField({
         {/* Avatar Section */}
         <div className="flex flex-col items-center">
           <Image
-            src={imagePreview || "/images/default_profile_image.png"}
+            src={imagePreview || avatar || "/images/default_profile_image.png"}
             className="object-cover rounded-full shrink-0 md:w-16 md:h-16 dark:border-none"
             alt="avatar"
             width={70}
@@ -170,7 +201,7 @@ export default function ProfileInputField({
                 type="text"
                 name="category"
                 id="category"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-500 sm:text-sm rounded-lg block w-full p-2.5  bg-gray-100"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-500 sm:text-sm rounded-lg block w-full p-2.5 bg-gray-100 pointer-events-none focus:outline-none"
                 value={formData.email}
                 readOnly
               />

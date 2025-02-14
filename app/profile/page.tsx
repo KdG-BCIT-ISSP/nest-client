@@ -16,6 +16,7 @@ export default function ProfilePage() {
           username={userData.username}
           email={userData.email}
           region={userData.region}
+          avatar={userData.avatar}
         ></ProfileInputField>
       </div>
     </div>
