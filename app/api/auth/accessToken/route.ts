@@ -7,9 +7,9 @@ export const getNewAccessToken = async (refreshToken: string) => {
     "/auth/getNewAccessToken",
     { refreshToken },
     {
-      requiresAuth: true,
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${refreshToken}`,
       },
     } as CustomAxiosRequestConfig
   );
