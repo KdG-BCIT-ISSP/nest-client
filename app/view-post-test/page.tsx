@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import ViewPost from "@/components/ViewPost";
 import PostCard from "@/components/PostCard";
 
-export default function CreateViewPostPage() {
+export default function ViewPostPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
