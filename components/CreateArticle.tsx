@@ -6,9 +6,11 @@ import Button from "@/components/Button";
 import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
+import { ArticleType } from "@/types/ArticleType";
 
 export default function CreateArticle() {
-  const [article, setArticle] = useState({
+  const [article, setArticle] = useState<ArticleType>({
+    author: "",
     title: "",
     content: "",
     image: null as File | null, // Stores uploaded image
@@ -16,22 +18,28 @@ export default function CreateArticle() {
   });
 
   const [errors, setErrors] = useState({
+    author: "",
     title: "",
     content: "",
     image: "",
   });
 
-  // Handle Title Change
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setArticle({ ...article, title: e.target.value });
+  // Handle Change
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: "author" | "title"
+  ) => {
+    const value = e.target.value;
+    setArticle({ ...article, [field]: value });
 
     // Live validation
     setErrors((prevErrors) => ({
       ...prevErrors,
-      title: e.target.value.trim() ? "" : "Title is required.",
+      [field]: value.trim()
+        ? ""
+        : `${field.charAt(0).toUpperCase() + field.slice(1)} is required.`,
     }));
   };
-
   // Handle Image Upload
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -66,7 +74,12 @@ export default function CreateArticle() {
   // Validate Form
   const validateForm = () => {
     let isValid = true;
-    const newErrors = { title: "", content: "", image: "" };
+    const newErrors = { author: "", title: "", content: "", image: "" };
+
+    if (!article.author?.trim()) {
+      newErrors.author = "Author is required.";
+      isValid = false;
+    }
 
     if (!article.title?.trim()) {
       newErrors.title = "Title is required.";
@@ -102,6 +115,22 @@ export default function CreateArticle() {
     <div className="max-w-6xl mx-auto bg-white p-6 lg:p-12 rounded-lg shadow-md my-10">
       <form onSubmit={handleSubmit}>
         <div className="mb-6 flex items-center justify-between gap-6">
+          {/* Author Input */}
+          <div className="w-1/4 flex flex-col">
+            <label className="block text-lg font-medium text-black">
+              Author
+            </label>
+            <input
+              type="text"
+              value={article.author}
+              onChange={(e) => handleChange(e, "author")}
+              className="mt-1 p-3 w-full border border-gray-300 rounded-md text-black h-12"
+              placeholder="Enter author's name..."
+            />
+            {errors.author && (
+              <p className="text-red-500 text-sm">{errors.author}</p>
+            )}
+          </div>
           {/* Title Input */}
           <div className="w-3/5 flex flex-col">
             <label className="block text-lg font-medium text-black">
@@ -110,7 +139,7 @@ export default function CreateArticle() {
             <input
               type="text"
               value={article.title}
-              onChange={handleTitleChange}
+              onChange={(e) => handleChange(e, "title")}
               className="mt-1 p-3 w-full border border-gray-300 rounded-md text-black h-12"
               placeholder="Enter article title..."
             />
