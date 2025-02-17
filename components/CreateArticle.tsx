@@ -6,9 +6,11 @@ import Button from "@/components/Button";
 import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
+import { ArticleType } from "@/types/ArticleType";
 
 export default function CreateArticle() {
-  const [article, setArticle] = useState({
+  const [article, setArticle] = useState<ArticleType>({
+    author: "",
     title: "",
     content: "",
     image: null as File | null, // Stores uploaded image
