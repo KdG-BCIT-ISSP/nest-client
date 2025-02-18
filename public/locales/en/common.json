@@ -1,3 +1,21 @@
 {
-  "welcome": "Welcome to NEST!"
+  "navigation": {
+    "home": "Home",
+    "articles": "Articles",
+    "community": "Community",
+    "profile": "Profile",
+    "savedPosts": "Saved Posts",
+    "notifications": "Notifications",
+    "signOut": "Sign Out",
+    "login": "Log In",
+    "register": "Register",
+    "searchSomething": "Search something..."
+  },
+  "profile": {
+    "uploadImage": "Upload Image",
+    "username": "Username",
+    "email": "Email",
+    "region": "Region",
+    "save": "Save"
+  }
 }
