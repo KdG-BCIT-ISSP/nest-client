@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Layout from "@/components/Layout";
-import JotaiProvider from "./providers/JotaiProvider";
+import Providers from "./providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -16,9 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <JotaiProvider>
+        <Providers>
           <Layout>{children}</Layout>
-        </JotaiProvider>
+        </Providers>
       </body>
     </html>
   );
