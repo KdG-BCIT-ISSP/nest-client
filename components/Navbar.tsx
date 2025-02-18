@@ -1,32 +1,44 @@
+"use client";
 
 import MenuIcon from "@/public/svg/Menu";
 import SearchBar from "./SearchBar";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useAtom } from "jotai";
 import { isAuthenticatedAtom } from "@/atoms/auth/atom";
 import { userAtom } from "@/atoms/user/atom";
-
-const NAV_LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/curated-articles", label: "Articles" },
-  { href: "/posts", label: "Community" },
-];
-
-const USER_DROPDOWN_LINKS = [
-  { href: "/profile", label: "Profile" },
-  { href: "/profile/saved-posts", label: "Saved Posts" },
-  { href: "/profile/notifications", label: "Notification" },
-];
+import { useTranslation } from "react-i18next";
 
 export default function Navbar() {
+  const [mounted, setMounted] = useState(false);
+  const { t } = useTranslation("common");
   const [userData] = useAtom(userAtom);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
 
   const [, , removeCookie] = useCookies(["refreshToken"]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  const NAV_LINKS = [
+    { href: "/", label: t("navigation.home") },
+    { href: "/curated-articles", label: t("navigation.articles") },
+    { href: "/posts", label: t("navigation.community") },
+  ];
+
+  const USER_DROPDOWN_LINKS = [
+    { href: "/profile", label: t("navigation.profile") },
+    { href: "/profile/saved-posts", label: t("navigation.savedPosts") },
+    { href: "/profile/notifications", label: t("navigation.notifications") },
+  ];
 
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen((prev) => !prev);
@@ -109,7 +121,7 @@ export default function Navbar() {
                         className="block px-4 py-2 w-full text-left text-sm text-red-600
                                    hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200"
                       >
-                        Sign out
+                        {t("navigation.signOut")}
                       </button>
                     </li>
                   </ul>
@@ -123,13 +135,13 @@ export default function Navbar() {
                 href="/auth/login"
                 className="px-4 py-2 text-sm font-medium text-white bg-secondary rounded-md"
               >
-                Log In
+                {t("navigation.login")}
               </Link>
               <Link
                 href="/auth/signup"
                 className="px-4 py-2 text-sm font-medium text-white bg-tertiary rounded-md "
               >
-                Sign Up
+                {t("navigation.register")}
               </Link>
             </div>
           )}
