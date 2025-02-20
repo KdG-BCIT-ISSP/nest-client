@@ -10,7 +10,6 @@ import { ArticleType } from "@/types/ArticleType";
 
 export default function CreateArticle() {
   const [article, setArticle] = useState<ArticleType>({
-    author: "",
     title: "",
     content: "",
     image: null as File | null, // Stores uploaded image
@@ -18,7 +17,6 @@ export default function CreateArticle() {
   });
 
   const [errors, setErrors] = useState({
-    author: "",
     title: "",
     content: "",
     image: "",
@@ -27,7 +25,7 @@ export default function CreateArticle() {
   // Handle Change
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    field: "author" | "title"
+    field: "title"
   ) => {
     const value = e.target.value;
     setArticle({ ...article, [field]: value });
@@ -74,12 +72,7 @@ export default function CreateArticle() {
   // Validate Form
   const validateForm = () => {
     let isValid = true;
-    const newErrors = { author: "", title: "", content: "", image: "" };
-
-    if (!article.author?.trim()) {
-      newErrors.author = "Author is required.";
-      isValid = false;
-    }
+    const newErrors = { title: "", content: "", image: "" };
 
     if (!article.title?.trim()) {
       newErrors.title = "Title is required.";
@@ -115,22 +108,6 @@ export default function CreateArticle() {
     <div className="max-w-6xl mx-auto bg-white p-6 lg:p-12 rounded-lg shadow-md my-10">
       <form onSubmit={handleSubmit}>
         <div className="mb-6 flex items-center justify-between gap-6">
-          {/* Author Input */}
-          <div className="w-1/4 flex flex-col">
-            <label className="block text-lg font-medium text-black">
-              Author
-            </label>
-            <input
-              type="text"
-              value={article.author}
-              onChange={(e) => handleChange(e, "author")}
-              className="mt-1 p-3 w-full border border-gray-300 rounded-md text-black h-12"
-              placeholder="Enter author's name..."
-            />
-            {errors.author && (
-              <p className="text-red-500 text-sm">{errors.author}</p>
-            )}
-          </div>
           {/* Title Input */}
           <div className="w-3/5 flex flex-col">
             <label className="block text-lg font-medium text-black">
