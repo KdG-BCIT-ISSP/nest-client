@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { ArticleType } from "@/types/ArticleType";
 import { CommentType } from "@/types/CommentType";
+import { Interweave } from "interweave";
+import { polyfill } from "interweave-ssr";
+polyfill();
 
 export default function ViewArticle({
   author,
@@ -43,17 +46,7 @@ export default function ViewArticle({
       {author && <p className="text-gray-600 text-lg mb-6">By {author}</p>}
 
       {/* Content */}
-      <div className="prose max-w-none text-black">
-        {content ? (
-          content.split("\n").map((paragraph, index) => (
-            <p key={index} className="mb-4 text-black">
-              {paragraph}
-            </p>
-          ))
-        ) : (
-          <p className="text-black">No content available.</p>
-        )}
-      </div>
+      <Interweave content={content} />
 
       {/* Comments Section */}
       <div className="mt-8">

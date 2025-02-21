@@ -1,5 +1,5 @@
 export type ArticleType = {
-  author: string;
+  author?: string;
   title: string;
   content: string;
   image: File | string | null;
