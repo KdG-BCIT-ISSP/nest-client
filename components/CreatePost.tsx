@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { PostType } from "@/types/PostType";
 import Button from "@/components/Button";
 import Image from "next/image";
+import imageCompression from "browser-image-compression";
+import { createPost } from "@/app/api/post/create/route";
 
 const AVAILABLE_TAGS = [
   "Tips",
@@ -15,13 +17,17 @@ const AVAILABLE_TAGS = [
 ];
 
 export default function CreatePost({
-  title = "",
-  content = "",
-  author = "Anonymous",
+  type,
 }: PostType) {
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const [post, setPost] = useState<PostType>({
-    title,
-    content,
+    title: "",
+    content: "",
+    tags: [],
+    type: type,
+    coverImage: "",
   });
 
   const [errors, setErrors] = useState({
@@ -34,12 +40,12 @@ export default function CreatePost({
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   // Listens for changes in title, subtitle, and content props and updates accordingly.
-  useEffect(() => {
-    setPost({
-      title: title ?? "",
-      content: content ?? "",
-    });
-  }, [title, content]);
+  // useEffect(() => {
+  //   setPost({
+  //     title: post.title || "",
+  //     content: post.content || "",
+  //   });
+  // }, [post.title, post.content]);
 
   // Cleans up temporary object URLs created for image previews.
   useEffect(() => {
@@ -72,16 +78,73 @@ export default function CreatePost({
     setPost({ ...post, [e.target.name]: e.target.value });
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0]; // Only take the first file
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
-      // Update state to store only the latest file
+const file = e.target.files ? e.target.files[0] : null;
+    if (file) {
       setImages([file]);
+      setImagePreviews([URL.createObjectURL(file)]);
 
-      // Update preview, replacing the previous one
-      const imageUrl = URL.createObjectURL(file);
-      setImagePreviews([imageUrl]);
+      try{
+        const options = {
+          maxSizeMB: 1, 
+          maxWidthOrHeight: 500, 
+          useWebWorker: true,
+        };
+
+        const compressedFile = await imageCompression(file, options);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (reader.result) {
+            setImagePreviews([reader.result as string]);
+            console.log("before:", post.coverImage);
+            setPost((prevPost) => {
+              const updatedPost = { ...prevPost, coverImage: reader.result as string };
+              console.log("after:", updatedPost.coverImage);
+              return updatedPost;
+            });
+          }
+        };
+        reader.readAsDataURL(file);
+
+      }catch(error){
+        console.error("Failed to upload image", error);
+      }
+
+
+    // if (e.target.files && e.target.files.length > 0) {
+    //   const file = e.target.files[0]; // Only take the first file
+
+    //   // Update state to store only the latest file
+    //   setImages([file]);
+
+    //   // Update preview, replacing the previous one
+    //   const imageUrl = URL.createObjectURL(file);
+    //   setImagePreviews([imageUrl]);
+    //   console.log(":", post.coverImage);
+
+
+    //   imageCompression(file, {
+    //     maxSizeMB: 1,
+    //     maxWidthOrHeight: 500,
+    //     useWebWorker: true,  })
+    //     .then((compressedFile) => {
+    //       // Create a FileReader to read the image and convert it to base64
+    //       const reader = new FileReader();
+    //       reader.readAsDataURL(compressedFile);
+
+    //       reader.onloadend = () => {
+    //         // Get base64 string
+    //         const base64Image = reader.result as string;
+
+    //         // Update state with the base64 image
+    //         setPost({ ...post, coverImage: base64Image });
+
+    //       };
+    //     })
+    //     .catch((error) => {
+    //       console.error("Image compression failed:", error);
+    //     });
     }
   };
 
@@ -93,25 +156,40 @@ export default function CreatePost({
     }
   };
 
+
+
   // handle post submission (WIP)
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (validateForm()) {
-      const newPost = {
-        ...post,
-        tags: selectedTags,
-        images,
-        author: author,
-        timestamp: new Date().toLocaleString(),
-      };
-      if (!newPost.id) {
-        newPost.id = `post-${Date.now()}`; // Unique ID timestamp? Crypto?
+    setIsLoading(true);
+    console.log("Post:", post);
+
+    if (!validateForm()) return;
+    const updatedPost = { ...post, tags: selectedTags };
+    try {
+      if (!post.coverImage) {
+        throw new Error("Image upload failed. Please try again.");
       }
-      console.log("Post submitted:", newPost);
-      // TODO: Add redirect to post
-    } else {
-      console.log("Form is invalid.");
+      console.log("title:", post.title);
+      console.log("content:", post.content);
+      console.log("type:", type);
+      console.log("tags:", post.tags);
+      console.log("coverImage:", post.coverImage);
+      const response = await createPost(post.title, post.content, type, post.tags, post.coverImage);
+      
+
+      if (response) {
+        console.log("Post created successfully:", response);
+        console.log(response);
+        // window.alert("Post created successfully");
+        // window.location.href = `/posts/`;
+      } else {
+        console.error("Post creation failed: No response from server.");
+      }
+    } catch (error) {
+      console.error("Failed to upload image", error);
     }
+
   };
 
   return (
@@ -163,11 +241,10 @@ export default function CreatePost({
                     key={tag}
                     onClick={() => handleTagClick(tag)}
                     type="button"
-                    className={`px-3 py-1 rounded-lg text-sm border flex items-center gap-1 ${
-                      selectedTags.includes(tag)
-                        ? "bg-red-300 border-red-500"
-                        : "bg-gray-200 border-gray-400"
-                    } text-black`}
+                    className={`px-3 py-1 rounded-lg text-sm border flex items-center gap-1 ${selectedTags.includes(tag)
+                      ? "bg-red-300 border-red-500"
+                      : "bg-gray-200 border-gray-400"
+                      } text-black`}
                   >
                     {tag}{" "}
                     {selectedTags.includes(tag) && (
@@ -222,7 +299,7 @@ export default function CreatePost({
         <div className="mt-6 border-t border-gray-200 flex justify-end pt-4">
           <Button
             label="Post"
-            onClick={handleSubmit}
+            type="submit"
             className="text-white bg-red-500 hover:bg-red-600 font-medium rounded-md text-sm px-5 py-2.5"
           />
         </div>
