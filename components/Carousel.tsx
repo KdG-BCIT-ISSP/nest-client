@@ -32,21 +32,15 @@ export default function Carousel({ cardsData }: { cardsData: CardType[] }) {
   };
 
   return (
-    <div className="relative mt-8">
+    <div className="relative mt-8 mx-auto max-w-screen-lg px-4">
       <button
-        className="absolute xl:left-24 top-1/2 -translate-y-1/2 z-10"
+        className="absolute left-[-55px] top-1/2 -translate-y-1/2 z-10"
         onClick={handlePrev}
       >
         <ArrowLeft onClick={handlePrev} />
       </button>
-      <button
-        className="absolute right-[0%] md:right-[0%] lg:right-[0%] xl:right-24 top-1/2 -translate-y-1/2 z-10"
-        onClick={handleNext}
-      >
-        <ArrowRight onClick={handleNext} />
-      </button>
 
-      <div className="mx-auto max-w-screen-lg px-4 overflow-hidden">
+      <div className="overflow-hidden">
         <div
           ref={slidesRef}
           className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory py-4"
@@ -67,6 +61,14 @@ export default function Carousel({ cardsData }: { cardsData: CardType[] }) {
         </div>
       </div>
 
+      <button
+        className="absolute right-[-55px] top-1/2 -translate-y-1/2 z-10"
+        onClick={handleNext}
+      >
+        <ArrowRight onClick={handleNext} />
+      </button>
+
+      {/* Dots */}
       <div className="flex justify-center gap-2 mt-6">
         {slides.map((_, index) => (
           <button

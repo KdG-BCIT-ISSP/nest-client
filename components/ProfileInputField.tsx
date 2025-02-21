@@ -1,16 +1,15 @@
-
 "use client";
 
 import { ProfileDataType } from "@/types/ProfileDataType";
 import { updateProfile } from "@/app/api/profile/update/route";
-import { useState } from "react";
-import React from 'react';
+import { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
 import { getProfile } from "@/app/api/profile/get/route";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
 import imageCompression from "browser-image-compression";
-
+import { useTranslation } from "react-i18next";
 
 const REGION_VALUES = [
   { value: "", label: "Select a region" },
@@ -25,6 +24,8 @@ export default function ProfileInputField({
   region,
   avatar,
 }: ProfileDataType) {
+  const { t } = useTranslation("common");
+  const [mounted, setMounted] = useState(false);
 
   const [formData, setFormData] = useState({
     username: username || "",
@@ -33,16 +34,13 @@ export default function ProfileInputField({
     avatar: avatar || "",
   });
 
-  const [errors, setErrors] = useState<{ username: string; region: string }>({ username: "", region: "" });
-  const [message, setMessage] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<{ username: string; region: string }>({
+    username: "",
+    region: "",
+  });
 
-  const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [, setUserData] = useAtom(userAtom);
-
-  console.log(avatar)
-
 
   const validateForm = () => {
     let isValid = true;
@@ -66,21 +64,29 @@ export default function ProfileInputField({
     return isValid;
   };
 
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
-      setImage(file);
       setImagePreview(URL.createObjectURL(file));
 
-      try{
+      try {
         const options = {
-          maxSizeMB: 1, 
-          maxWidthOrHeight: 500, 
+          maxSizeMB: 1,
+          maxWidthOrHeight: 500,
           useWebWorker: true,
         };
 
@@ -92,29 +98,24 @@ export default function ProfileInputField({
             setFormData({ ...formData, avatar: reader.result as string });
           }
         };
-        reader.readAsDataURL(file);
-
-      }catch(error){
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
         console.error("Failed to upload image", error);
       }
-
-
-
     }
-
-
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setMessage(null);
 
     if (!validateForm()) return;
 
-
     try {
-      const response = await updateProfile(formData.username, formData.region, formData.avatar);
+      const response = await updateProfile(
+        formData.username,
+        formData.region,
+        formData.avatar
+      );
 
       if (response) {
         setFormData((prev) => ({
@@ -130,21 +131,15 @@ export default function ProfileInputField({
       }
 
       const data = await getProfile();
-      console.log(data);
       setUserData(data);
-      console.log(response)
-      setMessage("Profile updated successfully!");
       window.alert("Profile updated successfully!");
     } catch (error) {
       console.error("Update failed:", error);
-      setMessage("Failed to update profile.");
       window.alert("Profile updated failed!");
     } finally {
-      setIsLoading(false);
     }
   };
 
-  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
   return (
     <div className="bg-white border border-2 rounded-md relative m-10">
       <div className="flex items-center gap-3 py-2 pl-10 pt-10">
@@ -164,9 +159,11 @@ export default function ProfileInputField({
         <div className="flex flex-col justify-center ml-3">
           <h5 className="text-md text-gray-600">{formData.username}</h5>
           <p className="text-gray-500 text-sm">{formData.email}</p>
-          <button className="mt-2 border-secondary border-2 rounded-md text-sm text-secondary hover:text-white hover:bg-secondary"
-            onClick={() => document.getElementById("imageInput")?.click()}>
-            Upload Image
+          <button
+            className="mt-2 border-secondary border-2 rounded-md text-sm text-secondary hover:text-white hover:bg-secondary"
+            onClick={() => document.getElementById("imageInput")?.click()}
+          >
+            {t("profile.uploadImage")}
           </button>
           <input
             type="file"
@@ -185,7 +182,7 @@ export default function ProfileInputField({
                 htmlFor="username"
                 className="text-sm font-medium text-gray-900 block mb-2"
               >
-                Username
+                {t("profile.username")}
               </label>
               <input
                 type="text"
@@ -204,7 +201,7 @@ export default function ProfileInputField({
                 htmlFor="category"
                 className="text-sm font-medium text-gray-900 block mb-2"
               >
-                Email
+                {t("profile.email")}
               </label>
               <input
                 type="text"
@@ -220,7 +217,7 @@ export default function ProfileInputField({
                 htmlFor="brand"
                 className="text-sm font-medium text-gray-900 block mb-2"
               >
-                Region
+                {t("profile.region")}
               </label>
               <select
                 name="region"
@@ -245,7 +242,7 @@ export default function ProfileInputField({
               className="text-white bg-secondary hover:bg-tertiary font-medium rounded-md text-sm px-5 py-2.5 text-center"
               type="submit"
             >
-              Save
+              {t("profile.save")}
             </button>
           </div>
         </form>
