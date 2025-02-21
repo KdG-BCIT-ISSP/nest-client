@@ -2,7 +2,22 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { ArticleType } from "@/types/ArticleType";
 import { CommentType } from "@/types/CommentType";
-import { Interweave } from "interweave";
+import dynamic from "next/dynamic";
+
+// Dynamically import Interweave with error handling
+const Interweave = dynamic(
+  () =>
+    import("interweave")
+      .then((module) => module.Interweave)
+      .catch((err) => {
+        console.error("Failed to load Interweave:", err);
+        return { default: () => <div>Error loading content.</div> };
+      }),
+  {
+    loading: () => <div>Loading content...</div>, // Loading state
+    ssr: false, // Disable SSR for Interweave
+  }
+);
 
 export default function ViewArticle({
   author,
