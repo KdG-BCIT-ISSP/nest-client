@@ -46,6 +46,11 @@ export default function CreateArticle() {
       // Create preview URL
       const imageUrl = URL.createObjectURL(file);
       setArticle({ ...article, image: file, imagePreview: imageUrl });
+
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        image: "", // Clear the error message
+      }));
     }
   };
 
@@ -135,6 +140,9 @@ export default function CreateArticle() {
                 className="hidden"
                 id="fileUpload"
               />
+              {errors.image && ( // Display image error message
+                <p className="text-red-500 text-sm">{errors.image}</p>
+              )}
               <Button
                 label="Add Cover Image"
                 onClick={() => document.getElementById("fileUpload")?.click()}
@@ -171,6 +179,20 @@ export default function CreateArticle() {
             theme="snow"
             placeholder="Write your article content here..."
             style={{ height: "400px" }}
+            modules={{
+              toolbar: [
+                [{ font: [] }],
+                [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                ["bold", "italic", "underline", "strike"],
+                [{ color: [] }, { background: [] }],
+                [{ script: "sub" }, { script: "super" }],
+                ["blockquote", "code-block"],
+                [{ list: "ordered" }, { list: "bullet" }],
+                [{ indent: "-1" }, { indent: "+1" }, { align: [] }],
+                ["link", "image", "video"],
+                ["clean"],
+              ],
+            }}
           />
           {errors.content && (
             <p className="text-red-500 text-sm">{errors.content}</p>
@@ -186,6 +208,13 @@ export default function CreateArticle() {
           />
         </div>
       </form>
+
+      {/* HTML Preview */}
+      <div className="prose mt-8 border-t border-gray-200 pt-6 text-black">
+        {" "}
+        <h3>Article HTML Preview:</h3>
+        <pre style={{ whiteSpace: "pre-wrap" }}>{article.content}</pre>
+      </div>
     </div>
   );
 }
