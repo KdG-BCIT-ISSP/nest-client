@@ -1,7 +1,6 @@
 import React from "react";
 import { PostType } from "@/types/PostType";
 import Image from "next/image";
-import Tags from "./tags";
 
 export default function PostCard({
   title,
@@ -43,8 +42,19 @@ export default function PostCard({
           </p>
 
           {/* Tags */}
-          
-          <Tags tagsList={tags || []}/>
+          {tags && tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="bg-gray-200 text-sm px-3 py-1 rounded-full text-gray-700"
+                >
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
+
           {/* Image */}
           {images && images.length > 0 && (
             <div className="relative w-full h-64 overflow-hidden rounded-lg border border-gray-300">
