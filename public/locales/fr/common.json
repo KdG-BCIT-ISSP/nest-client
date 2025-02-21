@@ -1,0 +1,21 @@
+{
+  "navigation": {
+    "home": "Accueil",
+    "articles": "Articles",
+    "community": "Communauté",
+    "profile": "Profil",
+    "savedPosts": "Publications enregistrées",
+    "notifications": "Notifications",
+    "signOut": "Se déconnecter",
+    "login": "Se connecter",
+    "register": "S'inscrire",
+    "searchSomething": "Rechercher quelque chose..."
+  },
+  "profile": {
+    "uploadImage": "Téléverser l'image",
+    "username": "Nom d'utilisateur",
+    "email": "Email",
+    "region": "Région",
+    "save": "Enregistrer"
+  }
+}
