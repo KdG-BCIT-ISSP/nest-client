@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import { PostType } from "@/types/PostType";
 import Button from "@/components/Button";
 import TagsSelector from "./TagsSelector";
-import Image from "next/image";
-import imageCompression from "browser-image-compression";
 import { createPost } from "@/app/api/post/create/route";
+import ImageUpload from "./ImageUpload";
 
 
 export default function CreatePost() {
@@ -25,17 +24,10 @@ export default function CreatePost() {
     content: "",
   });
 
+
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-
-  // Listens for changes in title, subtitle, and content props and updates accordingly.
-  // useEffect(() => {
-  //   setPost({
-  //     title: post.title || "",
-  //     content: post.content || "",
-  //   });
-  // }, [post.title, post.content]);
 
   // Cleans up temporary object URLs created for image previews.
   useEffect(() => {
@@ -61,84 +53,6 @@ export default function CreatePost() {
     setErrors(newErrors);
     return isValid;
   };
-  // Dynamically updates the post state whenever the user types something.
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setPost({ ...post, [e.target.name]: e.target.value });
-  };
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-
-    const file = e.target.files ? e.target.files[0] : null;
-    if (file) {
-      setImages([file]);
-      setImagePreviews([URL.createObjectURL(file)]);
-
-      try {
-        const options = {
-          maxSizeMB: 1,
-          maxWidthOrHeight: 500,
-          useWebWorker: true,
-        };
-
-        const compressedFile = await imageCompression(file, options);
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          if (reader.result) {
-            setImagePreviews([reader.result as string]);
-            console.log("before:", post.coverImage);
-            setPost((prevPost) => {
-              const updatedPost = { ...prevPost, coverImage: reader.result as string };
-              console.log("after:", updatedPost.coverImage);
-              return updatedPost;
-            });
-          }
-        };
-        reader.readAsDataURL(file);
-
-      } catch (error) {
-        console.error("Failed to upload image", error);
-      }
-
-
-      if (e.target.files && e.target.files.length > 0) {
-        const file = e.target.files[0]; // Only take the first file
-
-        // Update state to store only the latest file
-        setImages([file]);
-
-        // Update preview, replacing the previous one
-        const imageUrl = URL.createObjectURL(file);
-        setImagePreviews([imageUrl]);
-        console.log(":", post.coverImage);
-
-
-        imageCompression(file, {
-          maxSizeMB: 1,
-          maxWidthOrHeight: 500,
-          useWebWorker: true,
-        })
-          .then((compressedFile) => {
-            // Create a FileReader to read the image and convert it to base64
-            const reader = new FileReader();
-            reader.readAsDataURL(compressedFile);
-
-            reader.onloadend = () => {
-              // Get base64 string
-              const base64Image = reader.result as string;
-
-              // Update state with the base64 image
-              setPost({ ...post, coverImage: base64Image });
-
-            };
-          })
-          .catch((error) => {
-            console.error("Image compression failed:", error);
-          });
-      }
-    }
-  };
 
   const handleTagClick = (tag: string) => {
     if (selectedTags.includes(tag)) {
@@ -151,10 +65,29 @@ export default function CreatePost() {
   };
 
   const handleRemoveImage = () => {
+    const fileInput = document.getElementById("fileUpload") as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = "";
+    }
     setImagePreviews([]);
     post.coverImage = "";
   };
 
+  const handleImageChange = (compressedImage: string) => {
+    setImagePreviews([compressedImage]);
+    setPost((prevPost) => ({
+      ...prevPost,
+      coverImage: compressedImage,
+    }));
+  };
+
+
+  // Dynamically updates the post state whenever the user types something.
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setPost({ ...post, [e.target.name]: e.target.value });
+  };
 
   // handle post submission (WIP)
   const handleSubmit = async (event: React.FormEvent) => {
@@ -231,50 +164,13 @@ export default function CreatePost() {
               onTagClick={handleTagClick} />
 
             {/* Image Upload */}
-            <div className="w-full md:w-1/2 flex justify-end md:ml-auto">
-              <div className="text-right">
-                {/* Upload Image Button */}
-                <div className="relative inline-block">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                    id="fileUpload"
-                  />
-                  <Button
-                    label="Add image"
-                    onClick={() =>
-                      document.getElementById("fileUpload")?.click()
-                    }
-                    type="button"
-                    className="bg-gray-200 hover:bg-gray-300 text-black px-4 py-2 rounded-md border border-gray-400"
-                  />
-                </div>
+            <ImageUpload
+              onImageChange={handleImageChange}
+              onRemoveImage={handleRemoveImage}
+              imagePreviews={imagePreviews} />
 
-                {/* Display Image Preview */}
-                {imagePreviews.length > 0 && (
-                  <div className="mt-4 relative">
-                    <Image
-                      src={imagePreviews[0]}
-                      alt="Preview"
-                      width={100}
-                      height={100}
-                      className="w-24 h-24 object-cover rounded-lg border border-gray-300"
-                      unoptimized
-                    />
-                    {/* Add Remove Button */}
-                    <button
-                      type="button"
-                      onClick={handleRemoveImage}
-                      className="absolute w-8 h-8 top-0 right-0 bg-red-500 text-white rounded-full p-1 text-xs"
-                    >
-                      ✖
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
+
+
           </div>
         </div>
 
