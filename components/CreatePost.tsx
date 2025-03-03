@@ -79,15 +79,15 @@ export default function CreatePost() {
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
-const file = e.target.files ? e.target.files[0] : null;
+    const file = e.target.files ? e.target.files[0] : null;
     if (file) {
       setImages([file]);
       setImagePreviews([URL.createObjectURL(file)]);
 
-      try{
+      try {
         const options = {
-          maxSizeMB: 1, 
-          maxWidthOrHeight: 500, 
+          maxSizeMB: 1,
+          maxWidthOrHeight: 500,
           useWebWorker: true,
         };
 
@@ -106,44 +106,45 @@ const file = e.target.files ? e.target.files[0] : null;
         };
         reader.readAsDataURL(file);
 
-      }catch(error){
+      } catch (error) {
         console.error("Failed to upload image", error);
       }
 
 
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0]; // Only take the first file
+      if (e.target.files && e.target.files.length > 0) {
+        const file = e.target.files[0]; // Only take the first file
 
-      // Update state to store only the latest file
-      setImages([file]);
+        // Update state to store only the latest file
+        setImages([file]);
 
-      // Update preview, replacing the previous one
-      const imageUrl = URL.createObjectURL(file);
-      setImagePreviews([imageUrl]);
-      console.log(":", post.coverImage);
+        // Update preview, replacing the previous one
+        const imageUrl = URL.createObjectURL(file);
+        setImagePreviews([imageUrl]);
+        console.log(":", post.coverImage);
 
 
-      imageCompression(file, {
-        maxSizeMB: 1,
-        maxWidthOrHeight: 500,
-        useWebWorker: true,  })
-        .then((compressedFile) => {
-          // Create a FileReader to read the image and convert it to base64
-          const reader = new FileReader();
-          reader.readAsDataURL(compressedFile);
-
-          reader.onloadend = () => {
-            // Get base64 string
-            const base64Image = reader.result as string;
-
-            // Update state with the base64 image
-            setPost({ ...post, coverImage: base64Image });
-
-          };
+        imageCompression(file, {
+          maxSizeMB: 1,
+          maxWidthOrHeight: 500,
+          useWebWorker: true,
         })
-        .catch((error) => {
-          console.error("Image compression failed:", error);
-        });
+          .then((compressedFile) => {
+            // Create a FileReader to read the image and convert it to base64
+            const reader = new FileReader();
+            reader.readAsDataURL(compressedFile);
+
+            reader.onloadend = () => {
+              // Get base64 string
+              const base64Image = reader.result as string;
+
+              // Update state with the base64 image
+              setPost({ ...post, coverImage: base64Image });
+
+            };
+          })
+          .catch((error) => {
+            console.error("Image compression failed:", error);
+          });
       }
     }
   };
@@ -151,13 +152,16 @@ const file = e.target.files ? e.target.files[0] : null;
   const handleTagClick = (tag: string) => {
     if (selectedTags.includes(tag)) {
       setSelectedTags(selectedTags.filter((t) => t !== tag)); // Remove tag if clicked again
+      post.tags = post.tags.filter((t) => t !== tag);
     } else {
       setSelectedTags([...selectedTags, tag]); // Add tag if not already selected
+      post.tags = [...post.tags, tag];
     }
   };
 
   const handleRemoveImage = () => {
     setImagePreviews([]);
+    post.coverImage = "";
   };
 
 
@@ -170,22 +174,19 @@ const file = e.target.files ? e.target.files[0] : null;
     if (!validateForm()) return;
     const updatedPost = { ...post, tags: selectedTags };
     try {
-      if (!post.coverImage) {
-        throw new Error("Image upload failed. Please try again.");
-      }
       console.log("title:", post.title);
       console.log("content:", post.content);
       console.log("topicId:", post.topicId);
       console.log("tags:", post.tags);
       console.log("coverImage:", post.coverImage);
       const response = await createPost(post.title, post.content, post.topicId, post.type, post.tags, post.coverImage);
-      
+
 
       if (response) {
         console.log("Post created successfully:", response);
         console.log(response);
         window.alert("Post created successfully");
-        window.location.href = `/posts/`;
+        // window.location.href = `/posts/`;
       } else {
         console.error("Post creation failed: No response from server.");
       }
