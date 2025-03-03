@@ -8,5 +8,5 @@ export type PostType = {
   author?: string;
   timestamp?: string;
   images?: File[];
-  coverImage: string;
+  postImages: string[];
 };

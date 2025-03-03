@@ -16,7 +16,7 @@ export default function CreatePost() {
     tags: [],
     topicId: 2,
     type: "USERPOST",
-    coverImage: "",
+    postImages: [],
   });
 
   const [errors, setErrors] = useState({
@@ -25,7 +25,6 @@ export default function CreatePost() {
   });
 
 
-  const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
@@ -64,20 +63,28 @@ export default function CreatePost() {
     }
   };
 
-  const handleRemoveImage = () => {
+  const handleRemoveImage = (index: number) => {
+    const newPreviews = [...imagePreviews];
+    newPreviews.splice(index, 1);
+    setImagePreviews(newPreviews);
+    setPost((prevPost) => ({
+      ...prevPost,
+      postImages: prevPost.postImages.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleImageChange = (compressedImage: string) => {
+
     const fileInput = document.getElementById("fileUpload") as HTMLInputElement;
     if (fileInput) {
       fileInput.value = "";
     }
-    setImagePreviews([]);
-    post.coverImage = "";
-  };
 
-  const handleImageChange = (compressedImage: string) => {
-    setImagePreviews([compressedImage]);
+    setImagePreviews((prevPreviews) => [...prevPreviews, compressedImage]);
+
     setPost((prevPost) => ({
       ...prevPost,
-      coverImage: compressedImage,
+      postImages: [...prevPost.postImages, compressedImage], // Ensure this is valid type
     }));
   };
 
@@ -102,8 +109,9 @@ export default function CreatePost() {
       console.log("content:", post.content);
       console.log("topicId:", post.topicId);
       console.log("tags:", post.tags);
-      console.log("coverImage:", post.coverImage);
-      const response = await createPost(post.title, post.content, post.topicId, post.type, post.tags, post.coverImage);
+      console.log("image:", post.postImages[0]);
+      console.log("image:", post.postImages[1]);
+      const response = await createPost(post.title, post.content, post.topicId, post.type, post.tags, post.postImages);
 
 
       if (response) {
@@ -167,7 +175,9 @@ export default function CreatePost() {
             <ImageUpload
               onImageChange={handleImageChange}
               onRemoveImage={handleRemoveImage}
-              imagePreviews={imagePreviews} />
+              imagePreviews={imagePreviews} 
+              multiple={true}
+              />
 
 
 
