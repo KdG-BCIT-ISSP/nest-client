@@ -1,3 +1,3 @@
 export type TagListProps = {
-    tagsList: string[];
+  tagsList: string[];
 };

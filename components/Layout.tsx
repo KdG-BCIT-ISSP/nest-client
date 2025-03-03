@@ -42,7 +42,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }
   }, [isAuthenticated]);
 
-
   return (
     <div
       className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white min-h-screen flex flex-col`}

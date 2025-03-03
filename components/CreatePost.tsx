@@ -5,9 +5,7 @@ import TagsSelector from "./TagsSelector";
 import { createPost } from "@/app/api/post/create/route";
 import ImageUpload from "./ImageUpload";
 
-
 export default function CreatePost() {
-
   const [isLoading, setIsLoading] = useState(false);
 
   const [post, setPost] = useState<PostType>({
@@ -23,7 +21,6 @@ export default function CreatePost() {
     title: "",
     content: "",
   });
-
 
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -74,7 +71,6 @@ export default function CreatePost() {
   };
 
   const handleImageChange = (compressedImage: string) => {
-
     const fileInput = document.getElementById("fileUpload") as HTMLInputElement;
     if (fileInput) {
       fileInput.value = "";
@@ -87,7 +83,6 @@ export default function CreatePost() {
       postImages: [...prevPost.postImages, compressedImage], // Ensure this is valid type
     }));
   };
-
 
   // Dynamically updates the post state whenever the user types something.
   const handleChange = (
@@ -111,8 +106,14 @@ export default function CreatePost() {
       console.log("tags:", post.tags);
       console.log("image:", post.postImages[0]);
       console.log("image:", post.postImages[1]);
-      const response = await createPost(post.title, post.content, post.topicId, post.type, post.tags, post.postImages);
-
+      const response = await createPost(
+        post.title,
+        post.content,
+        post.topicId,
+        post.type,
+        post.tags,
+        post.postImages
+      );
 
       if (response) {
         console.log("Post created successfully:", response);
@@ -125,7 +126,6 @@ export default function CreatePost() {
     } catch (error) {
       console.error("Failedddd to upload image", error);
     }
-
   };
 
   return (
@@ -169,18 +169,16 @@ export default function CreatePost() {
             {/* Tag Selection */}
             <TagsSelector
               selectedTags={selectedTags}
-              onTagClick={handleTagClick} />
+              onTagClick={handleTagClick}
+            />
 
             {/* Image Upload */}
             <ImageUpload
               onImageChange={handleImageChange}
               onRemoveImage={handleRemoveImage}
-              imagePreviews={imagePreviews} 
+              imagePreviews={imagePreviews}
               multiple={true}
-              />
-
-
-
+            />
           </div>
         </div>
 
