@@ -16,9 +16,7 @@ const AVAILABLE_TAGS = [
   "Technology",
 ];
 
-export default function CreatePost({
-  type,
-}: PostType) {
+export default function CreatePost() {
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -26,7 +24,8 @@ export default function CreatePost({
     title: "",
     content: "",
     tags: [],
-    type: type,
+    topicId: 2,
+    type: "USERPOST",
     coverImage: "",
   });
 
@@ -112,39 +111,40 @@ const file = e.target.files ? e.target.files[0] : null;
       }
 
 
-    // if (e.target.files && e.target.files.length > 0) {
-    //   const file = e.target.files[0]; // Only take the first file
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0]; // Only take the first file
 
-    //   // Update state to store only the latest file
-    //   setImages([file]);
+      // Update state to store only the latest file
+      setImages([file]);
 
-    //   // Update preview, replacing the previous one
-    //   const imageUrl = URL.createObjectURL(file);
-    //   setImagePreviews([imageUrl]);
-    //   console.log(":", post.coverImage);
+      // Update preview, replacing the previous one
+      const imageUrl = URL.createObjectURL(file);
+      setImagePreviews([imageUrl]);
+      console.log(":", post.coverImage);
 
 
-    //   imageCompression(file, {
-    //     maxSizeMB: 1,
-    //     maxWidthOrHeight: 500,
-    //     useWebWorker: true,  })
-    //     .then((compressedFile) => {
-    //       // Create a FileReader to read the image and convert it to base64
-    //       const reader = new FileReader();
-    //       reader.readAsDataURL(compressedFile);
+      imageCompression(file, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 500,
+        useWebWorker: true,  })
+        .then((compressedFile) => {
+          // Create a FileReader to read the image and convert it to base64
+          const reader = new FileReader();
+          reader.readAsDataURL(compressedFile);
 
-    //       reader.onloadend = () => {
-    //         // Get base64 string
-    //         const base64Image = reader.result as string;
+          reader.onloadend = () => {
+            // Get base64 string
+            const base64Image = reader.result as string;
 
-    //         // Update state with the base64 image
-    //         setPost({ ...post, coverImage: base64Image });
+            // Update state with the base64 image
+            setPost({ ...post, coverImage: base64Image });
 
-    //       };
-    //     })
-    //     .catch((error) => {
-    //       console.error("Image compression failed:", error);
-    //     });
+          };
+        })
+        .catch((error) => {
+          console.error("Image compression failed:", error);
+        });
+      }
     }
   };
 
@@ -172,10 +172,10 @@ const file = e.target.files ? e.target.files[0] : null;
       }
       console.log("title:", post.title);
       console.log("content:", post.content);
-      console.log("type:", type);
+      console.log("topicId:", post.topicId);
       console.log("tags:", post.tags);
       console.log("coverImage:", post.coverImage);
-      const response = await createPost(post.title, post.content, type, post.tags, post.coverImage);
+      const response = await createPost(post.title, post.content, post.topicId, post.type, post.tags, post.coverImage);
       
 
       if (response) {
@@ -187,7 +187,7 @@ const file = e.target.files ? e.target.files[0] : null;
         console.error("Post creation failed: No response from server.");
       }
     } catch (error) {
-      console.error("Failed to upload image", error);
+      console.error("Failedddd to upload image", error);
     }
 
   };

@@ -3,6 +3,7 @@ export type PostType = {
   title: string;
   content: string;
   type: string;
+  topicId: number;
   tags: string[];
   author?: string;
   timestamp?: string;
