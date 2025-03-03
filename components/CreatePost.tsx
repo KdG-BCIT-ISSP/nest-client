@@ -156,6 +156,9 @@ const file = e.target.files ? e.target.files[0] : null;
     }
   };
 
+  const handleRemoveImage = () => {
+    setImagePreviews([]);
+  };
 
 
   // handle post submission (WIP)
@@ -181,8 +184,8 @@ const file = e.target.files ? e.target.files[0] : null;
       if (response) {
         console.log("Post created successfully:", response);
         console.log(response);
-        // window.alert("Post created successfully");
-        // window.location.href = `/posts/`;
+        window.alert("Post created successfully");
+        window.location.href = `/posts/`;
       } else {
         console.error("Post creation failed: No response from server.");
       }
@@ -288,6 +291,14 @@ const file = e.target.files ? e.target.files[0] : null;
                       className="w-24 h-24 object-cover rounded-lg border border-gray-300"
                       unoptimized
                     />
+                    {/* Add Remove Button */}
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="absolute w-8 h-8 top-0 right-0 bg-red-500 text-white rounded-full p-1 text-xs"
+                    >
+                      ✖
+                    </button>
                   </div>
                 )}
               </div>
