@@ -1,20 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { PostType } from "@/types/PostType";
 import Button from "@/components/Button";
+import TagsSelector from "./TagsSelector";
 import Image from "next/image";
 import imageCompression from "browser-image-compression";
 import { createPost } from "@/app/api/post/create/route";
 
-const AVAILABLE_TAGS = [
-  "Tips",
-  "Baby",
-  "Travel",
-  "Food",
-  "Health",
-  "Education",
-  "Fitness",
-  "Technology",
-];
 
 export default function CreatePost() {
 
@@ -235,29 +226,9 @@ export default function CreatePost() {
 
           <div className="col-span-6 flex flex-wrap items-start gap-4">
             {/* Tag Selection */}
-            <div className="w-full md:w-1/2">
-              <label className="text-sm font-medium text-gray-900 block mb-2">
-                Tags:
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {AVAILABLE_TAGS.map((tag) => (
-                  <Button
-                    key={tag}
-                    onClick={() => handleTagClick(tag)}
-                    type="button"
-                    className={`px-3 py-1 rounded-lg text-sm border flex items-center gap-1 ${selectedTags.includes(tag)
-                      ? "bg-red-300 border-red-500"
-                      : "bg-gray-200 border-gray-400"
-                      } text-black`}
-                  >
-                    {tag}{" "}
-                    {selectedTags.includes(tag) && (
-                      <span className="ml-1">✖</span>
-                    )}
-                  </Button>
-                ))}
-              </div>
-            </div>
+            <TagsSelector
+              selectedTags={selectedTags}
+              onTagClick={handleTagClick} />
 
             {/* Image Upload */}
             <div className="w-full md:w-1/2 flex justify-end md:ml-auto">
