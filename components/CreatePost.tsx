@@ -1,27 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { PostType } from "@/types/PostType";
 import Button from "@/components/Button";
-import Image from "next/image";
+import TagsSelector from "./TagsSelector";
+import { createPost } from "@/app/api/post/create/route";
+import ImageUpload from "./ImageUpload";
 
-const AVAILABLE_TAGS = [
-  "Tips",
-  "Baby",
-  "Travel",
-  "Food",
-  "Health",
-  "Education",
-  "Fitness",
-  "Technology",
-];
+export default function CreatePost() {
+  const [isLoading, setIsLoading] = useState(false);
 
-export default function CreatePost({
-  title = "",
-  content = "",
-  author = "Anonymous",
-}: PostType) {
   const [post, setPost] = useState<PostType>({
-    title,
-    content,
+    title: "",
+    content: "",
+    tags: [],
+    topicId: 2,
+    type: "USERPOST",
+    postImages: [],
   });
 
   const [errors, setErrors] = useState({
@@ -29,17 +22,8 @@ export default function CreatePost({
     content: "",
   });
 
-  const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-
-  // Listens for changes in title, subtitle, and content props and updates accordingly.
-  useEffect(() => {
-    setPost({
-      title: title ?? "",
-      content: content ?? "",
-    });
-  }, [title, content]);
 
   // Cleans up temporary object URLs created for image previews.
   useEffect(() => {
@@ -65,6 +49,41 @@ export default function CreatePost({
     setErrors(newErrors);
     return isValid;
   };
+
+  const handleTagClick = (tag: string) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tag)); // Remove tag if clicked again
+      post.tags = post.tags.filter((t) => t !== tag);
+    } else {
+      setSelectedTags([...selectedTags, tag]); // Add tag if not already selected
+      post.tags = [...post.tags, tag];
+    }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    const newPreviews = [...imagePreviews];
+    newPreviews.splice(index, 1);
+    setImagePreviews(newPreviews);
+    setPost((prevPost) => ({
+      ...prevPost,
+      postImages: prevPost.postImages.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleImageChange = (compressedImage: string) => {
+    const fileInput = document.getElementById("fileUpload") as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = "";
+    }
+
+    setImagePreviews((prevPreviews) => [...prevPreviews, compressedImage]);
+
+    setPost((prevPost) => ({
+      ...prevPost,
+      postImages: [...prevPost.postImages, compressedImage], // Ensure this is valid type
+    }));
+  };
+
   // Dynamically updates the post state whenever the user types something.
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -72,45 +91,40 @@ export default function CreatePost({
     setPost({ ...post, [e.target.name]: e.target.value });
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0]; // Only take the first file
-
-      // Update state to store only the latest file
-      setImages([file]);
-
-      // Update preview, replacing the previous one
-      const imageUrl = URL.createObjectURL(file);
-      setImagePreviews([imageUrl]);
-    }
-  };
-
-  const handleTagClick = (tag: string) => {
-    if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter((t) => t !== tag)); // Remove tag if clicked again
-    } else {
-      setSelectedTags([...selectedTags, tag]); // Add tag if not already selected
-    }
-  };
-
   // handle post submission (WIP)
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (validateForm()) {
-      const newPost = {
-        ...post,
-        tags: selectedTags,
-        images,
-        author: author,
-        timestamp: new Date().toLocaleString(),
-      };
-      if (!newPost.id) {
-        newPost.id = `post-${Date.now()}`; // Unique ID timestamp? Crypto?
+    setIsLoading(true);
+    console.log("Post:", post);
+
+    if (!validateForm()) return;
+    const updatedPost = { ...post, tags: selectedTags };
+    try {
+      console.log("title:", post.title);
+      console.log("content:", post.content);
+      console.log("topicId:", post.topicId);
+      console.log("tags:", post.tags);
+      console.log("image:", post.postImages[0]);
+      console.log("image:", post.postImages[1]);
+      const response = await createPost(
+        post.title,
+        post.content,
+        post.topicId,
+        post.type,
+        post.tags,
+        post.postImages
+      );
+
+      if (response) {
+        console.log("Post created successfully:", response);
+        console.log(response);
+        window.alert("Post created successfully");
+        // window.location.href = `/posts/`;
+      } else {
+        console.error("Post creation failed: No response from server.");
       }
-      console.log("Post submitted:", newPost);
-      // TODO: Add redirect to post
-    } else {
-      console.log("Form is invalid.");
+    } catch (error) {
+      console.error("Failedddd to upload image", error);
     }
   };
 
@@ -153,68 +167,18 @@ export default function CreatePost({
 
           <div className="col-span-6 flex flex-wrap items-start gap-4">
             {/* Tag Selection */}
-            <div className="w-full md:w-1/2">
-              <label className="text-sm font-medium text-gray-900 block mb-2">
-                Tags:
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {AVAILABLE_TAGS.map((tag) => (
-                  <Button
-                    key={tag}
-                    onClick={() => handleTagClick(tag)}
-                    type="button"
-                    className={`px-3 py-1 rounded-lg text-sm border flex items-center gap-1 ${
-                      selectedTags.includes(tag)
-                        ? "bg-red-300 border-red-500"
-                        : "bg-gray-200 border-gray-400"
-                    } text-black`}
-                  >
-                    {tag}{" "}
-                    {selectedTags.includes(tag) && (
-                      <span className="ml-1">✖</span>
-                    )}
-                  </Button>
-                ))}
-              </div>
-            </div>
+            <TagsSelector
+              selectedTags={selectedTags}
+              onTagClick={handleTagClick}
+            />
 
             {/* Image Upload */}
-            <div className="w-full md:w-1/2 flex justify-end md:ml-auto">
-              <div className="text-right">
-                {/* Upload Image Button */}
-                <div className="relative inline-block">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                    id="fileUpload"
-                  />
-                  <Button
-                    label="Add image"
-                    onClick={() =>
-                      document.getElementById("fileUpload")?.click()
-                    }
-                    type="button"
-                    className="bg-gray-200 hover:bg-gray-300 text-black px-4 py-2 rounded-md border border-gray-400"
-                  />
-                </div>
-
-                {/* Display Image Preview */}
-                {imagePreviews.length > 0 && (
-                  <div className="mt-4 relative">
-                    <Image
-                      src={imagePreviews[0]}
-                      alt="Preview"
-                      width={100}
-                      height={100}
-                      className="w-24 h-24 object-cover rounded-lg border border-gray-300"
-                      unoptimized
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
+            <ImageUpload
+              onImageChange={handleImageChange}
+              onRemoveImage={handleRemoveImage}
+              imagePreviews={imagePreviews}
+              multiple={true}
+            />
           </div>
         </div>
 
@@ -222,7 +186,7 @@ export default function CreatePost({
         <div className="mt-6 border-t border-gray-200 flex justify-end pt-4">
           <Button
             label="Post"
-            onClick={handleSubmit}
+            type="submit"
             className="text-white bg-red-500 hover:bg-red-600 font-medium rounded-md text-sm px-5 py-2.5"
           />
         </div>

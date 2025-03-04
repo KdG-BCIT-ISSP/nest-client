@@ -7,6 +7,7 @@ export const updateProfile = async (
   region: string,
   avatar: string
 ) => {
+
   const response = await axiosInterceptor.put(
     "/member/me",
     {
