@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useAtom } from "jotai";
-import { isAuthenticatedAtom } from "@/atoms/auth/atom";
 import { userAtom } from "@/atoms/user/atom";
 import { useTranslation } from "react-i18next";
 
@@ -16,9 +15,11 @@ export default function Navbar() {
   const { t } = useTranslation("common");
   const [userData] = useAtom(userAtom);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  const isAuthenticated = localStorage.getItem("accessToken");
 
   const [, , removeCookie] = useCookies(["refreshToken"]);
+
+  console.log(userData);
 
   useEffect(() => {
     setMounted(true);

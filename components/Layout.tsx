@@ -2,7 +2,6 @@
 
 import { Geist, Geist_Mono } from "next/font/google";
 import { useEffect } from "react";
-import { isAuthenticatedAtom } from "@/atoms/auth/atom";
 import { userAtom } from "@/atoms/user/atom";
 import { useAtom } from "jotai";
 import { getProfile } from "@/app/api/profile/get/route";
@@ -18,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  const isAuthenticated = localStorage.getItem("accessToken");
   const [, setUserData] = useAtom(userAtom);
 
   useEffect(() => {
