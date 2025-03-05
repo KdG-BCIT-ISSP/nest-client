@@ -1,6 +1,7 @@
 export type SvgPost = {
-  count: number;
+  count?: number;
   post?: boolean;
   onClick?: () => void;
   container?: boolean;
+  filled?: boolean;
 };

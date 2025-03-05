@@ -1,6 +1,12 @@
 import { SvgPost } from "@/types/SvgPost";
 
-export default function Bookmark({ count, onClick }: SvgPost) {
+export default function Bookmark({
+  count,
+  onClick,
+  post,
+  container,
+  filled = false,
+}: SvgPost) {
   return (
     <div
       onClick={onClick}
@@ -10,17 +16,16 @@ export default function Bookmark({ count, onClick }: SvgPost) {
         justifyContent: "center",
         gap: "6px",
         padding: "6px 10px",
-        border: "2px solid #CD6A6A",
         borderRadius: "8px",
         cursor: "pointer",
-        width: "80px",
+        width: container ? "60px" : "40px",
       }}
     >
       <svg
-        width="14"
-        height="18"
-        viewBox="0 0 14 18"
-        fill="none"
+        width="21"
+        height="20"
+        viewBox="0 0 21 20"
+        fill={filled ? "#CD6A6A" : "none"}
         xmlns="http://www.w3.org/2000/svg"
       >
         <path

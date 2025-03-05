@@ -13,13 +13,13 @@ export default function Comments({ count, post, container, onClick }: SvgPost) {
         border: post ? "2px solid #CD6A6A" : "none",
         borderRadius: post ? "8px" : "0",
         cursor: post ? "pointer" : "",
-        width: post || container ? "80px" : "40px",
+        width: container ? "45px" : "40px",
       }}
     >
       <svg
-        width="22"
-        height="22"
-        viewBox="0 0 22 22"
+        width="21"
+        height="20"
+        viewBox="0 0 21 20"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
