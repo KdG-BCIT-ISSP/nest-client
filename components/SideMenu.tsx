@@ -26,7 +26,7 @@ export default function SideMenu() {
   return (
     <aside
       id="default-sidebar"
-      className="fixed top-0 left-0 z-60 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+      className="fixed top-0 left-0 z-10 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
       aria-label="Sidebar"
     >
       <div className="h-full pt-32 px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
