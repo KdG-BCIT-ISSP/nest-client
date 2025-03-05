@@ -7,11 +7,13 @@ import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 import { ArticleType } from "@/types/ArticleType";
+import TagsSelector from "./TagsSelector";
 
 export default function CreateArticle() {
   const [article, setArticle] = useState<ArticleType>({
     title: "",
     content: "",
+    tags: [],
     image: null as File | null, // Stores uploaded image
     imagePreview: "", // Stores preview URL
   });
@@ -21,6 +23,8 @@ export default function CreateArticle() {
     content: "",
     image: "",
   });
+
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   // Handle Change
   const handleChange = (
@@ -107,6 +111,16 @@ export default function CreateArticle() {
     console.log("Submitting Article:", article);
 
     // TODO: Send `article` data to backend (API request)
+  };
+
+  const handleTagClick = (tag: string) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tag)); // Remove tag if clicked again
+      article.tags = article.tags.filter((t) => t !== tag);
+    } else {
+      setSelectedTags([...selectedTags, tag]); // Add tag if not already selected
+      article.tags = [...article.tags, tag];
+    }
   };
 
   return (
@@ -198,7 +212,10 @@ export default function CreateArticle() {
             <p className="text-red-500 text-sm">{errors.content}</p>
           )}
         </div>
-
+          <TagsSelector
+                        selectedTags={selectedTags}
+                        onTagClick={handleTagClick}
+                      />
         {/* Submit Button */}
         <div className="mt-8 border-t border-gray-200 flex justify-end pt-6">
           <Button
