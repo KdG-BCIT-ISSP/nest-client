@@ -8,13 +8,17 @@ import "react-quill-new/dist/quill.snow.css";
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 import { ArticleType } from "@/types/ArticleType";
 import TagsSelector from "./TagsSelector";
+import imageCompression from "browser-image-compression";
+import { createArticle } from "@/app/api/article/create/route";
 
 export default function CreateArticle() {
   const [article, setArticle] = useState<ArticleType>({
     title: "",
     content: "",
     tags: [],
-    image: null as File | null, // Stores uploaded image
+    topicId: 2,
+    type: "ARTICLE",
+    image: "", // Stores uploaded image
     imagePreview: "", // Stores preview URL
   });
 
@@ -47,14 +51,37 @@ export default function CreateArticle() {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
 
-      // Create preview URL
-      const imageUrl = URL.createObjectURL(file);
-      setArticle({ ...article, image: file, imagePreview: imageUrl });
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 500,
+        useWebWorker: true,
+      };
 
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        image: "", // Clear the error message
-      }));
+      imageCompression(file, options)
+        .then((compressedFile) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(compressedFile);
+          reader.onload = () => {
+            setArticle({
+              ...article,
+              image: reader.result as string,
+              imagePreview: URL.createObjectURL(file),
+            });
+
+            setErrors((prevErrors) => ({
+              ...prevErrors,
+              image: "", // Clear the error message
+            }
+            ));
+          }
+
+        })
+        .catch((error) => {
+          console.error("Image compression failed:", error);
+        });
+
+
+
     }
   };
 
@@ -103,14 +130,39 @@ export default function CreateArticle() {
   };
 
   // Handle Form Submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) return;
 
     console.log("Submitting Article:", article);
+    const encodedContent = encodeURIComponent(article.content);
+    console.log("Encoded Content:", encodedContent);
 
-    // TODO: Send `article` data to backend (API request)
+    try {
+      console.log("title:", article.title);
+      console.log("content:", article.content);
+      console.log("tags:", article.tags);
+      console.log("image:", article.image);
+
+      const response = await createArticle(
+        article.title,
+        encodedContent,
+        article.topicId,
+        article.type,
+        article.tags,
+        article.image
+      )
+
+      if (response) {
+        console.log("Article Created:", response);
+        window.alert("Article created successfully");
+      } else {
+        console.error("Post creation failed: No response from server.");
+      }
+    } catch (error) {
+      console.error("Failedddd to create article", error);
+    }
   };
 
   const handleTagClick = (tag: string) => {
@@ -212,10 +264,10 @@ export default function CreateArticle() {
             <p className="text-red-500 text-sm">{errors.content}</p>
           )}
         </div>
-          <TagsSelector
-                        selectedTags={selectedTags}
-                        onTagClick={handleTagClick}
-                      />
+        <TagsSelector
+          selectedTags={selectedTags}
+          onTagClick={handleTagClick}
+        />
         {/* Submit Button */}
         <div className="mt-8 border-t border-gray-200 flex justify-end pt-6">
           <Button

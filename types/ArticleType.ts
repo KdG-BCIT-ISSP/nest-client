@@ -2,7 +2,9 @@ export type ArticleType = {
   author?: string;
   title: string;
   content: string;
+  type: string;
+  topicId: number;
   tags: string[];
-  image: File | string | null;
+  image: string;
   imagePreview?: string | null;
 };
