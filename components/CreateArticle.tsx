@@ -15,10 +15,10 @@ export default function CreateArticle() {
   const [article, setArticle] = useState<ArticleType>({
     title: "",
     content: "",
-    tags: [],
+    tagNames: [],
     topicId: 2,
     type: "ARTICLE",
-    image: "", // Stores uploaded image
+    coverImage: "", // Stores uploaded image
     imagePreview: "", // Stores preview URL
   });
 
@@ -64,7 +64,7 @@ export default function CreateArticle() {
           reader.onload = () => {
             setArticle({
               ...article,
-              image: reader.result as string,
+              coverImage: reader.result as string,
               imagePreview: URL.createObjectURL(file),
             });
 
@@ -115,7 +115,7 @@ export default function CreateArticle() {
       isValid = false;
     }
 
-    if (!article.image) {
+    if (!article.coverImage) {
       newErrors.image = "Please upload an image.";
       isValid = false;
     }
@@ -142,16 +142,16 @@ export default function CreateArticle() {
     try {
       console.log("title:", article.title);
       console.log("content:", article.content);
-      console.log("tags:", article.tags);
-      console.log("image:", article.image);
+      console.log("tags:", article.tagNames);
+      console.log("image:", article.coverImage);
 
       const response = await createArticle(
         article.title,
         encodedContent,
         article.topicId,
         article.type,
-        article.tags,
-        article.image
+        article.tagNames,
+        article.coverImage
       )
 
       if (response) {
@@ -168,10 +168,10 @@ export default function CreateArticle() {
   const handleTagClick = (tag: string) => {
     if (selectedTags.includes(tag)) {
       setSelectedTags(selectedTags.filter((t) => t !== tag)); // Remove tag if clicked again
-      article.tags = article.tags.filter((t) => t !== tag);
+      article.tagNames = article.tagNames.filter((t) => t !== tag);
     } else {
       setSelectedTags([...selectedTags, tag]); // Add tag if not already selected
-      article.tags = [...article.tags, tag];
+      article.tagNames = [...article.tagNames, tag];
     }
   };
 
