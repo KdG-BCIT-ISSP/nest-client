@@ -264,16 +264,17 @@ export default function CreateArticle() {
             <p className="text-red-500 text-sm">{errors.content}</p>
           )}
         </div>
-        <TagsSelector
-          selectedTags={selectedTags}
-          onTagClick={handleTagClick}
-        />
+
         {/* Submit Button */}
-        <div className="mt-8 border-t border-gray-200 flex justify-end pt-6">
+        <div className="mt-8 border-t border-gray-200 flex justify-between pt-6">
+          <TagsSelector
+            selectedTags={selectedTags}
+            onTagClick={handleTagClick}
+          />
           <Button
             label="Publish Article"
             onClick={handleSubmit}
-            className="text-white bg-red-500 hover:bg-red-600 font-medium rounded-md text-lg px-6 py-3"
+            className="text-white bg-red-500 h-12 hover:bg-red-600 font-medium rounded-md text-lg px-6 py-3"
           />
         </div>
       </form>
