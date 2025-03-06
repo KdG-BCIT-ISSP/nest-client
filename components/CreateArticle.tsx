@@ -71,17 +71,12 @@ export default function CreateArticle() {
             setErrors((prevErrors) => ({
               ...prevErrors,
               image: "", // Clear the error message
-            }
-            ));
-          }
-
+            }));
+          };
         })
         .catch((error) => {
           console.error("Image compression failed:", error);
         });
-
-
-
     }
   };
 
@@ -152,7 +147,7 @@ export default function CreateArticle() {
         article.type,
         article.tagNames,
         article.coverImage
-      )
+      );
 
       if (response) {
         console.log("Article Created:", response);

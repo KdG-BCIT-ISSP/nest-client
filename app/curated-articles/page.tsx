@@ -12,13 +12,12 @@ export default function CuratedArticlesPage() {
   useEffect(() => {
     async function fetchArticles() {
       try {
-        const data = await getArticle(); 
+        const data = await getArticle();
         const updatedArticles = data.map((article: ArticleTypeWithID) => ({
           ...article,
           content: decodeURIComponent(article.content), // If needed, process content here
         }));
         setArticles(updatedArticles);
-        
       } catch (error) {
         console.error("Failed to fetch articles:", error);
       } finally {
@@ -29,7 +28,9 @@ export default function CuratedArticlesPage() {
   }, []);
 
   const handleDelete = (id: number) => {
-    setArticles((prevArticles) => prevArticles.filter((article) => article.id !== id));
+    setArticles((prevArticles) =>
+      prevArticles.filter((article) => article.id !== id)
+    );
   };
 
   if (loading) {
@@ -38,11 +39,17 @@ export default function CuratedArticlesPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4 text-center">Curated Articles Page</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">
+        Curated Articles Page
+      </h1>
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
           {articles.map((article) => (
-            <ArticleCard key={article.id} article={article} onDelete={handleDelete}/>
+            <ArticleCard
+              key={article.id}
+              article={article}
+              onDelete={handleDelete}
+            />
           ))}
         </div>
       </div>
