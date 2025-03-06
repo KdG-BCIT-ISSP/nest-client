@@ -17,14 +17,14 @@ const geistMono = Geist_Mono({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const isAuthenticated = localStorage.getItem("accessToken");
+  const isAuthenticated =
+    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
   const [, setUserData] = useAtom(userAtom);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getProfile();
-        console.log(data);
         setUserData(data);
       } catch (error) {
         console.error("Failed to fetch profile data:", error);

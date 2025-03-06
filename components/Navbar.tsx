@@ -15,11 +15,10 @@ export default function Navbar() {
   const { t } = useTranslation("common");
   const [userData] = useAtom(userAtom);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  const isAuthenticated = localStorage.getItem("accessToken");
+  const isAuthenticated =
+    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
   const [, , removeCookie] = useCookies(["refreshToken"]);
-
-  console.log(userData);
 
   useEffect(() => {
     setMounted(true);
