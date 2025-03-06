@@ -1,5 +1,5 @@
-export type ArticleType = {
-  id?: number;
+export type ArticleTypeWithID = {
+  id: number;
   author?: string;
   title: string;
   content: string;

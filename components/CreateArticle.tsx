@@ -7,12 +7,18 @@ import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 import { ArticleType } from "@/types/ArticleType";
+import TagsSelector from "./TagsSelector";
+import imageCompression from "browser-image-compression";
+import { createArticle } from "@/app/api/article/create/route";
 
 export default function CreateArticle() {
   const [article, setArticle] = useState<ArticleType>({
     title: "",
     content: "",
-    image: null as File | null, // Stores uploaded image
+    tagNames: [],
+    topicId: 2,
+    type: "ARTICLE",
+    coverImage: "", // Stores uploaded image
     imagePreview: "", // Stores preview URL
   });
 
@@ -21,6 +27,8 @@ export default function CreateArticle() {
     content: "",
     image: "",
   });
+
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   // Handle Change
   const handleChange = (
@@ -43,14 +51,32 @@ export default function CreateArticle() {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
 
-      // Create preview URL
-      const imageUrl = URL.createObjectURL(file);
-      setArticle({ ...article, image: file, imagePreview: imageUrl });
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 500,
+        useWebWorker: true,
+      };
 
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        image: "", // Clear the error message
-      }));
+      imageCompression(file, options)
+        .then((compressedFile) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(compressedFile);
+          reader.onload = () => {
+            setArticle({
+              ...article,
+              coverImage: reader.result as string,
+              imagePreview: URL.createObjectURL(file),
+            });
+
+            setErrors((prevErrors) => ({
+              ...prevErrors,
+              image: "", // Clear the error message
+            }));
+          };
+        })
+        .catch((error) => {
+          console.error("Image compression failed:", error);
+        });
     }
   };
 
@@ -84,7 +110,7 @@ export default function CreateArticle() {
       isValid = false;
     }
 
-    if (!article.image) {
+    if (!article.coverImage) {
       newErrors.image = "Please upload an image.";
       isValid = false;
     }
@@ -99,14 +125,49 @@ export default function CreateArticle() {
   };
 
   // Handle Form Submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) return;
 
     console.log("Submitting Article:", article);
+    const encodedContent = encodeURIComponent(article.content);
+    console.log("Encoded Content:", encodedContent);
 
-    // TODO: Send `article` data to backend (API request)
+    try {
+      console.log("title:", article.title);
+      console.log("content:", article.content);
+      console.log("tags:", article.tagNames);
+      console.log("image:", article.coverImage);
+
+      const response = await createArticle(
+        article.title,
+        encodedContent,
+        article.topicId,
+        article.type,
+        article.tagNames,
+        article.coverImage
+      );
+
+      if (response) {
+        console.log("Article Created:", response);
+        window.alert("Article created successfully");
+      } else {
+        console.error("Post creation failed: No response from server.");
+      }
+    } catch (error) {
+      console.error("Failedddd to create article", error);
+    }
+  };
+
+  const handleTagClick = (tag: string) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tag)); // Remove tag if clicked again
+      article.tagNames = article.tagNames.filter((t) => t !== tag);
+    } else {
+      setSelectedTags([...selectedTags, tag]); // Add tag if not already selected
+      article.tagNames = [...article.tagNames, tag];
+    }
   };
 
   return (
@@ -200,11 +261,15 @@ export default function CreateArticle() {
         </div>
 
         {/* Submit Button */}
-        <div className="mt-8 border-t border-gray-200 flex justify-end pt-6">
+        <div className="mt-8 border-t border-gray-200 flex justify-between pt-6">
+          <TagsSelector
+            selectedTags={selectedTags}
+            onTagClick={handleTagClick}
+          />
           <Button
             label="Publish Article"
             onClick={handleSubmit}
-            className="text-white bg-red-500 hover:bg-red-600 font-medium rounded-md text-lg px-6 py-3"
+            className="text-white bg-red-500 h-12 hover:bg-red-600 font-medium rounded-md text-lg px-6 py-3"
           />
         </div>
       </form>
