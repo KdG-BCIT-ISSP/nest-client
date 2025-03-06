@@ -1,10 +1,12 @@
 export type ArticleType = {
+  id?: number;
   author?: string;
   title: string;
   content: string;
   type: string;
   topicId: number;
-  tags: string[];
-  image: string;
+  tagNames: string[];
+  coverImage: string;
   imagePreview?: string | null;
+  link?: string;
 };
