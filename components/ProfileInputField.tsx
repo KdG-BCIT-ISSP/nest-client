@@ -167,7 +167,6 @@ export default function ProfileInputField({
             className="mt-2 border-secondary border-2 rounded-md text-sm text-secondary hover:text-white hover:bg-secondary"
             onClick={() => document.getElementById("imageInput")?.click()}
           >
-            Upload Image
             {t("profile.uploadImage")}
           </button>
           <input

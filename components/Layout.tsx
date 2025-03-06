@@ -1,11 +1,7 @@
 "use client";
 
 import { Geist, Geist_Mono } from "next/font/google";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { useInitAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
-import { isAuthenticatedAtom } from "@/atoms/auth/atom";
 import { userAtom } from "@/atoms/user/atom";
 import { useAtom } from "jotai";
 import { getProfile } from "@/app/api/profile/get/route";
@@ -21,19 +17,17 @@ const geistMono = Geist_Mono({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  useInitAuth();
-  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  const isAuthenticated =
+    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
   const [, setUserData] = useAtom(userAtom);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getProfile();
-        console.log(data);
         setUserData(data);
       } catch (error) {
         console.error("Failed to fetch profile data:", error);
-      } finally {
       }
     };
 
@@ -44,11 +38,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white min-h-screen flex flex-col`}
+      className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col p-12`}
     >
-      <Navbar />
-      <main className="flex-grow">{children}</main>
-      <Footer />
+      <main className="flex-grow" style={{ backgroundColor: "#ffffff" }}>
+        {children}
+      </main>
     </div>
   );
 }

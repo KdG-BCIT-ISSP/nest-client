@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useAtom } from "jotai";
-import { isAuthenticatedAtom } from "@/atoms/auth/atom";
 import { userAtom } from "@/atoms/user/atom";
 import { useTranslation } from "react-i18next";
 
@@ -16,7 +15,8 @@ export default function Navbar() {
   const { t } = useTranslation("common");
   const [userData] = useAtom(userAtom);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  const isAuthenticated =
+    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
   const [, , removeCookie] = useCookies(["refreshToken"]);
 
@@ -51,7 +51,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-primary border-gray-200 dark:bg-gray-900 z-50">
+    <nav className="fixed top-0 left-0 right-0 bg-primary border-gray-200 dark:bg-gray-900 z-50">
       <div className="max-w-screen-xl flex items-center justify-between mx-auto p-5">
         <Link href="/" className="flex items-center space-x-3">
           <span className="text-2xl font-semibold whitespace-nowrap dark:text-white text-secondary">
@@ -118,8 +118,7 @@ export default function Navbar() {
                     <li>
                       <button
                         onClick={handleLogout}
-                        className="block px-4 py-2 w-full text-left text-sm text-red-600
-                                   hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200"
+                        className="block px-4 py-2 w-full text-left text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200"
                       >
                         {t("navigation.signOut")}
                       </button>
@@ -129,7 +128,6 @@ export default function Navbar() {
               )}
             </div>
           ) : (
-            // not logged in
             <div className="flex items-center space-x-4 px-2">
               <Link
                 href="/auth/login"
@@ -139,7 +137,7 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/auth/signup"
-                className="px-4 py-2 text-sm font-medium text-white bg-tertiary rounded-md "
+                className="px-4 py-2 text-sm font-medium text-white bg-tertiary rounded-md"
               >
                 {t("navigation.register")}
               </Link>
