@@ -4,6 +4,7 @@ import ArticleCard from "@/components/ArticleCard";
 import { useEffect, useState } from "react";
 import { getArticle } from "@/app/api/article/get/route";
 import { ArticleTypeWithID } from "@/types/ArticleTypeWithID";
+import HeroSection from "@/components/HeroSection";
 
 export default function CuratedArticlesPage() {
   const [loading, setLoading] = useState(true);
@@ -37,13 +38,20 @@ export default function CuratedArticlesPage() {
     return <div>Loading...</div>;
   }
 
+  console.log(articles);
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4 text-center">
-        Curated Articles Page
-      </h1>
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+    <div className="p-6 pt-10">
+      <HeroSection
+        img={"/images/pregnancy1.jpg"}
+        title="More Info for You and Your Baby"
+        subtitle="Medically-reviewed expert guides, tips, real-life stories, and
+            articles across fertility, pregnancy, motherhood and menopause."
+        direction="right"
+      />
+      <div className="py-10" />
+      <div className="w-full mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {articles.map((article) => (
             <ArticleCard
               key={article.id}
