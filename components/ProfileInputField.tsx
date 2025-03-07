@@ -38,8 +38,6 @@ export default function ProfileInputField({
     username: "",
     region: "",
   });
-  const [message, setMessage] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [, setUserData] = useAtom(userAtom);
@@ -135,7 +133,6 @@ export default function ProfileInputField({
 
       const data = await getProfile();
       setUserData(data);
-      setMessage("Profile updated successfully!");
       window.alert("Profile updated successfully!");
     } catch (error) {
       console.error("Update failed:", error);

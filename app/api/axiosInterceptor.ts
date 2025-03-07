@@ -103,8 +103,8 @@ axiosInterceptor.interceptors.response.use(
 const handleLogout = () => {
   deleteCookie("refreshToken", { path: "/" });
   localStorage.removeItem("accessToken");
-  window.location.href = "/auth/login";
   alert("Invalid token. Please log in again.");
+  window.location.href = "/auth/login";
 };
 
 export default axiosInterceptor;

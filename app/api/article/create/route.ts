@@ -10,8 +10,6 @@ export const createArticle = async (
   tags: string[],
   images: string
 ) => {
-  const requestData = { title, content, topicId, type, tags, images };
-  console.log("Request Data:", requestData);
   const response = await axiosInterceptor.post(
     "/article",
     {
