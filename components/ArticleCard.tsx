@@ -1,3 +1,6 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { deleteArticle } from "@/app/api/article/delete/route";
 import { ArticleTypeWithID } from "@/types/ArticleTypeWithID";
 import React from "react";
@@ -9,10 +12,14 @@ interface ArticleCardProps {
 }
 
 export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
+  const router = useRouter();
   const cleanContent = article.content.replace(/<[^>]*>/g, "");
   const maxLength = 100;
 
-  const handleDelete = async () => {
+  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+
     try {
       await deleteArticle(article.id);
       onDelete(article.id);
@@ -21,8 +28,15 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
     }
   };
 
+  const handleClick = () => {
+    router.push(`/curated-articles/${article.id}`);
+  };
+
   return (
-    <div className="flex flex-col bg-white shadow-md md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
+    <div
+      onClick={handleClick}
+      className="flex flex-col bg-white shadow-md md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 cursor-pointer"
+    >
       <div className="md:w-48">
         <Image
           className="object-cover w-full h-full rounded-t-lg md:rounded-none"
