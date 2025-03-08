@@ -13,6 +13,8 @@ import ArticleThumpsUp from "@/public/svg/Article/ThumbsUp";
 import ArticleComment from "@/public/svg/Article/Comment";
 import ArticleBookmark from "@/public/svg/Article/Bookmark";
 import ArticleShare from "@/public/svg/Article/Share";
+import Tags from "@/components/Tags";
+import CommentsSection from "@/components/Comments";
 
 export default function ArticleDetailsPage() {
   const params = useParams();
@@ -59,16 +61,7 @@ export default function ArticleDetailsPage() {
             {article.title}
           </h1>
 
-          <div className="flex flex-wrap mt-4 pb-2">
-            {article.tagNames.map((tag, index) => (
-              <span
-                key={index}
-                className="px-3 py-1 bg-gray-200 text-gray-800 rounded-md mr-2 mb-2"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
+          <Tags tagsList={article.tagNames} />
 
           <div className="relative w-full h-[400px] rounded-t-lg md:rounded-none overflow-hidden">
             <Image
@@ -90,6 +83,7 @@ export default function ArticleDetailsPage() {
           <ArticleBookmark count={212} />
           <ArticleShare count={12} />
         </div>
+        <CommentsSection />
       </div>
     </div>
   );
