@@ -19,7 +19,7 @@ export default function ThumbsUp({
         border: post ? "2px solid #CD6A6A" : "none",
         borderRadius: post ? "8px" : "0",
         cursor: post ? "pointer" : "",
-        width: container ? "50px" : "40px",
+        width: container || post ? "50px" : "40px",
       }}
     >
       <svg
