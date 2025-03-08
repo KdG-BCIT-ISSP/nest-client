@@ -31,7 +31,7 @@ export default function CuratedArticlesPage() {
       }
     }
     fetchArticles();
-  }, []);
+  }, [setArticleData]);
 
   const handleDelete = (id: number) => {
     setArticles((prevArticles) =>
