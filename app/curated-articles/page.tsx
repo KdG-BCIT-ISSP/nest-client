@@ -5,20 +5,25 @@ import { useEffect, useState } from "react";
 import { getArticle } from "@/app/api/article/get/route";
 import { ArticleTypeWithID } from "@/types/ArticleTypeWithID";
 import HeroSection from "@/components/HeroSection";
+import { articlesAtom } from "@/atoms/articles/atom";
+import { useAtom } from "jotai";
 
 export default function CuratedArticlesPage() {
+  const [, setArticleData] = useAtom(articlesAtom);
   const [loading, setLoading] = useState(true);
   const [articles, setArticles] = useState<ArticleTypeWithID[]>([]);
 
   useEffect(() => {
     async function fetchArticles() {
       try {
+        setLoading(true);
         const data = await getArticle();
         const updatedArticles = data.map((article: ArticleTypeWithID) => ({
           ...article,
           content: decodeURIComponent(article.content), // If needed, process content here
         }));
         setArticles(updatedArticles);
+        setArticleData(updatedArticles);
       } catch (error) {
         console.error("Failed to fetch articles:", error);
       } finally {
@@ -37,8 +42,6 @@ export default function CuratedArticlesPage() {
   if (loading) {
     return <div>Loading...</div>;
   }
-
-  console.log(articles);
 
   return (
     <div className="p-6 pt-10">
