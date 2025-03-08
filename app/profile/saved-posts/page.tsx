@@ -15,7 +15,7 @@ export default function SavedPostsPage() {
   }
 
   return (
-    <div className="p-8 sm:ml-64">
+    <div className="p-4 sm:ml-64">
       <SideMenu />
       <div className="pl-0 p-8 flex flex-col items-start">
         <h1 className="text-2xl font-bold text-black mb-4">Saved Posts</h1>
