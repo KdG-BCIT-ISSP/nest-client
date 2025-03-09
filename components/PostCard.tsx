@@ -5,28 +5,18 @@ import ThumbsUp from "@/public/svg/Post/ThumbsUp";
 import Comments from "@/public/svg/Post/Comment";
 import Bookmark from "@/public/svg/Post/Bookmark";
 import Share from "@/public/svg/Post/Share";
-
-interface PostCardProps {
-  saved?: boolean;
-  className?: string;
-  title?: string;
-  content?: string;
-  tags?: string[];
-  imageBase64?: string[];
-  author?: string;
-  timestamp?: string;
-}
+import { PostCardType } from "@/types/PostCardType";
 
 export default function PostCard({
   saved = false,
   className,
   title = "Untitled Post",
   content = "No content available.",
-  tags = [],
-  imageBase64 = [],
+  tags,
+  imageBase64,
   author = "Anonymous",
   timestamp = "Just now",
-}: PostCardProps) {
+}: PostCardType) {
   return (
     <div
       className={clsx(
