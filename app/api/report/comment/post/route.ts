@@ -2,10 +2,11 @@ import axiosInterceptor, {
   CustomAxiosRequestConfig,
 } from "../../../axiosInterceptor";
 
-export const reportComment = async (commentId: string) => {
-  const response = await axiosInterceptor.post("/report/comment", {
-    requiresAuth: true,
-    params: { commentId },
-  } as CustomAxiosRequestConfig);
+export const reportCommment = async (commentId: number, reason: string) => {
+  const response = await axiosInterceptor.post(
+    `/report/comment/${commentId}`,
+    { reason },
+    { requiresAuth: true } as CustomAxiosRequestConfig
+  );
   return response.data;
 };

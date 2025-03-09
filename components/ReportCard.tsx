@@ -8,7 +8,6 @@ import Link from "next/link";
 import { ReportCardProps } from "@/types/ReportCard";
 
 export default function ReportCard({ post, reports }: ReportCardProps) {
-  console.log(post);
   return (
     <div className="bg-report border border-gray-200 rounded-md p-4 w-full mx-auto shadow-md">
       <Link href={`/curated-articles/${post.id}`}>
