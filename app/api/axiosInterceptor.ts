@@ -15,7 +15,7 @@ const axiosInterceptor: AxiosInstance = axios.create({
 
 // response error types
 const INVALID_TOKEN_ERROR = "Invalid token";
-const EXPIRED_TOKEN_ERROR = "Expired token";
+const EXPIRED_TOKEN_ERROR = ["Expired token", "Token expired"];
 
 export interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   requiresAuth?: boolean;
@@ -54,7 +54,7 @@ axiosInterceptor.interceptors.response.use(
       if (!originalRequest._retry) {
         originalRequest._retry = true;
 
-        if (responseType === EXPIRED_TOKEN_ERROR) {
+        if (EXPIRED_TOKEN_ERROR.includes(responseType)) {
           try {
             const response = await getNewAccessToken(refreshToken);
             localStorage.setItem("accessToken", response.accessToken);
@@ -103,8 +103,8 @@ axiosInterceptor.interceptors.response.use(
 const handleLogout = () => {
   deleteCookie("refreshToken", { path: "/" });
   localStorage.removeItem("accessToken");
-  window.location.href = "/auth/login";
   alert("Invalid token. Please log in again.");
+  window.location.href = "/auth/login";
 };
 
 export default axiosInterceptor;

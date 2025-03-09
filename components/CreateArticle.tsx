@@ -130,16 +130,9 @@ export default function CreateArticle() {
 
     if (!validateForm()) return;
 
-    console.log("Submitting Article:", article);
     const encodedContent = encodeURIComponent(article.content);
-    console.log("Encoded Content:", encodedContent);
 
     try {
-      console.log("title:", article.title);
-      console.log("content:", article.content);
-      console.log("tags:", article.tagNames);
-      console.log("image:", article.coverImage);
-
       const response = await createArticle(
         article.title,
         encodedContent,
@@ -150,7 +143,6 @@ export default function CreateArticle() {
       );
 
       if (response) {
-        console.log("Article Created:", response);
         window.alert("Article created successfully");
       } else {
         console.error("Post creation failed: No response from server.");

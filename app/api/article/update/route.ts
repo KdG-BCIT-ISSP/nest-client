@@ -11,8 +11,6 @@ export const updateArticle = async (
   tags: string[],
   images: string
 ) => {
-  const requestData = { id, title, content, topicId, type, tags, images };
-  console.log("Request Data:", requestData);
   const response = await axiosInterceptor.put(
     "/article",
     {
