@@ -109,11 +109,11 @@ export default function CreatePost() {
       console.log("image:", updatedPost.postImages[1]);
 
       const response = await createPost(
-        updatedPost.title, // Use updatedPost
+        updatedPost.title,
         updatedPost.content,
         updatedPost.topicId,
         updatedPost.type || "USERPOST",
-        updatedPost.tags, // Use updatedPost
+        updatedPost.tags,
         updatedPost.postImages
       );
 
