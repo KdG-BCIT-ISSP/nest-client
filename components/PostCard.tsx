@@ -13,7 +13,7 @@ export default function PostCard({
   title,
   content,
   tags,
-  images,
+  postImages,
   author,
   timestamp,
 }: PostType) {
@@ -25,15 +25,22 @@ export default function PostCard({
       )}
     >
       <div className="block sm:hidden">
-        {images && (
-          <div className="w-full h-52 mb-3 relative overflow-hidden rounded-sm border border-gray-300">
-            <Image
-              src={images}
-              alt="Post Image"
-              fill
-              className="object-cover"
-              unoptimized
-            />
+        {postImages && postImages.length > 0 && (
+          <div className="flex flex-wrap">
+            {postImages.map((image, index) => (
+              <div
+                key={index}
+                className="w-full h-52 mb-3 relative overflow-hidden rounded-sm border border-gray-300"
+              >
+                <Image
+                  src={image}
+                  alt={`Post Image ${index}`}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              </div>
+            ))}
           </div>
         )}
         <div className="flex gap-4">
@@ -144,15 +151,22 @@ export default function PostCard({
               </button>
             </div>
           </div>
-          {images && (
-            <div className="relative w-72 h-auto aspect-[16/9] overflow-hidden rounded-sm border border-gray-300">
-              <Image
-                src={images}
-                alt="Post Image"
-                fill
-                className="object-cover"
-                unoptimized
-              />
+          {postImages && postImages.length > 0 && (
+            <div className="flex flex-wrap">
+              {postImages.map((image, index) => (
+                <div
+                  key={index}
+                  className="relative w-72 h-auto aspect-[16/9] overflow-hidden rounded-sm border border-gray-300"
+                >
+                  <Image
+                    src={image}
+                    alt={`Post Image ${index}`}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
+                </div>
+              ))}
             </div>
           )}
         </div>
