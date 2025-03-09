@@ -105,8 +105,8 @@ export default function CreatePost() {
       console.log("content:", updatedPost.content);
       console.log("topicId:", updatedPost.topicId);
       console.log("tags:", updatedPost.tags);
-      console.log("image:", updatedPost.postImages[0]);
-      console.log("image:", updatedPost.postImages[1]);
+      console.log("image:", post.postImages[0]);
+      console.log("image:", post.postImages[1]);
 
       const response = await createPost(
         updatedPost.title,
@@ -114,7 +114,7 @@ export default function CreatePost() {
         updatedPost.topicId,
         updatedPost.type || "USERPOST",
         updatedPost.tags,
-        updatedPost.postImages
+        post.postImages
       );
 
       if (response) {
