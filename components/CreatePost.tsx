@@ -98,21 +98,23 @@ export default function CreatePost() {
     console.log("Post:", post);
 
     if (!validateForm()) return;
-    const updatedPost = { ...post, tags: selectedTags };
+    const updatedPost = { ...post, tags: selectedTags }; // Create updatedPost
+
     try {
-      console.log("title:", post.title);
-      console.log("content:", post.content);
-      console.log("topicId:", post.topicId);
-      console.log("tags:", post.tags);
-      console.log("image:", post.postImages[0]);
-      console.log("image:", post.postImages[1]);
+      console.log("title:", updatedPost.title); //Log the updated post.
+      console.log("content:", updatedPost.content);
+      console.log("topicId:", updatedPost.topicId);
+      console.log("tags:", updatedPost.tags);
+      console.log("image:", updatedPost.postImages[0]);
+      console.log("image:", updatedPost.postImages[1]);
+
       const response = await createPost(
-        post.title,
-        post.content,
-        post.topicId,
-        post.type,
-        post.tags,
-        post.postImages
+        updatedPost.title, // Use updatedPost
+        updatedPost.content,
+        updatedPost.topicId,
+        updatedPost.type || "USERPOST",
+        updatedPost.tags, // Use updatedPost
+        updatedPost.postImages
       );
 
       if (response) {
@@ -123,7 +125,9 @@ export default function CreatePost() {
         console.error("Post creation failed: No response from server.");
       }
     } catch (error) {
-      console.error("Failedddd to create post", error);
+      console.error("Failed to create post", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -189,6 +193,7 @@ export default function CreatePost() {
             className="text-white bg-red-500 hover:bg-red-600 font-medium rounded-md text-sm px-5 py-2.5"
           />
         </div>
+        {isLoading && <p>Loading...</p>}
       </form>
     </div>
   );
