@@ -1,6 +1,7 @@
 export type ArticleType = {
   id?: number;
   author?: string;
+  memberUsername?: string;
   title: string;
   content: string;
   type: string;

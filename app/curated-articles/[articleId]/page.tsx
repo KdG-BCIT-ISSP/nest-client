@@ -1,10 +1,8 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useAtom } from "jotai";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { articlesAtom } from "@/atoms/articles/atom";
 import Back from "@/public/svg/Article/Back";
 import Dots from "@/public/svg/Article/Dots";
 import parse from "html-react-parser";
@@ -15,23 +13,43 @@ import ArticleBookmark from "@/public/svg/Article/Bookmark";
 import ArticleShare from "@/public/svg/Article/Share";
 import Tags from "@/components/Tags";
 import CommentsSection from "@/components/Comments";
+import { getArticle } from "@/app/api/article/get/route";
+import { ArticleType } from "@/types/ArticleType";
 
 export default function ArticleDetailsPage() {
   const params = useParams();
   const articleId = Number(params.articleId);
-  const [articles] = useAtom(articlesAtom);
+  const [article, setArticle] = useState<ArticleType>();
+  const [loading, setLoading] = useState(true);
   const [showReport, setShowReport] = useState(false);
 
-  // TODO: replace article find with api call
-  const article = articles.find((item) => item.id === articleId);
+  useEffect(() => {
+    async function fetchArticle() {
+      try {
+        setLoading(true);
+        const data = await getArticle();
+        const foundArticle = data.find(
+          (item: ArticleType) => item.id === articleId
+        );
+        if (foundArticle) {
+          setArticle({
+            ...foundArticle,
+            content: decodeURIComponent(foundArticle.content),
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching article:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchArticle();
+  }, [articleId]);
 
-  if (!article) {
-    return <div>Article not found</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (!article) return <div>Article not found</div>;
 
   const html = parse(article.content);
-
-  console.log(article.tagNames);
 
   return (
     <div className="w-max mx-auto pt-10">
@@ -66,7 +84,7 @@ export default function ArticleDetailsPage() {
           <div className="relative w-full h-[400px] rounded-t-lg md:rounded-none overflow-hidden">
             <Image
               src={article.coverImage}
-              alt={"Article cover image"}
+              alt="Article cover image"
               fill
               style={{ objectFit: "cover", objectPosition: "top" }}
               priority

@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { useEffect } from "react";
 import { userAtom } from "@/atoms/user/atom";
 import { useAtom } from "jotai";
-import { getProfile } from "@/app/api/profile/get/route";
+import { getProfile } from "@/app/api/member/get/route";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,11 +17,13 @@ const geistMono = Geist_Mono({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const isAuthenticated =
-    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
   const [, setUserData] = useAtom(userAtom);
 
   useEffect(() => {
+    // read the token only once on mount
+    const token = localStorage.getItem("accessToken");
+    if (!token) return;
+
     const fetchData = async () => {
       try {
         const data = await getProfile();
@@ -31,10 +33,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       }
     };
 
-    if (isAuthenticated) {
-      fetchData();
-    }
-  }, [isAuthenticated, setUserData]);
+    fetchData();
+  }, [setUserData]);
 
   return (
     <div

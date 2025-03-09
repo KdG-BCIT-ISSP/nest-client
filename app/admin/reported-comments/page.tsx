@@ -1,27 +1,27 @@
 "use client";
 
-import { getPostReports } from "@/app/api/report/post/getAll/route";
-import { getPost } from "@/app/api/post/get/route";
+import { getArticleReports } from "@/app/api/report/article/getAll/route";
+import { getArticle } from "@/app/api/article/get/route";
 import ReportCard from "@/components/ReportCard";
 import SideMenu from "@/components/SideMenu";
 import { useEffect, useState } from "react";
 import { ReportPostType, Report } from "@/types/PostType";
 
-export default function ReportedPostsPage() {
+export default function ReportedCommentsPage() {
   const [loading, setLoading] = useState(true);
-  const [reportedPosts, setReportedPosts] = useState<Report[]>([]);
-  const [posts, setPosts] = useState<ReportPostType[]>([]);
+  const [reportedComments, setReportedComments] = useState<Report[]>([]);
+  const [comments, setComments] = useState<ReportPostType[]>([]);
 
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
       try {
         const [reportedPostsData, postsData] = await Promise.all([
-          getPostReports(),
-          getPost(),
+          getArticleReports(),
+          getArticle(),
         ]);
-        setReportedPosts(reportedPostsData);
-        setPosts(postsData);
+        setReportedComments(reportedPostsData);
+        setComments(postsData);
       } catch (err) {
         console.error("Failed to fetch data:", err);
       } finally {
@@ -35,8 +35,8 @@ export default function ReportedPostsPage() {
     return <div>Loading...</div>;
   }
 
-  const postsWithReports = posts.filter((post) =>
-    reportedPosts.some((report) => report.postId === post.id)
+  const commentsWithReports = comments.filter((comment) =>
+    reportedComments.some((report) => report.commentId === comment.id)
   );
 
   return (
@@ -44,20 +44,20 @@ export default function ReportedPostsPage() {
       <SideMenu admin />
       <div className="pl-0 p-8 flex flex-col items-start">
         <h1 className="text-2xl font-bold text-black mb-4 pb-4">
-          Reported Posts
+          Reported Comments
         </h1>
-        {postsWithReports.length === 0 && (
-          <div className="text-gray-500">No reported posts</div>
+        {commentsWithReports.length === 0 && (
+          <div className="text-gray-500">No reported comments</div>
         )}
         <div className="flex flex-col gap-6 w-full">
-          {postsWithReports.map((post) => {
-            const associatedReports = reportedPosts.filter(
-              (report) => report.postId === post.id
+          {commentsWithReports.map((comment) => {
+            const associatedReports = reportedComments.filter(
+              (report) => report.commentId === comment.id
             );
             return (
               <ReportCard
-                key={post.id}
-                post={post}
+                key={comment.id}
+                post={comment}
                 reports={associatedReports}
               />
             );

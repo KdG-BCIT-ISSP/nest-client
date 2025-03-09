@@ -1,13 +1,13 @@
 "use client";
 
-import { getPostReports } from "@/app/api/report/post/getAll/route";
-import { getPost } from "@/app/api/post/get/route";
+import { getArticleReports } from "@/app/api/report/article/getAll/route";
+import { getArticle } from "@/app/api/article/get/route";
 import ReportCard from "@/components/ReportCard";
 import SideMenu from "@/components/SideMenu";
 import { useEffect, useState } from "react";
 import { ReportPostType, Report } from "@/types/PostType";
 
-export default function ReportedPostsPage() {
+export default function ReportedArticlesPage() {
   const [loading, setLoading] = useState(true);
   const [reportedPosts, setReportedPosts] = useState<Report[]>([]);
   const [posts, setPosts] = useState<ReportPostType[]>([]);
@@ -17,8 +17,8 @@ export default function ReportedPostsPage() {
       setLoading(true);
       try {
         const [reportedPostsData, postsData] = await Promise.all([
-          getPostReports(),
-          getPost(),
+          getArticleReports(),
+          getArticle(),
         ]);
         setReportedPosts(reportedPostsData);
         setPosts(postsData);
@@ -44,7 +44,7 @@ export default function ReportedPostsPage() {
       <SideMenu admin />
       <div className="pl-0 p-8 flex flex-col items-start">
         <h1 className="text-2xl font-bold text-black mb-4 pb-4">
-          Reported Posts
+          Reported Articles
         </h1>
         {postsWithReports.length === 0 && (
           <div className="text-gray-500">No reported posts</div>
