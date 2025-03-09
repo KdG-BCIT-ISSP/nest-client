@@ -10,8 +10,20 @@ const SIDE_MENU_LINKS = [
   { href: "reset", label: "Reset Password" },
 ];
 
-export default function SideMenu() {
+const ADMIN_SIDE_MENU_LINKS = [
+  { href: "/admin/user-access", label: "User Access" },
+  { href: "/admin/posts", label: "Posts" },
+  { href: "/admin/articles", label: "Articles" },
+  { href: "/admin/reported-posts", label: "Reported Post" },
+  { href: "/admin/reported-articles", label: "Reported Articles" },
+  { href: "/admin/reported-comments", label: "Reported Comments" },
+  { href: "/admin/data", label: "Data" },
+  { href: "/admin/tag-management", label: "Tag Management" },
+];
+
+export default function SideMenu({ admin = false }: { admin?: boolean }) {
   const [, , removeCookie] = useCookies(["refreshToken"]);
+  const links = admin ? ADMIN_SIDE_MENU_LINKS : SIDE_MENU_LINKS;
 
   const handleLogout = async () => {
     try {
@@ -31,12 +43,11 @@ export default function SideMenu() {
     >
       <div className="h-full pt-32 px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
         <ul className="space-y-2 font-medium">
-          {SIDE_MENU_LINKS.map((link) => (
+          {links.map((link) => (
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white
-                           hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <span className="flex-1 ms-3 whitespace-nowrap">
                   {link.label}
@@ -44,7 +55,6 @@ export default function SideMenu() {
               </Link>
             </li>
           ))}
-
           <li>
             <button
               onClick={handleLogout}

@@ -21,6 +21,7 @@ export default {
         muted: "#FFCFCF", // Custom Pink
         container: "#F2FBF3", // Custom Yellow
         black: "#101010", // Custom Black
+        report: "#EEEEEE", // Custom report pink
       },
     },
   },

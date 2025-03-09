@@ -1,11 +1,11 @@
 "use client";
 
 import { ProfileDataType } from "@/types/ProfileDataType";
-import { updateProfile } from "@/app/api/profile/update/route";
+import { updateProfile } from "@/app/api/member/update/route";
 import { useEffect, useState } from "react";
 import React from "react";
 import Image from "next/image";
-import { getProfile } from "@/app/api/profile/get/route";
+import { getProfile } from "@/app/api/member/get/route";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
 import imageCompression from "browser-image-compression";
@@ -38,8 +38,6 @@ export default function ProfileInputField({
     username: "",
     region: "",
   });
-  const [message, setMessage] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [, setUserData] = useAtom(userAtom);
@@ -135,7 +133,6 @@ export default function ProfileInputField({
 
       const data = await getProfile();
       setUserData(data);
-      setMessage("Profile updated successfully!");
       window.alert("Profile updated successfully!");
     } catch (error) {
       console.error("Update failed:", error);

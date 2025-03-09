@@ -9,11 +9,11 @@ export default function Share({ onClick, post }: SvgPost) {
         alignItems: "center",
         justifyContent: "center",
         gap: "6px",
-        padding: "6px 10px",
-        border: post ? "2px solid #CD6A6A" : "",
-        borderRadius: "8px",
-        cursor: "pointer",
-        width: "80px",
+        padding: post ? "6px 10px" : "0",
+        border: post ? "2px solid #CD6A6A" : "none",
+        borderRadius: post ? "8px" : "0",
+        cursor: post ? "pointer" : "",
+        width: post ? "100px" : "80px",
       }}
     >
       <svg
