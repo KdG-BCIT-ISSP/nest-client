@@ -34,8 +34,10 @@ export default function SavedPostsPage() {
     return <div>Error: {error}</div>;
   }
 
-  // Filter posts to only include only those with memberID
-  const filteredPosts = posts.filter((post) => post.memberId === 21);
+  // Filter posts to only include only those with correct memberID and postID
+  const filteredPosts = posts.filter(
+    (post) => post.memberId === 21 && post.id === 117
+  );
 
   return (
     <div className="p-4 sm:ml-64">
