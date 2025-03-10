@@ -24,7 +24,7 @@ export default function SavedPostsPage() {
     }
 
     fetchBookmarkedPosts();
-  });
+  }, []);
 
   if (loading) {
     return <div>Loading...</div>;
