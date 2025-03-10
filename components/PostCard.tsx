@@ -3,12 +3,12 @@ import Image from "next/image";
 import clsx from "clsx";
 import ThumbsUp from "@/public/svg/Post/ThumbsUp";
 import Comments from "@/public/svg/Post/Comment";
-import Bookmark from "@/public/svg/Post/Bookmark";
 import Share from "@/public/svg/Post/Share";
 import { PostCardType } from "@/types/PostCardType";
+import BookmarkToggle from "../components/Bookmark";
 
 export default function PostCard({
-  saved = false,
+  id,
   className,
   title = "Untitled Post",
   content = "No content available.",
@@ -16,6 +16,7 @@ export default function PostCard({
   imageBase64,
   author = "Anonymous",
   timestamp = "Just now",
+  isBookmarked,
 }: PostCardType) {
   return (
     <div
@@ -44,24 +45,16 @@ export default function PostCard({
           </div>
         )}
         <div className="flex gap-4">
-          {!saved && (
-            <div className="flex flex-row items-center text-gray-500">
-              <button className="p-1 text-gray-400 hover:text-cyan-500">
-                ▲
-              </button>
-              <span className="font-bold text-gray-800">123</span>
-              <button className="p-1 text-gray-400 hover:text-red-500">
-                ▼
-              </button>
-            </div>
-          )}
+          <div className="flex flex-row items-center text-gray-500">
+            <button className="p-1 text-gray-400 hover:text-cyan-500">▲</button>
+            <span className="font-bold text-gray-800">123</span>
+            <button className="p-1 text-gray-400 hover:text-red-500">▼</button>
+          </div>
           <div className="flex-1">
-            {!saved && (
-              <div className="text-sm text-gray-500 mb-2">
-                <span className="font-medium text-gray-800">{author}</span> •{" "}
-                <span>{timestamp}</span>
-              </div>
-            )}
+            <div className="text-sm text-gray-500 mb-2">
+              <span className="font-medium text-gray-800">{author}</span> •{" "}
+              <span>{timestamp}</span>
+            </div>
             <h1 className="text-lg font-bold text-gray-900 mb-2">{title}</h1>
             <p className="text-base text-gray-700 whitespace-pre-wrap mb-4">
               {content}
@@ -86,7 +79,7 @@ export default function PostCard({
                 <Comments count={234} container />
               </button>
               <button className="hover:text-cyan-600">
-                <Bookmark count={32} container filled={saved} />
+                <BookmarkToggle count={32} postId={id} filled={true} />
               </button>
               <button className="hover:text-cyan-600">
                 <Share />
@@ -97,21 +90,17 @@ export default function PostCard({
       </div>
 
       <div className="hidden sm:flex gap-4">
-        {!saved && (
-          <div className="flex flex-col items-center text-gray-500">
-            <button className="p-1 text-gray-400 hover:text-cyan-500">▲</button>
-            <span className="font-bold text-gray-800">123</span>
-            <button className="p-1 text-gray-400 hover:text-red-500">▼</button>
-          </div>
-        )}
+        <div className="flex flex-col items-center text-gray-500">
+          <button className="p-1 text-gray-400 hover:text-cyan-500">▲</button>
+          <span className="font-bold text-gray-800">123</span>
+          <button className="p-1 text-gray-400 hover:text-red-500">▼</button>
+        </div>
         <div className="flex flex-1 gap-4">
           <div className="flex-1 flex flex-col">
-            {!saved && (
-              <div className="text-sm text-gray-500 mb-2">
-                <span className="font-medium text-gray-800">{author}</span> •{" "}
-                <span>{timestamp}</span>
-              </div>
-            )}
+            <div className="text-sm text-gray-500 mb-2">
+              <span className="font-medium text-gray-800">{author}</span> •{" "}
+              <span>{timestamp}</span>
+            </div>
             <h1 className="text-lg font-bold text-gray-900 mb-2">{title}</h1>
             <p className="text-base text-gray-700 whitespace-pre-wrap mb-4">
               {content}
@@ -136,7 +125,7 @@ export default function PostCard({
                 <Comments count={234} container />
               </button>
               <button className="hover:text-cyan-600">
-                <Bookmark count={32} container filled={saved} />
+                <BookmarkToggle count={32} postId={id} filled={isBookmarked} />
               </button>
               <button className="hover:text-cyan-600">
                 <Share />

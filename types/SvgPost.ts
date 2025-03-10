@@ -4,4 +4,6 @@ export type SvgPost = {
   onClick?: () => void;
   container?: boolean;
   filled?: boolean;
+  postId?: number;
+  initialIsBookmarked?: boolean;
 };

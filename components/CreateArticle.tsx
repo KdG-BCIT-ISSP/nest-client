@@ -144,6 +144,7 @@ export default function CreateArticle() {
 
       if (response) {
         window.alert("Article created successfully");
+        window.location.href = `/curated-articles/`;
       } else {
         console.error("Post creation failed: No response from server.");
       }

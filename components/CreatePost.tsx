@@ -120,7 +120,7 @@ export default function CreatePost() {
       if (response) {
         console.log("Post created successfully:", response);
         window.alert("Post created successfully");
-        // window.location.href = `/posts/`;
+        window.location.href = `/posts/`;
       } else {
         console.error("Post creation failed: No response from server.");
       }
