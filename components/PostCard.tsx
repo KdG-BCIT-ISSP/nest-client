@@ -44,24 +44,16 @@ export default function PostCard({
           </div>
         )}
         <div className="flex gap-4">
-          {!saved && (
-            <div className="flex flex-row items-center text-gray-500">
-              <button className="p-1 text-gray-400 hover:text-cyan-500">
-                ▲
-              </button>
-              <span className="font-bold text-gray-800">123</span>
-              <button className="p-1 text-gray-400 hover:text-red-500">
-                ▼
-              </button>
-            </div>
-          )}
+          <div className="flex flex-row items-center text-gray-500">
+            <button className="p-1 text-gray-400 hover:text-cyan-500">▲</button>
+            <span className="font-bold text-gray-800">123</span>
+            <button className="p-1 text-gray-400 hover:text-red-500">▼</button>
+          </div>
           <div className="flex-1">
-            {!saved && (
-              <div className="text-sm text-gray-500 mb-2">
-                <span className="font-medium text-gray-800">{author}</span> •{" "}
-                <span>{timestamp}</span>
-              </div>
-            )}
+            <div className="text-sm text-gray-500 mb-2">
+              <span className="font-medium text-gray-800">{author}</span> •{" "}
+              <span>{timestamp}</span>
+            </div>
             <h1 className="text-lg font-bold text-gray-900 mb-2">{title}</h1>
             <p className="text-base text-gray-700 whitespace-pre-wrap mb-4">
               {content}
@@ -97,21 +89,17 @@ export default function PostCard({
       </div>
 
       <div className="hidden sm:flex gap-4">
-        {!saved && (
-          <div className="flex flex-col items-center text-gray-500">
-            <button className="p-1 text-gray-400 hover:text-cyan-500">▲</button>
-            <span className="font-bold text-gray-800">123</span>
-            <button className="p-1 text-gray-400 hover:text-red-500">▼</button>
-          </div>
-        )}
+        <div className="flex flex-col items-center text-gray-500">
+          <button className="p-1 text-gray-400 hover:text-cyan-500">▲</button>
+          <span className="font-bold text-gray-800">123</span>
+          <button className="p-1 text-gray-400 hover:text-red-500">▼</button>
+        </div>
         <div className="flex flex-1 gap-4">
           <div className="flex-1 flex flex-col">
-            {!saved && (
-              <div className="text-sm text-gray-500 mb-2">
-                <span className="font-medium text-gray-800">{author}</span> •{" "}
-                <span>{timestamp}</span>
-              </div>
-            )}
+            <div className="text-sm text-gray-500 mb-2">
+              <span className="font-medium text-gray-800">{author}</span> •{" "}
+              <span>{timestamp}</span>
+            </div>
             <h1 className="text-lg font-bold text-gray-900 mb-2">{title}</h1>
             <p className="text-base text-gray-700 whitespace-pre-wrap mb-4">
               {content}
