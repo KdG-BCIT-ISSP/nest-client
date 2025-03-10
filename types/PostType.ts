@@ -1,7 +1,8 @@
 export type PostType = {
   saved?: boolean;
   className?: string;
-  id?: string;
+  id?: number;
+  memberId?: number;
   title: string;
   content: string;
   type?: string;
