@@ -3,7 +3,7 @@ import axiosInterceptor, {
 } from "../../../axiosInterceptor";
 
 export const getArticleBookmarks = async () => {
-  const response = await axiosInterceptor.get(`content/post/article`, {
+  const response = await axiosInterceptor.get(`content/article/bookmark`, {
     requiresAuth: true,
   } as CustomAxiosRequestConfig);
   return response.data;
