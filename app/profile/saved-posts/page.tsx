@@ -2,29 +2,29 @@
 import PostCard from "@/components/PostCard";
 import SideMenu from "@/components/SideMenu";
 import { useEffect, useState } from "react";
-import { getPost } from "@/app/api/post/get/route";
 import { PostType } from "@/types/PostType";
+import { getPostBookmarks } from "@/app/api/bookmark/post/get/route";
 
 export default function SavedPostsPage() {
   const [loading, setLoading] = useState(true);
-  const [posts, setPosts] = useState<PostType[]>([]);
+  const [bookmarkedPosts, setBookmarkedPosts] = useState<PostType[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchPosts() {
+    async function fetchBookmarkedPosts() {
       try {
-        const data = await getPost();
-        setPosts(data);
+        const data = await getPostBookmarks();
+        setBookmarkedPosts(data);
       } catch (err) {
-        console.error("Failed to fetch posts:", err);
-        setError("Failed to fetch posts. Please try again.");
+        console.error("Failed to fetch bookmarked posts:", err);
+        setError("Failed to fetch bookmarked posts. Please try again.");
       } finally {
         setLoading(false);
       }
     }
 
-    fetchPosts();
-  }, []);
+    fetchBookmarkedPosts();
+  });
 
   if (loading) {
     return <div>Loading...</div>;
@@ -34,25 +34,20 @@ export default function SavedPostsPage() {
     return <div>Error: {error}</div>;
   }
 
-  // Filter posts to only include only those with correct memberID and postID
-  const filteredPosts = posts.filter(
-    (post) => post.memberId === 21 && post.id === 117
-  );
-
   return (
     <div className="p-4 sm:ml-64">
       <SideMenu />
       <div className="pl-0 p-8 flex flex-col items-start">
         <h1 className="text-2xl font-bold text-black mb-4">Saved Posts</h1>
         <div className="flex flex-col gap-6 w-full">
-          {filteredPosts.map((post) => (
+          {bookmarkedPosts.map((post) => (
             <PostCard
               key={post.id}
               className="bg-container flex-shrink-0 w-full max-w-5xl ml-0 container"
               {...post}
             />
           ))}
-          {filteredPosts.length === 0 && <p>You have no saved posts.</p>}
+          {bookmarkedPosts.length === 0 && <p>You have no saved posts.</p>}
         </div>
       </div>
     </div>
