@@ -3,12 +3,22 @@ import * as React from "react";
 function ArticleThumpsUp({
   count,
   reported,
+  liked,
+  onClick,
 }: {
   count: number;
   reported?: boolean;
+  liked?: boolean;
+  onClick?: () => void;
 }) {
   return (
-    <svg width={81} height={34} viewBox="0 0 81 34" fill="none">
+    <svg
+      onClick={onClick}
+      width={81}
+      height={34}
+      viewBox="0 0 81 34"
+      fill="none"
+    >
       {!reported && (
         <rect
           x={0.501465}
@@ -16,7 +26,7 @@ function ArticleThumpsUp({
           width={79.1006}
           height={32.7113}
           rx={4.5}
-          fill="#fff"
+          fill={liked ? "#CD6A6A" : "#fff"}
           stroke="#CD6A6A"
         />
       )}

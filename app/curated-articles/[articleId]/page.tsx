@@ -7,7 +7,6 @@ import Back from "@/public/svg/Article/Back";
 import Dots from "@/public/svg/Article/Dots";
 import parse from "html-react-parser";
 import Report from "@/public/svg/Article/Report";
-import ArticleThumpsUp from "@/public/svg/Article/ThumbsUp";
 import ArticleComment from "@/public/svg/Article/Comment";
 import ArticleBookmark from "@/public/svg/Article/Bookmark";
 import ArticleShare from "@/public/svg/Article/Share";
@@ -17,6 +16,10 @@ import { getArticle } from "@/app/api/article/get/route";
 import { ArticleType } from "@/types/ArticleType";
 import { reportArticle } from "@/app/api/report/article/post/route";
 import XIcon from "@/public/svg/XIcon";
+import { getLikes } from "@/app/api/content/likes/get/route";
+import { isLiked } from "@/app/api/content/likes/isLiked/route";
+import { toggleLikes } from "@/app/api/content/likes/toggle/route";
+import ArticleThumpsUp from "@/public/svg/Article/ThumbsUp";
 
 export default function ArticleDetailsPage() {
   const params = useParams();
@@ -27,6 +30,11 @@ export default function ArticleDetailsPage() {
   const [showReportButton, setShowReportButton] = useState(false);
   const [reportReason, setReportReason] = useState("");
 
+  // New states for likes
+  const [likesCount, setLikesCount] = useState(0);
+  const [liked, setLiked] = useState(false);
+
+  // Fetch the article
   useEffect(() => {
     async function fetchArticle() {
       try {
@@ -49,6 +57,35 @@ export default function ArticleDetailsPage() {
     }
     fetchArticle();
   }, [articleId]);
+
+  // useEffect(() => {
+  //   if (article) {
+  //     async function fetchLikesData() {
+  //       try {
+  //         const likesData = await getLikes(article.id);
+  //         const isLikedData = await isLiked(article.id);
+  //         setLikesCount(likesData.count);
+  //         setLiked(isLikedData.liked ?? isLikedData);
+  //       } catch (error) {
+  //         console.error("Error fetching likes data:", error);
+  //       }
+  //     }
+  //     fetchLikesData();
+  //   }
+  // }, [article]);
+
+  // const handleToggleLike = async () => {
+  //   if (!article) return;
+  //   try {
+  //     await toggleLikes(article.id);
+  //     const likesData = await getLikes(article.id);
+  //     const isLikedData = await isLiked(article.id);
+  //     setLikesCount(likesData.count);
+  //     setLiked(isLikedData.liked ?? isLikedData);
+  //   } catch (error) {
+  //     console.error("Error toggling like:", error);
+  //   }
+  // };
 
   if (loading) return <div>Loading...</div>;
   if (!article) return <div>Article not found</div>;
@@ -90,7 +127,7 @@ export default function ArticleDetailsPage() {
 
       {showReport && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 text-black">
-          <div className="bg-white p-6 rounded-md w-1/4 flex space-between flex-col">
+          <div className="bg-white p-6 rounded-md w-1/4 flex flex-col space-y-4">
             <div className="flex justify-between items-center mb-4">
               <h1 className="text-xl font-bold">Submit a report</h1>
               <button
@@ -147,7 +184,11 @@ export default function ArticleDetailsPage() {
 
         <div className="prose prose-green mb-8">{html}</div>
         <div className="flex justify-end gap-4">
-          <ArticleThumpsUp count={224} />
+          <ArticleThumpsUp
+            count={likesCount}
+            liked={liked}
+            onClick={() => {}}
+          />
           <ArticleComment count={32} />
           <ArticleBookmark count={212} />
           <ArticleShare count={12} />
