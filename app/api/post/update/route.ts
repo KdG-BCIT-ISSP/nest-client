@@ -10,7 +10,7 @@ export const updatePost = async (
   topicId: number,
   type: string,
   tags: string[],
-  images: string
+  images: string[]
 ) => {
   const requestData = {
     id,
