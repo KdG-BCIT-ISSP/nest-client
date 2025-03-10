@@ -1,22 +1,22 @@
 import React from "react";
-import { PostType } from "@/types/PostType";
 import Image from "next/image";
 import clsx from "clsx";
 import ThumbsUp from "@/public/svg/Post/ThumbsUp";
 import Comments from "@/public/svg/Post/Comment";
 import Bookmark from "@/public/svg/Post/Bookmark";
 import Share from "@/public/svg/Post/Share";
+import { PostCardType } from "@/types/PostCardType";
 
 export default function PostCard({
-  saved,
+  saved = false,
   className,
-  title,
-  content,
+  title = "Untitled Post",
+  content = "No content available.",
   tags,
-  images,
-  author,
-  timestamp,
-}: PostType) {
+  imageBase64,
+  author = "Anonymous",
+  timestamp = "Just now",
+}: PostCardType) {
   return (
     <div
       className={clsx(
@@ -25,15 +25,22 @@ export default function PostCard({
       )}
     >
       <div className="block sm:hidden">
-        {images && (
-          <div className="w-full h-52 mb-3 relative overflow-hidden rounded-sm border border-gray-300">
-            <Image
-              src={images}
-              alt="Post Image"
-              fill
-              className="object-cover"
-              unoptimized
-            />
+        {imageBase64 && imageBase64.length > 0 && (
+          <div className="flex flex-wrap">
+            {imageBase64.map((base64, index) => (
+              <div
+                key={index}
+                className="w-full h-52 mb-3 relative overflow-hidden rounded-sm border border-gray-300"
+              >
+                <Image
+                  src={base64}
+                  alt={`Post Image ${index}`}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              </div>
+            ))}
           </div>
         )}
         <div className="flex gap-4">
@@ -51,17 +58,13 @@ export default function PostCard({
           <div className="flex-1">
             {!saved && (
               <div className="text-sm text-gray-500 mb-2">
-                <span className="font-medium text-gray-800">
-                  {author || "Anonymous"}
-                </span>{" "}
-                • <span>{timestamp || "Just now"}</span>
+                <span className="font-medium text-gray-800">{author}</span> •{" "}
+                <span>{timestamp}</span>
               </div>
             )}
-            <h1 className="text-lg font-bold text-gray-900 mb-2">
-              {title || "Untitled Post"}
-            </h1>
+            <h1 className="text-lg font-bold text-gray-900 mb-2">{title}</h1>
             <p className="text-base text-gray-700 whitespace-pre-wrap mb-4">
-              {content || "No content available."}
+              {content}
             </p>
             {tags && tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
@@ -105,17 +108,13 @@ export default function PostCard({
           <div className="flex-1 flex flex-col">
             {!saved && (
               <div className="text-sm text-gray-500 mb-2">
-                <span className="font-medium text-gray-800">
-                  {author || "Anonymous"}
-                </span>{" "}
-                • <span>{timestamp || "Just now"}</span>
+                <span className="font-medium text-gray-800">{author}</span> •{" "}
+                <span>{timestamp}</span>
               </div>
             )}
-            <h1 className="text-lg font-bold text-gray-900 mb-2">
-              {title || "Untitled Post"}
-            </h1>
+            <h1 className="text-lg font-bold text-gray-900 mb-2">{title}</h1>
             <p className="text-base text-gray-700 whitespace-pre-wrap mb-4">
-              {content || "No content available."}
+              {content}
             </p>
             {tags && tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
@@ -144,15 +143,22 @@ export default function PostCard({
               </button>
             </div>
           </div>
-          {images && (
-            <div className="relative w-72 h-auto aspect-[16/9] overflow-hidden rounded-sm border border-gray-300">
-              <Image
-                src={images}
-                alt="Post Image"
-                fill
-                className="object-cover"
-                unoptimized
-              />
+          {imageBase64 && imageBase64.length > 0 && (
+            <div className="flex flex-wrap">
+              {imageBase64.map((base64, index) => (
+                <div
+                  key={index}
+                  className="relative w-72 h-auto aspect-[16/9] overflow-hidden rounded-sm border border-gray-300"
+                >
+                  <Image
+                    src={base64}
+                    alt={`Post Image ${index}`}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
+                </div>
+              ))}
             </div>
           )}
         </div>
