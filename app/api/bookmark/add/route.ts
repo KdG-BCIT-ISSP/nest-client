@@ -2,7 +2,7 @@ import axiosInterceptor, {
   CustomAxiosRequestConfig,
 } from "../../axiosInterceptor";
 
-export const removeBookmark = async (postId: number) => {
+export const addBookmark = async (postId: number) => {
   const response = await axiosInterceptor.post(
     `/posts/bookmark/add/${postId}`,
     {
