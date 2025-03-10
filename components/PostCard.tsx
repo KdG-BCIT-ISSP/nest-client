@@ -3,12 +3,12 @@ import Image from "next/image";
 import clsx from "clsx";
 import ThumbsUp from "@/public/svg/Post/ThumbsUp";
 import Comments from "@/public/svg/Post/Comment";
-import Bookmark from "@/public/svg/Post/Bookmark";
 import Share from "@/public/svg/Post/Share";
 import { PostCardType } from "@/types/PostCardType";
+import BookmarkToggle from "../components/Bookmark";
 
 export default function PostCard({
-  saved = false,
+  id,
   className,
   title = "Untitled Post",
   content = "No content available.",
@@ -16,6 +16,7 @@ export default function PostCard({
   imageBase64,
   author = "Anonymous",
   timestamp = "Just now",
+  isBookmarked,
 }: PostCardType) {
   return (
     <div
@@ -78,7 +79,7 @@ export default function PostCard({
                 <Comments count={234} container />
               </button>
               <button className="hover:text-cyan-600">
-                <Bookmark count={32} container filled={saved} />
+                <BookmarkToggle count={32} postId={id} filled={true} />
               </button>
               <button className="hover:text-cyan-600">
                 <Share />
@@ -124,7 +125,7 @@ export default function PostCard({
                 <Comments count={234} container />
               </button>
               <button className="hover:text-cyan-600">
-                <Bookmark count={32} container filled={saved} />
+                <BookmarkToggle count={32} postId={id} filled={isBookmarked} />
               </button>
               <button className="hover:text-cyan-600">
                 <Share />
