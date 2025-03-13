@@ -12,11 +12,12 @@ export default function PostCard({
   className,
   title = "Untitled Post",
   content = "No content available.",
-  tags,
-  imageBase64,
+  tags = [],
+  imageBase64 = [],
   author = "Anonymous",
   timestamp = "Just now",
-  isBookmarked,
+  isBookmarked = false,
+  isLiked = false,
 }: PostCardType) {
   return (
     <div
@@ -26,7 +27,7 @@ export default function PostCard({
       )}
     >
       <div className="block sm:hidden">
-        {imageBase64 && imageBase64.length > 0 && (
+        {imageBase64.length > 0 && (
           <div className="flex flex-wrap">
             {imageBase64.map((base64, index) => (
               <div
@@ -46,7 +47,11 @@ export default function PostCard({
         )}
         <div className="flex gap-4">
           <div className="flex flex-row items-center text-gray-500">
-            <button className="p-1 text-gray-400 hover:text-cyan-500">▲</button>
+            <button className="hover:text-cyan-600">
+              <button className="p-1 text-gray-400 hover:text-cyan-500">
+                ▲
+              </button>
+            </button>
             <span className="font-bold text-gray-800">123</span>
             <button className="p-1 text-gray-400 hover:text-red-500">▼</button>
           </div>
@@ -59,7 +64,7 @@ export default function PostCard({
             <p className="text-base text-gray-700 whitespace-pre-wrap mb-4">
               {content}
             </p>
-            {tags && tags.length > 0 && (
+            {tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
                 {tags.map((tag) => (
                   <span
@@ -73,13 +78,13 @@ export default function PostCard({
             )}
             <div className="mt-4 flex justify-between text-gray-500 text-sm">
               <button className="hover:text-cyan-600">
-                <ThumbsUp count={32} />
+                <ThumbsUp count={32} filled={isLiked} />
               </button>
               <button className="hover:text-cyan-600">
                 <Comments count={234} container />
               </button>
               <button className="hover:text-cyan-600">
-                <BookmarkToggle count={32} postId={id} filled={true} />
+                <BookmarkToggle count={32} postId={id} filled={isBookmarked} />
               </button>
               <button className="hover:text-cyan-600">
                 <Share />
@@ -105,7 +110,7 @@ export default function PostCard({
             <p className="text-base text-gray-700 whitespace-pre-wrap mb-4">
               {content}
             </p>
-            {tags && tags.length > 0 && (
+            {tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
                 {tags.map((tag) => (
                   <span
@@ -119,7 +124,7 @@ export default function PostCard({
             )}
             <div className="mt-4 flex justify-between text-gray-500 text-sm">
               <button className="hover:text-cyan-600">
-                <ThumbsUp count={32} />
+                <ThumbsUp count={32} filled={isLiked} />
               </button>
               <button className="hover:text-cyan-600">
                 <Comments count={234} container />
@@ -132,7 +137,7 @@ export default function PostCard({
               </button>
             </div>
           </div>
-          {imageBase64 && imageBase64.length > 0 && (
+          {imageBase64.length > 0 && (
             <div className="flex flex-wrap">
               {imageBase64.map((base64, index) => (
                 <div

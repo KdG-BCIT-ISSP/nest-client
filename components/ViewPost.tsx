@@ -6,9 +6,9 @@ import Image from "next/image";
 export default function ViewPost({
   title,
   content,
-  tags,
-  images,
-  author,
+  tagNames,
+  imageBase64 = [],
+  memberUsername,
   timestamp,
 }: PostType) {
   // Initialize comments state
@@ -91,7 +91,7 @@ export default function ViewPost({
           {/* Metadata */}
           <div className="text-sm text-black mb-2">
             <span className="font-medium text-black">
-              {author || "Anonymous"}
+              {memberUsername || "Anonymous"}
             </span>{" "}
             • <span>{timestamp || "Just now"}</span>
           </div>
@@ -107,30 +107,36 @@ export default function ViewPost({
           </p>
 
           {/* Tags */}
-          {tags && tags.length > 0 && (
+          {tagNames && tagNames.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
-              {tags.map((tag) => (
+              {tagNames.map((tagNames) => (
                 <span
-                  key={tag}
+                  key={tagNames}
                   className="bg-gray-200 text-sm px-3 py-1 rounded-full text-black"
                 >
-                  #{tag}
+                  #{tagNames}
                 </span>
               ))}
             </div>
           )}
 
           {/* Image */}
-          {images && images.length > 0 && (
-            <div className="relative w-full h-64 overflow-hidden rounded-lg border border-gray-300">
-              <Image
-                src={URL.createObjectURL(images[0])}
-                alt="Post Image"
-                layout="fill"
-                objectFit="cover"
-                className="rounded-lg"
-                unoptimized
-              />
+          {imageBase64.length > 0 && (
+            <div className="flex flex-wrap">
+              {imageBase64.map((base64, index) => (
+                <div
+                  key={index}
+                  className="relative w-72 h-auto aspect-[16/9] overflow-hidden rounded-sm border border-gray-300"
+                >
+                  <Image
+                    src={base64}
+                    alt={`Post Image ${index}`}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
+                </div>
+              ))}
             </div>
           )}
 
