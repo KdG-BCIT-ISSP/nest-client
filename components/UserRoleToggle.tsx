@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 
-export default function UserRoleToggle() {
+interface UserRoleToggleProps {
+    currentRole: string;
+}
+
+
+export default function UserRoleToggle({currentRole}: UserRoleToggleProps) {
     const [isOpen, setIsOpen] = useState(false);
-    const [role, setRole] = useState("User");
+    const [role, setRole] = useState(currentRole);
 
     const menuItems = ["User", "Admin"];
 
