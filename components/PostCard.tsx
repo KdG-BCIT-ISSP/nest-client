@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 import ThumbsUp from "@/public/svg/Post/ThumbsUp";
@@ -19,6 +19,20 @@ export default function PostCard({
   isBookmarked = false,
   isLiked = false,
 }: PostCardType) {
+  const [upvoteCount, setUpvoteCount] = useState(123);
+  const [userLiked, setUserLiked] = useState(isLiked);
+
+  const handleUpvote = () => {
+    setUserLiked(true);
+    setUpvoteCount((prev) => prev + 1);
+  };
+
+  // Downvote Handler
+  const handleDownvote = () => {
+    setUserLiked(false);
+    setUpvoteCount((prev) => (prev > 0 ? prev - 1 : 0));
+  };
+
   return (
     <div
       className={clsx(
@@ -46,14 +60,21 @@ export default function PostCard({
           </div>
         )}
         <div className="flex gap-4">
-          <div className="flex flex-row items-center text-gray-500">
-            <button className="hover:text-cyan-600">
-              <button className="p-1 text-gray-400 hover:text-cyan-500">
-                ▲
-              </button>
+          {/* Upvote and Downvote Buttons */}
+          <div className="flex flex-col items-center text-gray-500">
+            <button
+              className={`p-1 ${userLiked ? "text-cyan-500" : "text-gray-400"} hover:text-cyan-500`}
+              onClick={handleUpvote}
+            >
+              ▲
             </button>
-            <span className="font-bold text-gray-800">123</span>
-            <button className="p-1 text-gray-400 hover:text-red-500">▼</button>
+            <span className="font-bold text-gray-800">{upvoteCount}</span>
+            <button
+              className="p-1 text-gray-400 hover:text-red-500"
+              onClick={handleDownvote}
+            >
+              ▼
+            </button>
           </div>
           <div className="flex-1">
             <div className="text-sm text-gray-500 mb-2">
@@ -78,7 +99,7 @@ export default function PostCard({
             )}
             <div className="mt-4 flex justify-between text-gray-500 text-sm">
               <button className="hover:text-cyan-600">
-                <ThumbsUp count={32} filled={isLiked} />
+                <ThumbsUp count={upvoteCount} filled={userLiked} />
               </button>
               <button className="hover:text-cyan-600">
                 <Comments count={234} container />
@@ -96,9 +117,19 @@ export default function PostCard({
 
       <div className="hidden sm:flex gap-4">
         <div className="flex flex-col items-center text-gray-500">
-          <button className="p-1 text-gray-400 hover:text-cyan-500">▲</button>
-          <span className="font-bold text-gray-800">123</span>
-          <button className="p-1 text-gray-400 hover:text-red-500">▼</button>
+          <button
+            className={`p-1 ${userLiked ? "text-cyan-500" : "text-gray-400"} hover:text-cyan-500`}
+            onClick={handleUpvote}
+          >
+            ▲
+          </button>
+          <span className="font-bold text-gray-800">{upvoteCount}</span>
+          <button
+            className="p-1 text-gray-400 hover:text-red-500"
+            onClick={handleDownvote}
+          >
+            ▼
+          </button>
         </div>
         <div className="flex flex-1 gap-4">
           <div className="flex-1 flex flex-col">
@@ -124,7 +155,7 @@ export default function PostCard({
             )}
             <div className="mt-4 flex justify-between text-gray-500 text-sm">
               <button className="hover:text-cyan-600">
-                <ThumbsUp count={32} filled={isLiked} />
+                <ThumbsUp count={upvoteCount} filled={userLiked} />
               </button>
               <button className="hover:text-cyan-600">
                 <Comments count={234} container />
