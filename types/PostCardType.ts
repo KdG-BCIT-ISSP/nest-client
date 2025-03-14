@@ -1,4 +1,5 @@
 export type PostCardType = {
+  id?: number;
   saved?: boolean;
   className?: string;
   title?: string;
@@ -7,4 +8,6 @@ export type PostCardType = {
   imageBase64?: string[];
   author?: string;
   timestamp?: string;
+  isBookmarked?: boolean;
+  isLiked?: boolean;
 };
