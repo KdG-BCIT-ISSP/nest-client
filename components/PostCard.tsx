@@ -6,6 +6,7 @@ import Comments from "@/public/svg/Post/Comment";
 import Share from "@/public/svg/Post/Share";
 import { PostCardType } from "@/types/PostCardType";
 import BookmarkToggle from "../components/Bookmark";
+import { useRouter } from "next/navigation";
 
 export default function PostCard({
   id,
@@ -19,6 +20,7 @@ export default function PostCard({
   isBookmarked = false,
   isLiked = false,
 }: PostCardType) {
+  const router = useRouter();
   const [upvoteCount, setUpvoteCount] = useState(123);
   const [userLiked, setUserLiked] = useState(isLiked);
 
@@ -27,18 +29,22 @@ export default function PostCard({
     setUpvoteCount((prev) => prev + 1);
   };
 
-  // Downvote Handler
   const handleDownvote = () => {
     setUserLiked(false);
     setUpvoteCount((prev) => (prev > 0 ? prev - 1 : 0));
   };
 
+  const handleClick = () => {
+    router.push(`/posts/${id}`);
+  };
+
   return (
     <div
       className={clsx(
-        "border rounded-md relative mx-auto my-6 p-4 shadow-md w-full",
+        "border rounded-md relative mx-auto my-6 p-4 shadow-md w-full cursor-pointer",
         className
       )}
+      onClick={handleClick}
     >
       <div className="block sm:hidden">
         {imageBase64.length > 0 && (
@@ -170,20 +176,15 @@ export default function PostCard({
           </div>
           {imageBase64.length > 0 && (
             <div className="flex flex-wrap">
-              {imageBase64.map((base64, index) => (
-                <div
-                  key={index}
-                  className="relative w-72 h-auto aspect-[16/9] overflow-hidden rounded-sm border border-gray-300"
-                >
-                  <Image
-                    src={base64}
-                    alt={`Post Image ${index}`}
-                    fill
-                    className="object-cover"
-                    unoptimized
-                  />
-                </div>
-              ))}
+              <div className="relative w-72 h-auto aspect-[16/9] overflow-hidden rounded-sm border border-gray-300">
+                <Image
+                  src={imageBase64[0]}
+                  alt={`Post Image `}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              </div>
             </div>
           )}
         </div>

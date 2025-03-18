@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getPost } from "@/app/api/post/get/route";
 import { PostType } from "@/types/PostType";
 import PostCard from "@/components/PostCard";
+import HeroSection from "@/components/HeroSection";
 
 export default function PostsPage() {
   const [loading, setLoading] = useState(true);
@@ -53,7 +54,12 @@ export default function PostsPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4 text-center">Posts</h1>
+      <HeroSection
+        img={"/images/mom_and_baby.png"}
+        title="Community posts"
+        subtitle="This platform offers a supportive community for new mothers to share experiences, access helpful tips, and find guidance throughout their motherhood journey."
+        direction="left"
+      />
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 gap-8">
           {posts.map((post) => (
