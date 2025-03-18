@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 import ThumbsUp from "@/public/svg/Post/ThumbsUp";
@@ -7,6 +7,7 @@ import Share from "@/public/svg/Post/Share";
 import { PostCardType } from "@/types/PostCardType";
 import BookmarkToggle from "../components/Bookmark";
 import { useRouter } from "next/navigation";
+import { postView } from "@/app/api/content/view/route";
 
 export default function PostCard({
   id,
@@ -34,9 +35,14 @@ export default function PostCard({
     setUpvoteCount((prev) => (prev > 0 ? prev - 1 : 0));
   };
 
-  const handleClick = () => {
-    router.push(`/posts/${id}`);
-  };
+  const handleClick = useCallback(() => {
+    if (id) {
+      postView(id).catch((error) =>
+        console.error("Error posting view:", error)
+      );
+      router.push(`/posts/${id}`);
+    }
+  }, [id, router]);
 
   return (
     <div

@@ -16,6 +16,7 @@ import { getPost } from "@/app/api/post/get/route";
 import { PostType } from "@/types/PostType";
 import { reportArticle } from "@/app/api/report/article/post/route";
 import XIcon from "@/public/svg/XIcon";
+import { getViewsById } from "@/app/api/content/views/route";
 
 export default function PostDetailPage() {
   const params = useParams();
@@ -26,18 +27,23 @@ export default function PostDetailPage() {
   const [showReportButton, setShowReportButton] = useState(false);
   const [reportReason, setReportReason] = useState("");
   const [showCopied, setShowCopied] = useState(false);
+  const [views, setViews] = useState(0);
 
   useEffect(() => {
-    async function fetchPosts() {
+    async function fetchData() {
       try {
         setLoading(true);
-        const data = await getPost();
-        const foundArticle = data.find((item: PostType) => item.id === postId);
-        if (foundArticle) {
+        const [posts, views] = await Promise.all([
+          getPost(),
+          getViewsById(postId),
+        ]);
+        const foundPosts = posts.find((item: PostType) => item.id === postId);
+        if (foundPosts) {
           setPost({
-            ...foundArticle,
-            content: decodeURIComponent(foundArticle.content),
+            ...foundPosts,
+            content: decodeURIComponent(foundPosts.content),
           });
+          setViews(views);
         }
       } catch (error) {
         console.error("Error fetching article:", error);
@@ -45,13 +51,11 @@ export default function PostDetailPage() {
         setLoading(false);
       }
     }
-    fetchPosts();
+    fetchData();
   }, [postId]);
 
   if (loading) return <div>Loading...</div>;
   if (!post) return <div>Article not found</div>;
-
-  console.log(post.imageBase64);
 
   const handleReportSubmit = async () => {
     if (!post || !post.id) return;
@@ -134,6 +138,7 @@ export default function PostDetailPage() {
           <p className="text-sm text-gray-700">
             By <b>{post.memberUsername}</b> | {new Date().toLocaleString()}
           </p>
+          <p className="text-xs mt-2">{views} verified views</p>
 
           <h1 className="text-3xl text-black font-bold mt-2 mb-2 font-serif">
             {post.title}

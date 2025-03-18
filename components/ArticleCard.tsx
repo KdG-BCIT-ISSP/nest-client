@@ -3,8 +3,9 @@
 import { useRouter } from "next/navigation";
 import { deleteArticle } from "@/app/api/article/delete/route";
 import { ArticleTypeWithID } from "@/types/ArticleTypeWithID";
-import React from "react";
+import React, { useCallback } from "react";
 import Image from "next/image";
+import { postView } from "@/app/api/content/view/route";
 
 interface ArticleCardProps {
   article: ArticleTypeWithID;
@@ -28,9 +29,12 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
     }
   };
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
+    postView(article.id).catch((error) =>
+      console.error("Error posting view:", error)
+    );
     router.push(`/curated-articles/${article.id}`);
-  };
+  }, [article.id, router]);
 
   return (
     <div

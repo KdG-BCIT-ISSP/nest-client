@@ -17,6 +17,7 @@ import { getArticle } from "@/app/api/article/get/route";
 import { ArticleType } from "@/types/ArticleType";
 import { reportArticle } from "@/app/api/report/article/post/route";
 import XIcon from "@/public/svg/XIcon";
+import { getViewsById } from "@/app/api/content/views/route";
 
 export default function ArticleDetailsPage() {
   const params = useParams();
@@ -27,13 +28,17 @@ export default function ArticleDetailsPage() {
   const [showReportButton, setShowReportButton] = useState(false);
   const [reportReason, setReportReason] = useState("");
   const [showCopied, setShowCopied] = useState(false);
+  const [views, setViews] = useState(0);
 
   useEffect(() => {
-    async function fetchArticle() {
+    async function fetchData() {
       try {
         setLoading(true);
-        const data = await getArticle();
-        const foundArticle = data.find(
+        const [articles, views] = await Promise.all([
+          getArticle(),
+          getViewsById(articleId),
+        ]);
+        const foundArticle = articles.find(
           (item: ArticleType) => item.id === articleId
         );
         if (foundArticle) {
@@ -42,13 +47,14 @@ export default function ArticleDetailsPage() {
             content: decodeURIComponent(foundArticle.content),
           });
         }
+        setViews(views);
       } catch (error) {
-        console.error("Error fetching article:", error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
     }
-    fetchArticle();
+    fetchData();
   }, [articleId]);
 
   if (loading) return <div>Loading...</div>;
@@ -137,6 +143,7 @@ export default function ArticleDetailsPage() {
           <p className="text-sm text-gray-700">
             By <b>{article.memberUsername}</b> | {new Date().toLocaleString()}
           </p>
+          <p className="text-xs mt-2">{views} verified views</p>
 
           <h1 className="text-3xl text-black font-bold mt-2 mb-2 font-serif">
             {article.title}
