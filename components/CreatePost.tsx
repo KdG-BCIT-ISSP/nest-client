@@ -11,10 +11,10 @@ export default function CreatePost() {
   const [post, setPost] = useState<PostType>({
     title: "",
     content: "",
-    tags: [],
+    tagNames: [],
     topicId: 2,
     type: "USERPOST",
-    postImages: [],
+    imageBase64: [],
   });
 
   const [errors, setErrors] = useState({
@@ -51,13 +51,18 @@ export default function CreatePost() {
   };
 
   const handleTagClick = (tag: string) => {
-    if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter((t) => t !== tag)); // Remove tag if clicked again
-      post.tags = post.tags.filter((t) => t !== tag);
-    } else {
-      setSelectedTags([...selectedTags, tag]); // Add tag if not already selected
-      post.tags = [...post.tags, tag];
-    }
+    setSelectedTags((prevTags) =>
+      prevTags.includes(tag)
+        ? prevTags.filter((t) => t !== tag)
+        : [...prevTags, tag]
+    );
+
+    setPost((prevPost) => ({
+      ...prevPost,
+      tagNames: prevPost.tagNames?.includes(tag)
+        ? prevPost.tagNames.filter((t) => t !== tag)
+        : [...(prevPost.tagNames || []), tag],
+    }));
   };
 
   const handleRemoveImage = (index: number) => {
@@ -66,7 +71,7 @@ export default function CreatePost() {
     setImagePreviews(newPreviews);
     setPost((prevPost) => ({
       ...prevPost,
-      postImages: prevPost.postImages.filter((_, i) => i !== index),
+      imageBase64: prevPost.imageBase64?.filter((_, i) => i !== index),
     }));
   };
 
@@ -80,7 +85,7 @@ export default function CreatePost() {
 
     setPost((prevPost) => ({
       ...prevPost,
-      postImages: [...prevPost.postImages, compressedImage], // Ensure this is valid type
+      imageBase64: [...(prevPost.imageBase64 ?? []), compressedImage], // Ensure this is valid type
     }));
   };
 
@@ -105,22 +110,22 @@ export default function CreatePost() {
       console.log("content:", updatedPost.content);
       console.log("topicId:", updatedPost.topicId);
       console.log("tags:", updatedPost.tags);
-      console.log("image:", post.postImages[0]);
-      console.log("image:", post.postImages[1]);
+      console.log("image:", post.imageBase64?.[0] || "No image");
+      console.log("image:", post.imageBase64?.[1] || "No image");
 
       const response = await createPost(
-        updatedPost.title,
-        updatedPost.content,
-        updatedPost.topicId,
+        updatedPost.title ?? "",
+        updatedPost.content ?? "",
+        updatedPost.topicId ?? 2,
         updatedPost.type || "USERPOST",
-        updatedPost.tags,
-        post.postImages
+        updatedPost.tagNames || [],
+        post.imageBase64 || []
       );
 
       if (response) {
         console.log("Post created successfully:", response);
         window.alert("Post created successfully");
-        window.location.href = `/posts/`;
+        window.location.href = "/posts/";
       } else {
         console.error("Post creation failed: No response from server.");
       }
