@@ -26,6 +26,7 @@ export default function ArticleDetailsPage() {
   const [showReport, setShowReport] = useState(false);
   const [showReportButton, setShowReportButton] = useState(false);
   const [reportReason, setReportReason] = useState("");
+  const [showCopied, setShowCopied] = useState(false);
 
   useEffect(() => {
     async function fetchArticle() {
@@ -67,6 +68,16 @@ export default function ArticleDetailsPage() {
     }
   };
 
+  const handleShareClick = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setShowCopied(true);
+      setTimeout(() => setShowCopied(false), 2000);
+    } catch (error) {
+      console.error("Failed to copy URL:", error);
+    }
+  };
+
   return (
     <div className="w-max mx-auto pt-10">
       <div className="flex justify-between items-center p-4">
@@ -90,8 +101,8 @@ export default function ArticleDetailsPage() {
 
       {showReport && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 text-black">
-          <div className="bg-white p-6 rounded-md w-1/4 flex space-between flex-col">
-            <div className="flex justify-between items-center mb-4">
+          <div className="bg-white p-6 rounded-md w-1/4 flex flex-col space-y-4">
+            <div className="flex justify-between items-center">
               <h1 className="text-xl font-bold">Submit a report</h1>
               <button
                 onClick={() => setShowReport(false)}
@@ -105,11 +116,11 @@ export default function ArticleDetailsPage() {
               value={reportReason}
               onChange={(e) => setReportReason(e.target.value)}
               placeholder="Enter your reason for reporting this article..."
-              className="w-full p-2 mb-4 border-none focus:outline-none focus:ring-0 bg-gray-200"
+              className="w-full p-2 border-none focus:outline-none focus:ring-0 bg-gray-200"
               rows={8}
             />
 
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end">
               <button
                 onClick={handleReportSubmit}
                 className="px-4 py-2 bg-secondary font-bold text-white rounded hover:bg-green-600"
@@ -150,10 +161,18 @@ export default function ArticleDetailsPage() {
           <ArticleThumpsUp count={224} />
           <ArticleComment count={32} />
           <ArticleBookmark count={212} />
-          <ArticleShare count={12} />
+          <button onClick={handleShareClick}>
+            <ArticleShare count={12} />
+          </button>
         </div>
         <CommentsSection />
       </div>
+
+      {showCopied && (
+        <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-400 text-white px-4 py-2 rounded transition-opacity duration-500">
+          URL copied to clipboard!
+        </div>
+      )}
     </div>
   );
 }
