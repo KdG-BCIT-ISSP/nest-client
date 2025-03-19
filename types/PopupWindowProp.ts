@@ -1,14 +1,25 @@
 import { ReactNode } from "react";
 
 export type PopupWindowProps = {
-    windowId: string;
     title: string;
+    content: string;
     submitButtonText: string;
     deleteButton: boolean;
-    onClick?: (
+    onSubmit?: (
         event:
             | React.MouseEvent<HTMLButtonElement>
             | React.FormEvent<HTMLFormElement>
     ) => void;
-    className?: string;
+    onDelete?: (
+        event:
+            | React.MouseEvent<HTMLButtonElement>
+            | React.FormEvent<HTMLFormElement>
+    ) => void;
+    onClose?: (
+        event:
+            | React.MouseEvent<HTMLButtonElement>
+            | React.FormEvent<HTMLFormElement>
+    ) => void;
+    inputValue: string;
+    onInputChange: (value: string) => void;
 };
