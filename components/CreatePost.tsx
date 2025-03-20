@@ -9,6 +9,7 @@ export default function CreatePost() {
   const [isLoading, setIsLoading] = useState(false);
 
   const [post, setPost] = useState<PostType>({
+    id: 0,
     title: "",
     content: "",
     tagNames: [],
