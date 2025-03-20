@@ -1,5 +1,3 @@
-import { ReactNode } from "react";
-
 export type PopupWindowProps = {
   title: string;
   submitButtonText: string;
