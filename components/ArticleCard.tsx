@@ -68,7 +68,6 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
           {truncatedHtml}
         </div>
 
-
         {/* Metadata: Topic, Created At, Stats */}
         <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
           <span className="font-medium text-gray-800">{article.topicName}</span>{" "}
