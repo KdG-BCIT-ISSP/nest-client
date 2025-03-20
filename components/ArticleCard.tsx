@@ -6,6 +6,8 @@ import { ArticleTypeWithID } from "@/types/ArticleTypeWithID";
 import React, { useCallback } from "react";
 import Image from "next/image";
 import { postView } from "@/app/api/content/view/route";
+import parse from "html-react-parser";
+import htmlTruncate from "html-truncate";
 
 interface ArticleCardProps {
   article: ArticleTypeWithID;
@@ -14,8 +16,10 @@ interface ArticleCardProps {
 
 export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
   const router = useRouter();
-  const cleanContent = article.content.replace(/<[^>]*>/g, "");
-  const maxLength = 100;
+  const maxLength = 50;
+
+  const truncatedHtmlString = htmlTruncate(article.content, maxLength) + "...";
+  const truncatedHtml = parse(truncatedHtmlString);
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -54,12 +58,15 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
         <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
           {article.title}
         </h5>
-        <p className="mb-3 font-small text-gray-700 dark:text-gray-400 overflow-hidden">
-          {cleanContent.length > maxLength
-            ? `${cleanContent.slice(0, maxLength)}...`
-            : cleanContent}
-        </p>
-        <div className="flex justify-end">
+
+        <div
+          className="text-gray-800 overflow-hidden"
+          style={{ maxHeight: "5rem" }}
+        >
+          {truncatedHtml}
+        </div>
+
+        <div className="flex justify-end pt-4">
           <button
             onClick={handleDelete}
             className="text-red-600 hover:text-red-800 border-2 border-red-500 w-20 p-1 rounded-md"

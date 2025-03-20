@@ -8,6 +8,7 @@ export type PostCardType = {
   createdAt?: string;
   isBookmarked?: boolean;
   isLiked?: boolean;
+  postImage?: string;
   saved?: boolean;
   className?: string;
   likesCount?: number;

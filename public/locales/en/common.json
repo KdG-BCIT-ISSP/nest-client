@@ -9,7 +9,8 @@
     "signOut": "Sign Out",
     "login": "Log In",
     "register": "Register",
-    "searchSomething": "Search something..."
+    "searchSomething": "Search something...",
+    "admin": "Admin"
   },
   "profile": {
     "uploadImage": "Upload Image",

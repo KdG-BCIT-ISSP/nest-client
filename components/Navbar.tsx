@@ -4,6 +4,7 @@ import MenuIcon from "@/public/svg/Menu";
 import SearchBar from "./SearchBar";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useAtom } from "jotai";
@@ -15,6 +16,7 @@ export default function Navbar() {
   const { t } = useTranslation("common");
   const [userData] = useAtom(userAtom);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const pathname = usePathname();
   const isAuthenticated =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
@@ -35,6 +37,7 @@ export default function Navbar() {
   ];
 
   const USER_DROPDOWN_LINKS = [
+    { href: "/admin/user-access", label: t("navigation.admin") },
     { href: "/profile", label: t("navigation.profile") },
     { href: "/profile/saved-posts", label: t("navigation.savedPosts") },
     { href: "/profile/notifications", label: t("navigation.notifications") },
@@ -50,6 +53,8 @@ export default function Navbar() {
     window.location.href = "/";
   };
 
+  const isSearchPage = pathname === "/search";
+
   return (
     <nav className="fixed top-0 left-0 right-0 bg-primary border-gray-200 dark:bg-gray-900 z-50">
       <div className="max-w-screen-xl flex items-center justify-between mx-auto p-5">
@@ -59,9 +64,11 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <div className="flex-1 mx-4 max-w-sm">
-          <SearchBar />
-        </div>
+        {!isSearchPage && (
+          <div className="flex-1 mx-4 max-w-sm">
+            <SearchBar />
+          </div>
+        )}
 
         <div className="hidden md:flex md:items-center md:space-x-8">
           {NAV_LINKS.map((link) => (
