@@ -12,4 +12,6 @@ export type ArticleCardType = {
   imagePreview?: string | null;
   link?: string;
   viewCount?: number;
+  shareCount?: number;
+  likesCount?: number;
 };
