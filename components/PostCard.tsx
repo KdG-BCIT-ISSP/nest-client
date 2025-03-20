@@ -27,7 +27,7 @@ export default function PostCard({
   viewCount = 0,
   shareCount = 0,
   onDelete,
-}: PostCardType & { onDelete: (id: number) => void }) {
+}: PostCardType & { onDelete?: (id: number) => void }) {
   const router = useRouter();
   const [userData] = useAtom(userAtom);
   const [upvoteCount, setUpvoteCount] = useState(likesCount);
@@ -51,7 +51,7 @@ export default function PostCard({
 
     try {
       await deletePost(id);
-      onDelete(id);
+      onDelete?.(id);
       alert("Post deleted successfully!");
     } catch (error) {
       console.error("Error deleting post:", error);

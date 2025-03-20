@@ -13,7 +13,7 @@ import { userAtom } from "@/atoms/user/atom";
 
 interface ArticleCardProps {
   article: ArticleCardType;
-  onDelete: (id: number) => void;
+  onDelete?: (id: number) => void;
 }
 
 export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
@@ -31,7 +31,7 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
 
     try {
       await deleteArticle(article.id);
-      onDelete(article.id);
+      onDelete?.(article.id);
       alert("Article deleted successfully!");
     } catch (error) {
       console.error("Error deleting article:", error);
