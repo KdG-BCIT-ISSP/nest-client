@@ -39,7 +39,7 @@ export default function PostGrid({ post }: PostGridProps) {
 
       <div className="flex items-center p-3 space-x-4">
         <button>
-          <ThumbsUp count={post.likesCount} />
+          <ThumbsUp count={post.likesCount} isLiked={post.liked} />
         </button>
         <button>
           <Comments count={post.comments ? parseInt(post.comments) : 0} />
