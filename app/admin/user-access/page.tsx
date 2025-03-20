@@ -27,7 +27,7 @@ export default function UserAccessPage() {
     return (
         <div className="p-4 sm:ml-64 bg-white">
             <SideMenu admin/>
-            <div className="container mr-auto max-w-7   xl">
+            <div className="container mr-auto max-w-7xl">
                 {/* search bar */}
                 <form className="max-w-md mx-auto">
                     <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
