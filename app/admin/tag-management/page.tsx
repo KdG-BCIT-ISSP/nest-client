@@ -11,11 +11,14 @@ import { getTag } from "@/app/api/tag/get/route";
 import { create } from "domain";
 import { createTopic } from "@/app/api/topic/create/route";
 import { createTag } from "@/app/api/tag/create/route";
+import { updateTag } from "@/app/api/tag/update/route";
+import { deleteTopic } from "@/app/api/topic/delete/route";
+import { deleteTag } from "@/app/api/tag/delete/route";
 
 interface Topic {
   id: number;
   name: string;
-  description: string;
+  description?: string;
 }
 
 interface Tag {
@@ -29,8 +32,6 @@ export default function TagManagementPage() {
   const [tags, setTags] = useState<Tag[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
   const [selectedTag, setSelectedTag] = useState<Tag | null>(null);
-  const [newTopic, setNewTopic] = useState<string>("");
-  const [newTag, setNewTag] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
 
   async function fetchTopics() {
@@ -61,6 +62,8 @@ export default function TagManagementPage() {
       setTags(data);
     } catch (err) {
       console.error("Failed to fetch tags:", err);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -97,21 +100,20 @@ export default function TagManagementPage() {
     setModalIndex(null);
   };
 
-  const editTopic = async (newTopic: string) => {
+  const editTopic = async () => {
     if (selectedTopic) {
       try {
-        setTopics((prevTopics) =>
-          prevTopics.map((topic) =>
-            topic.id === selectedTopic.id
-              ? { ...topic, topicTitle: newTopic }
-              : topic
-          )
-        );
-
-        const response = await updateTopic(selectedTopic.id, newTopic, "");
+        const response = await updateTopic(selectedTopic.id, selectedTopic.name, selectedTopic.description || "");
         closeModal();
 
         if (response) {
+          setTopics((prevTopics) =>
+            prevTopics.map((topic) =>
+              topic.id === selectedTopic.id
+                ? { ...topic, name: selectedTopic.name, description: selectedTopic.description }
+                : topic
+            )
+          );
           console.log("Topic created successfully:", response);
         } else {
           console.error("Topic creation failed: No response from server.");
@@ -122,36 +124,66 @@ export default function TagManagementPage() {
     }
   };
 
-  const editTag = (newTag: string) => {
-    setTags((prevTags) =>
-      prevTags.map((tag) =>
-        tag.id === selectedTag?.id ? { ...tag, tagName: newTag } : tag
-      )
-    );
+  const editTag = async () => {
+    if (selectedTag) {
+      const response = await updateTag(selectedTag.id, selectedTag.name);
+    }
     closeModal();
   };
 
-  const deleteTopic = () => {
-    setTopics((prevTopics) =>
-      prevTopics.filter((topic) => topic.id !== selectedTopic?.id)
-    );
+  const deleteSelectedTopic = async () => {
+    if (selectedTopic) {
+      const response = await deleteTopic(selectedTopic?.id);
+    }
     closeModal();
   };
 
-  const deleteTag = () => {
-    setTags((prevTags) => prevTags.filter((tag) => tag.id !== selectedTag?.id));
+  const deleteSelectedTag = async () => {
+    if (selectedTag) {
+      const response = await deleteTag(selectedTag?.id);
+    }
     closeModal();
   };
 
-  const addTopic = async (newTopic: string, description: string) => {
-    await createTopic(newTopic, description);
+  const addTopic = async () => {
+    if(selectedTopic){
+      const response = await createTopic(selectedTopic.name, selectedTopic.description || "");
+
+    }
     closeModal();
   };
 
-  const addTag = async (newTag: string) => {
-    await createTag(newTag);
+  const addTag = async () => {
+    if (selectedTag) {
+      const response = await createTag(selectedTag.name);
+
+    }
     closeModal();
   };
+
+  const handleInputChange = (
+    field: "name" | "description",
+    type: "topic" | "tag",
+    e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    const value = e.target.value;
+    console.log("value", value);
+    if (type === "topic") {
+      setSelectedTopic((prev) => ({
+        ...prev!,
+        [field]: value || "",
+      }));
+      console.log("selectedTopic", selectedTopic);
+    } else if (type === "tag") {
+      setSelectedTag((prev) => ({
+        ...prev!,
+        [field]: value || "",
+      }));
+    }
+  };
+
+
+
 
   return (
     <div className="p-4 sm:ml-64 bg-white">
@@ -242,14 +274,15 @@ export default function TagManagementPage() {
                 <PopupWindow
                   title="Edit Topic"
                   titleValue={selectedTopic?.name || ""}
-                  onInputChange={() => {}}
+                  onTitleChange={(e) => handleInputChange("name", "topic", e)}
+                  onDescriptionChange={(e) => handleInputChange("description", "topic", e)}
                   submitButtonText="Save"
                   descriptionValue={selectedTopic?.description || ""}
                   deleteButton={true}
                   descriptionInput={true}
-                  onSubmit={() => editTopic(newTopic)}
+                  onSubmit={() => editTopic()}
                   onClose={closeModal}
-                  onDelete={() => deleteTopic()}
+                  onDelete={() => deleteSelectedTopic()}
                 />
               </div>
             </div>
@@ -262,19 +295,16 @@ export default function TagManagementPage() {
                 <PopupWindow
                   title="Create a New Topic"
                   titleValue={selectedTopic?.name || ""}
-                  onInputChange={() => {}}
+                  onTitleChange={(e) => handleInputChange("name", "topic", e)}
                   submitButtonText="Add"
                   descriptionValue={selectedTopic?.description || ""}
                   descriptionInput={true}
                   deleteButton={false}
                   onSubmit={() =>
-                    addTopic(
-                      selectedTopic?.name || "",
-                      selectedTopic?.description || ""
-                    )
+                    addTopic()
                   }
                   onClose={closeModal}
-                  onDelete={() => {}}
+                  onDelete={() => { }}
                 />
               </div>
             </div>
@@ -287,14 +317,14 @@ export default function TagManagementPage() {
                 <PopupWindow
                   title="Edit Tag"
                   titleValue={selectedTag?.name || ""}
-                  onInputChange={() => {}}
+                  onTitleChange={(e) => handleInputChange("name", "tag", e)}
                   submitButtonText="Save"
                   descriptionValue=""
                   descriptionInput={false}
                   deleteButton={true}
-                  onSubmit={() => editTag(newTag)}
+                  onSubmit={() => editTag()}
                   onClose={closeModal}
-                  onDelete={() => deleteTag()}
+                  onDelete={() => deleteSelectedTag()}
                 />
               </div>
             </div>
@@ -307,14 +337,14 @@ export default function TagManagementPage() {
                 <PopupWindow
                   title="Create a New Tag"
                   titleValue={selectedTag?.name || ""}
-                  onInputChange={() => {}}
+                  onTitleChange={(e) => handleInputChange("name", "tag", e)}
                   submitButtonText="Add"
                   descriptionValue=""
                   descriptionInput={false}
                   deleteButton={false}
-                  onSubmit={() => editTag(newTag)}
+                  onSubmit={() => editTag()}
                   onClose={closeModal}
-                  onDelete={() => deleteTag()}
+                  onDelete={() => { }}
                 />
               </div>
             </div>

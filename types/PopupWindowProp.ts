@@ -22,5 +22,6 @@ export type PopupWindowProps = {
   ) => void;
   titleValue: string;
   descriptionValue: string;
-  onInputChange: (value: string) => void;
+  onTitleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onDescriptionChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 };
