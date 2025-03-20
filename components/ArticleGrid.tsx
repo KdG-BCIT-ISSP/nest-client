@@ -73,9 +73,7 @@ const ArticleGrid: React.FC<ArticleGridProps> = ({ article }) => {
           </div>
         )}
 
-        <p className="text-gray-700 text-sm break-words line-clamp-2">
-          {truncatedHtml}
-        </p>
+        <div className="text-gray-600 break-words py-2">{truncatedHtml}</div>
       </div>
     </div>
   );
