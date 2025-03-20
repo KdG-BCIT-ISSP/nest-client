@@ -14,25 +14,9 @@ export default function PostsPage() {
   useEffect(() => {
     async function fetchPosts() {
       try {
+        setLoading(true);
         const data = await getPost();
-
-        const formattedPosts: PostType[] = data.map((post: PostType) => ({
-          id: post.id,
-          title: post.title,
-          content: post.content,
-          topicId: post.topicId ?? 2,
-          tagNames: Array.isArray(post.tagNames) ? post.tagNames : [],
-          imageBase64: Array.isArray(post.imageBase64) ? post.imageBase64 : [],
-          memberUsername: post.memberUsername || "Anonymous",
-          timestamp: post.timestamp
-            ? new Date(post.timestamp).toISOString()
-            : new Date().toISOString(),
-          bookmarked: post.bookmarked ?? false,
-          liked: post.liked ?? false,
-          type: post.type ?? "USERPOST",
-        }));
-
-        setPosts(formattedPosts);
+        setPosts(data);
       } catch (err) {
         console.error("Failed to fetch posts:", err);
         setError("Failed to fetch posts. Please try again.");
@@ -44,13 +28,8 @@ export default function PostsPage() {
     fetchPosts();
   }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="p-6">
@@ -65,18 +44,18 @@ export default function PostsPage() {
           {posts.map((post) => (
             <PostCard
               key={post.id}
-              id={post.id}
+              id={post.id ?? 0}
               title={post.title}
               content={post.content}
-              tags={post.tagNames ?? []}
+              tags={post.tagNames}
               imageBase64={post.imageBase64}
               author={post.memberUsername}
-              timestamp={new Date(
-                post.timestamp ?? Date.now()
-              ).toLocaleString()}
+              createdAt={post.createdAt}
               isBookmarked={post.bookmarked}
               isLiked={post.liked}
-              className="bg-container flex-shrink-0 w-full max-w-5xl ml-0 container"
+              likesCount={post.likesCount ?? 0}
+              viewCount={post.viewCount ?? 0}
+              shareCount={post.shareCount ?? 0}
             />
           ))}
         </div>

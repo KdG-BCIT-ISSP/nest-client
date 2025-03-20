@@ -17,12 +17,15 @@ export default function PostCard({
   tags = [],
   imageBase64 = [],
   author = "Anonymous",
-  timestamp = "Just now",
+  createdAt = new Date().toISOString(),
   isBookmarked = false,
   isLiked = false,
+  likesCount = 0,
+  viewCount = 0,
+  shareCount = 0,
 }: PostCardType) {
   const router = useRouter();
-  const [upvoteCount, setUpvoteCount] = useState(123);
+  const [upvoteCount, setUpvoteCount] = useState(likesCount);
   const [userLiked, setUserLiked] = useState(isLiked);
 
   const handleUpvote = () => {
@@ -52,6 +55,7 @@ export default function PostCard({
       )}
       onClick={handleClick}
     >
+      {/* Mobile View */}
       <div className="block sm:hidden">
         {imageBase64.length > 0 && (
           <div className="flex flex-wrap">
@@ -91,7 +95,7 @@ export default function PostCard({
           <div className="flex-1">
             <div className="text-sm text-gray-500 mb-2">
               <span className="font-medium text-gray-800">{author}</span> •{" "}
-              <span>{timestamp}</span>
+              <span>{new Date(createdAt).toLocaleString()}</span>
             </div>
             <h1 className="text-lg font-bold text-gray-900 mb-2">{title}</h1>
             <p className="text-base text-gray-700 whitespace-pre-wrap mb-4">
@@ -123,10 +127,16 @@ export default function PostCard({
                 <Share />
               </button>
             </div>
+            {/* View Count & Share Count */}
+            <div className="flex justify-between text-gray-500 mt-2">
+              <span>{viewCount} Views</span>
+              <span>{shareCount} Shares</span>
+            </div>
           </div>
         </div>
       </div>
 
+      {/* Desktop View */}
       <div className="hidden sm:flex gap-4">
         <div className="flex flex-col items-center text-gray-500">
           <button
@@ -143,57 +153,60 @@ export default function PostCard({
             ▼
           </button>
         </div>
-        <div className="flex flex-1 gap-4">
-          <div className="flex-1 flex flex-col">
-            <div className="text-sm text-gray-500 mb-2">
-              <span className="font-medium text-gray-800">{author}</span> •{" "}
-              <span>{timestamp}</span>
-            </div>
-            <h1 className="text-lg font-bold text-gray-900 mb-2">{title}</h1>
-            <p className="text-base text-gray-700 whitespace-pre-wrap mb-4">
-              {content}
-            </p>
-            {tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-4">
-                {tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="bg-gray-200 text-sm px-3 py-1 rounded-full text-gray-700"
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            )}
-            <div className="mt-4 flex justify-between text-gray-500 text-sm">
-              <button className="hover:text-cyan-600">
-                <ThumbsUp count={upvoteCount} filled={userLiked} />
-              </button>
-              <button className="hover:text-cyan-600">
-                <Comments count={234} container />
-              </button>
-              <button className="hover:text-cyan-600">
-                <BookmarkToggle count={32} postId={id} filled={isBookmarked} />
-              </button>
-              <button className="hover:text-cyan-600">
-                <Share />
-              </button>
-            </div>
+        <div className="flex-1 flex flex-col">
+          <div className="text-sm text-gray-500 mb-2">
+            <span className="font-medium text-gray-800">{author}</span> •{" "}
+            <span>{new Date(createdAt).toLocaleString()}</span>
           </div>
-          {imageBase64.length > 0 && (
-            <div className="flex flex-wrap">
-              <div className="relative w-72 h-auto aspect-[16/9] overflow-hidden rounded-sm border border-gray-300">
-                <Image
-                  src={imageBase64[0]}
-                  alt={`Post Image `}
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
-              </div>
+          <h1 className="text-lg font-bold text-gray-900 mb-2">{title}</h1>
+          <p className="text-base text-gray-700 whitespace-pre-wrap mb-4">
+            {content}
+          </p>
+          {tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="bg-gray-200 text-sm px-3 py-1 rounded-full text-gray-700"
+                >
+                  #{tag}
+                </span>
+              ))}
             </div>
           )}
+          <div className="mt-4 flex justify-between text-gray-500 text-sm">
+            <button className="hover:text-cyan-600">
+              <ThumbsUp count={upvoteCount} filled={userLiked} />
+            </button>
+            <button className="hover:text-cyan-600">
+              <Comments count={234} container />
+            </button>
+            <button className="hover:text-cyan-600">
+              <BookmarkToggle count={32} postId={id} filled={isBookmarked} />
+            </button>
+            <button className="hover:text-cyan-600">
+              <Share />
+            </button>
+          </div>
+          {/* View Count & Share Count */}
+          <div className="flex justify-between text-gray-500 mt-2">
+            <span>{viewCount} Views</span>
+            <span>{shareCount} Shares</span>
+          </div>
         </div>
+        {imageBase64.length > 0 && (
+          <div className="flex flex-wrap">
+            <div className="relative w-72 h-auto aspect-[16/9] overflow-hidden rounded-sm border border-gray-300">
+              <Image
+                src={imageBase64[0]}
+                alt={`Post Image `}
+                fill
+                className="object-cover"
+                unoptimized
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

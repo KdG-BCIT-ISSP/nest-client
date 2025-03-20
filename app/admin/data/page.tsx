@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import SideMenu from "@/components/SideMenu";
+import TopPosts from "@/components/TopPosts";
 
 export default function DataPage() {
   const [loading, setLoading] = useState(true);
@@ -14,8 +16,14 @@ export default function DataPage() {
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Statistics Pages</h1>
+    <div className="flex">
+      <SideMenu admin />
+      <div className="p-4 sm:ml-64 w-full">
+        <h1 className="text-2xl font-bold mb-4">Statistics Page</h1>
+        <TopPosts limit={3} sortBy="likesCount" title="Top Liked Posts" />
+        <TopPosts limit={3} sortBy="viewCount" title="Most Viewed Posts" />
+        <TopPosts limit={3} sortBy="shareCount" title="Most Shared Posts" />
+      </div>
     </div>
   );
 }
