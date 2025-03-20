@@ -15,7 +15,7 @@ interface User {
 export default function UserAccessPage() {
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState<User[]>([]);
-  const [error, setError] = useState(null);
+  const [, setError] = useState(null);
 
   async function fetchUsers() {
     try {

@@ -1,6 +1,6 @@
 import { atom } from "jotai";
-import { ArticleTypeWithID } from "@/types/ArticleTypeWithID";
+import { ArticleCardType } from "@/types/ArticleCardType";
 
-export type ArticlesState = ArticleTypeWithID[];
+export type ArticlesState = ArticleCardType[];
 
 export const articlesAtom = atom<ArticlesState>([]);

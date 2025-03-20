@@ -51,18 +51,10 @@ export default function TopPosts({
         {topPosts.map((post) => (
           <PostCard
             key={post.id}
-            id={post.id ?? 0}
-            title={post.title}
-            content={post.content}
-            tags={post.tagNames}
-            imageBase64={post.imageBase64}
-            author={post.memberUsername}
-            createdAt={post.createdAt}
-            isBookmarked={post.bookmarked}
-            isLiked={post.liked}
-            likesCount={post.likesCount ?? 0}
-            viewCount={post.viewCount ?? 0}
-            shareCount={post.shareCount ?? 0}
+            {...post}
+            onDelete={(id) =>
+              setTopPosts((prev) => prev.filter((p) => p.id !== id))
+            }
           />
         ))}
       </div>

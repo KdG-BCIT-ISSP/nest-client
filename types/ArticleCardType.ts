@@ -1,4 +1,4 @@
-export type ArticleTypeWithID = {
+export type ArticleCardType = {
   id: number;
   memberUsername?: string;
   memberAvatar?: string;
@@ -11,4 +11,8 @@ export type ArticleTypeWithID = {
   coverImage: string;
   imagePreview?: string | null;
   link?: string;
+  viewCount?: number;
+  shareCount?: number;
+  likesCount?: number;
+  createdAt?: string;
 };

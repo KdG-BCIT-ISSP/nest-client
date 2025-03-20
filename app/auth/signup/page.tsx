@@ -4,10 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { join } from "@/app/api/member/join/route";
-import { useCookies } from "react-cookie";
 
 export default function SignupPage() {
-  const [, setCookie] = useCookies(["refreshToken"]);
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -55,6 +53,7 @@ export default function SignupPage() {
     }
 
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const response = await join(
         formData.username,
         formData.email,
@@ -62,11 +61,7 @@ export default function SignupPage() {
       );
 
       setSuccess("Account created successfully!");
-      localStorage.setItem("accessToken", response.accessToken);
-      setCookie("refreshToken", response.refreshToken, {
-        path: "/",
-        // maxAge: 3600,
-      });
+
       setTimeout(() => {
         window.location.href = "/auth/login";
       }, 500);
