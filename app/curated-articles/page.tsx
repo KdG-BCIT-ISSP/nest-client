@@ -4,7 +4,7 @@
 import ArticleCard from "@/components/ArticleCard";
 import { useEffect, useState } from "react";
 import { getArticle } from "@/app/api/article/get/route";
-import { ArticleTypeWithID } from "@/types/ArticleTypeWithID";
+import { ArticleCardType } from "@/types/ArticleCardType";
 import HeroSection from "@/components/HeroSection";
 import { articlesAtom } from "@/atoms/articles/atom";
 import { useAtom } from "jotai";
@@ -12,14 +12,14 @@ import { useAtom } from "jotai";
 export default function CuratedArticlesPage() {
   const [, setArticleData] = useAtom(articlesAtom);
   const [loading, setLoading] = useState(true);
-  const [articles, setArticles] = useState<ArticleTypeWithID[]>([]);
+  const [articles, setArticles] = useState<ArticleCardType[]>([]);
 
   useEffect(() => {
     async function fetchArticles() {
       try {
         setLoading(true);
         const data = await getArticle();
-        const updatedArticles = data.map((article: ArticleTypeWithID) => ({
+        const updatedArticles = data.map((article: ArticleCardType) => ({
           ...article,
           content: decodeURIComponent(article.content), // If needed, process content here
         }));

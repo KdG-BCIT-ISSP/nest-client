@@ -17,7 +17,7 @@ export default function PostCard({
   tags = [],
   imageBase64 = [],
   author = "Anonymous",
-  createdAt = new Date().toISOString(),
+  createdAt = "Unknown date",
   isBookmarked = false,
   isLiked = false,
   likesCount = 0,
@@ -95,7 +95,7 @@ export default function PostCard({
           <div className="flex-1">
             <div className="text-sm text-gray-500 mb-2">
               <span className="font-medium text-gray-800">{author}</span> •{" "}
-              <span>{new Date(createdAt).toLocaleString()}</span>
+              <span>{createdAt}</span>
             </div>
             <h1 className="text-lg font-bold text-gray-900 mb-2">{title}</h1>
             <p className="text-base text-gray-700 whitespace-pre-wrap mb-4">
@@ -156,7 +156,7 @@ export default function PostCard({
         <div className="flex-1 flex flex-col">
           <div className="text-sm text-gray-500 mb-2">
             <span className="font-medium text-gray-800">{author}</span> •{" "}
-            <span>{new Date(createdAt).toLocaleString()}</span>
+            <span>{createdAt}</span>
           </div>
           <h1 className="text-lg font-bold text-gray-900 mb-2">{title}</h1>
           <p className="text-base text-gray-700 whitespace-pre-wrap mb-4">
