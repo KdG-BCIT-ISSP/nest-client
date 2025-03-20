@@ -8,6 +8,9 @@ import { PostCardType } from "@/types/PostCardType";
 import BookmarkToggle from "../components/Bookmark";
 import { useRouter } from "next/navigation";
 import { postView } from "@/app/api/content/view/route";
+import { useAtom } from "jotai";
+import { userAtom } from "@/atoms/user/atom";
+import { deletePost } from "@/app/api/post/delete/route";
 
 export default function PostCard({
   id,
@@ -23,8 +26,10 @@ export default function PostCard({
   likesCount = 0,
   viewCount = 0,
   shareCount = 0,
-}: PostCardType) {
+  onDelete,
+}: PostCardType & { onDelete: (id: number) => void }) {
   const router = useRouter();
+  const [userData] = useAtom(userAtom);
   const [upvoteCount, setUpvoteCount] = useState(likesCount);
   const [userLiked, setUserLiked] = useState(isLiked);
 
@@ -36,6 +41,21 @@ export default function PostCard({
   const handleDownvote = () => {
     setUserLiked(false);
     setUpvoteCount((prev) => (prev > 0 ? prev - 1 : 0));
+  };
+
+  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (!confirm("Are you sure you want to delete this post?")) return;
+
+    try {
+      await deletePost(id);
+      onDelete(id);
+      alert("Post deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
   };
 
   const handleClick = useCallback(() => {
@@ -208,6 +228,17 @@ export default function PostCard({
           </div>
         )}
       </div>
+      {/* Show Delete Button Only for ADMIN or SUPER_ADMIN */}
+      {(userData.role === "ADMIN" || userData.role === "SUPER_ADMIN") && (
+        <div className="flex justify-end">
+          <button
+            onClick={handleDelete}
+            className="text-red-600 hover:text-red-800 border-2 border-red-500 w-20 p-1 rounded-md"
+          >
+            Delete
+          </button>
+        </div>
+      )}
     </div>
   );
 }
