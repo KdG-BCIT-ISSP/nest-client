@@ -42,7 +42,6 @@ export default function TagManagementPage() {
         name: topic.name,
         description: topic.description,
       }));
-      console.log("data", data);
       setTopics(formattedTopics);
     } catch (err) {
       console.error("Failed to fetch topics:", err);
@@ -54,7 +53,6 @@ export default function TagManagementPage() {
       setError(null);
 
       const data = await getTag();
-      console.log("data", data);
       const formattedTags: Tag[] = data.map((tag: Tag) => ({
         id: tag.id,
         name: tag.name,
@@ -126,39 +124,119 @@ export default function TagManagementPage() {
 
   const editTag = async () => {
     if (selectedTag) {
-      const response = await updateTag(selectedTag.id, selectedTag.name);
+      try {
+        const response = await updateTag(selectedTag.id, selectedTag.name);
+        closeModal();
+        if (response) {
+          setTags((prevTags) =>
+            prevTags.map((tag) =>
+              tag.id === selectedTag.id
+                ? { ...tag, name: selectedTag.name}
+                : tag
+            )
+          );
+          console.log("tag created successfully:", response);
+        } else {
+          console.error("tag creation failed: No response from server.");
+        }
+      } catch (error) {
+        console.error("Error updating tag:", error);
+      }
+
     }
-    closeModal();
   };
 
   const deleteSelectedTopic = async () => {
     if (selectedTopic) {
+      try {
       const response = await deleteTopic(selectedTopic?.id);
+      closeModal();
+
+        if (response) {
+          setTopics((prevTopics) =>
+            prevTopics.filter((topic) =>
+              topic.id !== selectedTopic.id
+        )
+          );
+          console.log("topic created successfully:", response);
+        } else {
+          console.error("topic creation failed: No response from server.");
+        }
+      } catch (error) {
+        console.error("Error updating topic:", error);
+      }
     }
-    closeModal();
   };
 
   const deleteSelectedTag = async () => {
     if (selectedTag) {
+      try {
       const response = await deleteTag(selectedTag?.id);
+      closeModal();
+        if (response) {
+          setTags((prevTags) =>
+            prevTags.filter((tag) =>
+              tag.id !== selectedTag.id
+            )
+          );
+          console.log("tag created successfully:", response);
+        } else {
+          console.error("tag creation failed: No response from server.");
+        }
+      } catch (error) {
+        console.error("Error updating tag:", error);
+      }
     }
-    closeModal();
   };
 
   const addTopic = async () => {
-    if(selectedTopic){
+    if (selectedTopic) {
+      try{
       const response = await createTopic(selectedTopic.name, selectedTopic.description || "");
+      closeModal();
+
+        if (response) {
+          setTopics((prevTopics) => [
+            ...prevTopics,
+            {
+              id: response.id, 
+              name: selectedTopic.name,
+              description: selectedTopic.description || "",
+            },
+          ]);
+          console.log("topic created successfully:", response);
+        } else {
+          console.error("topic creation failed: No response from server.");
+        }
+      } catch (error) {
+        console.error("Error updating topic:", error);
+      }
 
     }
-    closeModal();
   };
 
   const addTag = async () => {
     if (selectedTag) {
+      try{
       const response = await createTag(selectedTag.name);
+      closeModal();
+        if (response) {
+          setTags((prevTags) => [
+            ...prevTags,
+            {
+              id: response.id,
+              name: selectedTag.name,
+            },
+          ]);
+          console.log("tag created successfully:", response);
+        } else {
+          console.error("tag creation failed: No response from server.");
+        }
+      } catch (error) {
+        console.error("Error updating tag:", error);
+      }
 
     }
-    closeModal();
   };
 
   const handleInputChange = (
@@ -167,18 +245,19 @@ export default function TagManagementPage() {
     e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const value = e.target.value;
-    console.log("value", value);
+
     if (type === "topic") {
       setSelectedTopic((prev) => ({
         ...prev!,
         [field]: value || "",
       }));
-      console.log("selectedTopic", selectedTopic);
+
     } else if (type === "tag") {
       setSelectedTag((prev) => ({
         ...prev!,
         [field]: value || "",
       }));
+
     }
   };
 
@@ -275,8 +354,8 @@ export default function TagManagementPage() {
                   title="Edit Topic"
                   titleValue={selectedTopic?.name || ""}
                   onTitleChange={(e) => handleInputChange("name", "topic", e)}
-                  onDescriptionChange={(e) => handleInputChange("description", "topic", e)}
                   submitButtonText="Save"
+                  onDescriptionChange={(e) => handleInputChange("description", "topic", e)}
                   descriptionValue={selectedTopic?.description || ""}
                   deleteButton={true}
                   descriptionInput={true}
@@ -297,6 +376,7 @@ export default function TagManagementPage() {
                   titleValue={selectedTopic?.name || ""}
                   onTitleChange={(e) => handleInputChange("name", "topic", e)}
                   submitButtonText="Add"
+                  onDescriptionChange={(e) => handleInputChange("description", "topic", e)}
                   descriptionValue={selectedTopic?.description || ""}
                   descriptionInput={true}
                   deleteButton={false}
@@ -342,7 +422,7 @@ export default function TagManagementPage() {
                   descriptionValue=""
                   descriptionInput={false}
                   deleteButton={false}
-                  onSubmit={() => editTag()}
+                  onSubmit={() => addTag()}
                   onClose={closeModal}
                   onDelete={() => { }}
                 />
