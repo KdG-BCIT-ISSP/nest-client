@@ -5,4 +5,5 @@ export const userAtom = atom({
   email: "",
   region: "",
   avatar: "/images/default_profile_image.png",
+  role: "",
 });
