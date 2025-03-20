@@ -1,24 +1,47 @@
 "use client";
 
+import { getAllUsers } from "@/app/api/member/get/route";
 import Button from "@/components/Button";
 import SideMenu from "@/components/SideMenu";
 import UserRoleToggle from "@/components/UserRoleToggle";
 import { useEffect, useState } from "react";
 
+interface User {
+  username: string;
+  email: string;
+  role: string;
+}
+
 export default function UserAccessPage() {
   const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState<User[]>([]);
+  const [error, setError] = useState(null);
+
+  async function fetchUsers() {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const data = await getAllUsers();
+      console.log(data);
+      setUsers(data);
+    } catch (err) {
+      console.error("Failed to fetch users:", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchUsers();
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
     setLoading(false);
   }, []);
 
   const tableHeaders = ["Username", "Email", "Role"];
-
-  const users = [
-    { username: "Mike", email: "mike@apple.com", role: "User" },
-    { username: "Carol", email: "carol@apple.com", role: "Admin" },
-    { username: "Alice", email: "alice@apple.com", role: "User" },
-  ];
 
   if (loading) {
     return <div>Loading...</div>;

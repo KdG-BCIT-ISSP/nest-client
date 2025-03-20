@@ -101,14 +101,22 @@ export default function TagManagementPage() {
   const editTopic = async () => {
     if (selectedTopic) {
       try {
-        const response = await updateTopic(selectedTopic.id, selectedTopic.name, selectedTopic.description || "");
+        const response = await updateTopic(
+          selectedTopic.id,
+          selectedTopic.name,
+          selectedTopic.description || ""
+        );
         closeModal();
 
         if (response) {
           setTopics((prevTopics) =>
             prevTopics.map((topic) =>
               topic.id === selectedTopic.id
-                ? { ...topic, name: selectedTopic.name, description: selectedTopic.description }
+                ? {
+                    ...topic,
+                    name: selectedTopic.name,
+                    description: selectedTopic.description,
+                  }
                 : topic
             )
           );
@@ -131,7 +139,7 @@ export default function TagManagementPage() {
           setTags((prevTags) =>
             prevTags.map((tag) =>
               tag.id === selectedTag.id
-                ? { ...tag, name: selectedTag.name}
+                ? { ...tag, name: selectedTag.name }
                 : tag
             )
           );
@@ -142,21 +150,18 @@ export default function TagManagementPage() {
       } catch (error) {
         console.error("Error updating tag:", error);
       }
-
     }
   };
 
   const deleteSelectedTopic = async () => {
     if (selectedTopic) {
       try {
-      const response = await deleteTopic(selectedTopic?.id);
-      closeModal();
+        const response = await deleteTopic(selectedTopic?.id);
+        closeModal();
 
         if (response) {
           setTopics((prevTopics) =>
-            prevTopics.filter((topic) =>
-              topic.id !== selectedTopic.id
-        )
+            prevTopics.filter((topic) => topic.id !== selectedTopic.id)
           );
           console.log("topic created successfully:", response);
         } else {
@@ -171,13 +176,11 @@ export default function TagManagementPage() {
   const deleteSelectedTag = async () => {
     if (selectedTag) {
       try {
-      const response = await deleteTag(selectedTag?.id);
-      closeModal();
+        const response = await deleteTag(selectedTag?.id);
+        closeModal();
         if (response) {
           setTags((prevTags) =>
-            prevTags.filter((tag) =>
-              tag.id !== selectedTag.id
-            )
+            prevTags.filter((tag) => tag.id !== selectedTag.id)
           );
           console.log("tag created successfully:", response);
         } else {
@@ -191,15 +194,18 @@ export default function TagManagementPage() {
 
   const addTopic = async () => {
     if (selectedTopic) {
-      try{
-      const response = await createTopic(selectedTopic.name, selectedTopic.description || "");
-      closeModal();
+      try {
+        const response = await createTopic(
+          selectedTopic.name,
+          selectedTopic.description || ""
+        );
+        closeModal();
 
         if (response) {
           setTopics((prevTopics) => [
             ...prevTopics,
             {
-              id: response.id, 
+              id: response.id,
               name: selectedTopic.name,
               description: selectedTopic.description || "",
             },
@@ -211,15 +217,14 @@ export default function TagManagementPage() {
       } catch (error) {
         console.error("Error updating topic:", error);
       }
-
     }
   };
 
   const addTag = async () => {
     if (selectedTag) {
-      try{
-      const response = await createTag(selectedTag.name);
-      closeModal();
+      try {
+        const response = await createTag(selectedTag.name);
+        closeModal();
         if (response) {
           setTags((prevTags) => [
             ...prevTags,
@@ -235,14 +240,15 @@ export default function TagManagementPage() {
       } catch (error) {
         console.error("Error updating tag:", error);
       }
-
     }
   };
 
   const handleInputChange = (
     field: "name" | "description",
     type: "topic" | "tag",
-    e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const value = e.target.value;
 
@@ -251,18 +257,13 @@ export default function TagManagementPage() {
         ...prev!,
         [field]: value || "",
       }));
-
     } else if (type === "tag") {
       setSelectedTag((prev) => ({
         ...prev!,
         [field]: value || "",
       }));
-
     }
   };
-
-
-
 
   return (
     <div className="p-4 sm:ml-64 bg-white">
@@ -355,7 +356,9 @@ export default function TagManagementPage() {
                   titleValue={selectedTopic?.name || ""}
                   onTitleChange={(e) => handleInputChange("name", "topic", e)}
                   submitButtonText="Save"
-                  onDescriptionChange={(e) => handleInputChange("description", "topic", e)}
+                  onDescriptionChange={(e) =>
+                    handleInputChange("description", "topic", e)
+                  }
                   descriptionValue={selectedTopic?.description || ""}
                   deleteButton={true}
                   descriptionInput={true}
@@ -376,15 +379,15 @@ export default function TagManagementPage() {
                   titleValue={selectedTopic?.name || ""}
                   onTitleChange={(e) => handleInputChange("name", "topic", e)}
                   submitButtonText="Add"
-                  onDescriptionChange={(e) => handleInputChange("description", "topic", e)}
+                  onDescriptionChange={(e) =>
+                    handleInputChange("description", "topic", e)
+                  }
                   descriptionValue={selectedTopic?.description || ""}
                   descriptionInput={true}
                   deleteButton={false}
-                  onSubmit={() =>
-                    addTopic()
-                  }
+                  onSubmit={() => addTopic()}
                   onClose={closeModal}
-                  onDelete={() => { }}
+                  onDelete={() => {}}
                 />
               </div>
             </div>
@@ -424,7 +427,7 @@ export default function TagManagementPage() {
                   deleteButton={false}
                   onSubmit={() => addTag()}
                   onClose={closeModal}
-                  onDelete={() => { }}
+                  onDelete={() => {}}
                 />
               </div>
             </div>
