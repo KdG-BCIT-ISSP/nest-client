@@ -1,12 +1,12 @@
 "use client";
 
 import { getAllUsers } from "@/app/api/member/get/route";
-import Button from "@/components/Button";
 import SideMenu from "@/components/SideMenu";
 import UserRoleToggle from "@/components/UserRoleToggle";
 import { useEffect, useState } from "react";
 
 interface User {
+  id: number;
   username: string;
   email: string;
   role: string;
@@ -30,6 +30,14 @@ export default function UserAccessPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function getUserRole(users: User[]) {
+    let uniqueRoles = [...new Set(users.map((user) => user.role))];
+    if (uniqueRoles.includes("SUPER_ADMIN")) {
+      uniqueRoles = uniqueRoles.filter((role) => role !== "SUPER_ADMIN");
+    }
+    return uniqueRoles;
   }
 
   useEffect(() => {
@@ -112,20 +120,17 @@ export default function UserAccessPage() {
                   </th>
                   <td className="px-6 py-4">{user.email}</td>
                   <td className="px-6 py-4">
-                    <UserRoleToggle currentRole={user.role} />
+                    <UserRoleToggle
+                      id={user.id}
+                      currentRole={user.role}
+                      menuItems={getUserRole(users)}
+                    />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
-      <div className="mt-6 border-t border-gray-200 flex justify-end pt-4">
-        <Button
-          label="Save"
-          type="submit"
-          className="text-white bg-tertiary hover:bg-secondary font-medium rounded-md text-sm px-5 py-2.5"
-        />
       </div>
     </div>
   );
