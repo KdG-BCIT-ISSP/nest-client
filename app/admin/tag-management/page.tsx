@@ -4,11 +4,9 @@ import Button from "@/components/Button";
 import SideMenu from "@/components/SideMenu";
 import PopupWindow from "@/components/PopupWindow";
 import { useEffect, useState } from "react";
-import { t } from "i18next";
 import { updateTopic } from "@/app/api/topic/update/route";
 import { getTopic } from "@/app/api/topic/get/route";
 import { getTag } from "@/app/api/tag/get/route";
-import { create } from "domain";
 import { createTopic } from "@/app/api/topic/create/route";
 import { createTag } from "@/app/api/tag/create/route";
 import { updateTag } from "@/app/api/tag/update/route";
@@ -32,7 +30,7 @@ export default function TagManagementPage() {
   const [tags, setTags] = useState<Tag[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
   const [selectedTag, setSelectedTag] = useState<Tag | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
 
   async function fetchTopics() {
     try {
@@ -53,10 +51,10 @@ export default function TagManagementPage() {
       setError(null);
 
       const data = await getTag();
-      const formattedTags: Tag[] = data.map((tag: Tag) => ({
-        id: tag.id,
-        name: tag.name,
-      }));
+      // const formattedTags: Tag[] = data.map((tag: Tag) => ({
+      //   id: tag.id,
+      //   name: tag.name,
+      // }));
       setTags(data);
     } catch (err) {
       console.error("Failed to fetch tags:", err);
@@ -264,6 +262,10 @@ export default function TagManagementPage() {
       }));
     }
   };
+
+  if (loading) {
+    return <div> Loading...</div>;
+  }
 
   return (
     <div className="p-4 sm:ml-64 bg-white">
