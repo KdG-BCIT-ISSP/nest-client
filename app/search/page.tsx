@@ -9,7 +9,7 @@ import { getTopic } from "../api/topic/get/route";
 import { getTag } from "../api/tag/get/route";
 import SearchBar from "@/components/SearchBar";
 import PostGrid from "@/components/PostGrid";
-import ArticleCard from "@/components/ArticleCard";
+import ArticleGrid from "@/components/ArticleGrid";
 
 type OptionType = {
   id: string;
@@ -203,7 +203,7 @@ export default function SearchPage() {
         ) : (
           <div className="grid grid-cols-2 gap-6">
             {results.map((item) => (
-              <ArticleCard key={item.id} article={item} onDelete={() => {}} />
+              <ArticleGrid key={item.id} article={item} />
             ))}
           </div>
         )}
