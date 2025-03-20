@@ -17,6 +17,7 @@
     "cookies-next": "^5.1.0",
     "flowbite": "^3.0.0",
     "html-react-parser": "^5.2.2",
+    "html-truncate": "^1.2.2",
     "i18next": "^24.2.2",
     "i18next-http-backend": "^3.0.2",
     "interweave": "^13.1.1",
