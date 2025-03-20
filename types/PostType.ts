@@ -1,18 +1,24 @@
 export type PostType = {
-  id?: number;
+  id: number;
   title?: string;
   content?: string;
   type?: string;
   topicId: number;
   tagNames?: string[];
   memberUsername?: string;
-  timestamp?: string;
+  memberId?: number;
+  memberAvatar?: string[];
+  comment?: string[];
+  createdAt?: string;
   imageBase64?: string[];
   bookmarked?: boolean;
   liked?: boolean;
   saved?: boolean;
   className?: string;
   images?: string;
+  likesCount?: number;
+  viewCount?: number;
+  shareCount?: number;
 };
 
 export type ReportPostType = {
