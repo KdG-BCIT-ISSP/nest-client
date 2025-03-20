@@ -9,7 +9,7 @@ export default function ViewPost({
   tagNames,
   imageBase64 = [],
   memberUsername,
-  timestamp,
+  createdAt,
 }: PostType) {
   // Initialize comments state
   const [comments, setComments] = useState<CommentType[]>([]);
@@ -93,7 +93,7 @@ export default function ViewPost({
             <span className="font-medium text-black">
               {memberUsername || "Anonymous"}
             </span>{" "}
-            • <span>{timestamp || "Just now"}</span>
+            • <span>{createdAt || "Just now"}</span>
           </div>
 
           {/* Title */}
