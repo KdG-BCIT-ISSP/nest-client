@@ -10,4 +10,5 @@ export type PostCardType = {
   timestamp?: string;
   isBookmarked?: boolean;
   isLiked?: boolean;
+  postImage?: string;
 };

@@ -13,6 +13,7 @@ export type PostType = {
   saved?: boolean;
   className?: string;
   images?: string;
+  postImage?: string;
 };
 
 export type ReportPostType = {
@@ -32,3 +33,19 @@ export interface Report {
   reason: string;
   createdAt: string;
 }
+
+export type PostGridType = {
+  id: number;
+  title: string;
+  content: string;
+  creatorName: string;
+  createdAt: string;
+  likesCount: number;
+  postImage: string;
+  tags: string[];
+  topic: string;
+  viewCount: number;
+  shareCount: number;
+  comments?: string;
+  onDelete?: () => void;
+};
