@@ -2,9 +2,9 @@ import { ReactNode } from "react";
 
 export type PopupWindowProps = {
     title: string;
-    content: string;
     submitButtonText: string;
     deleteButton: boolean;
+    descriptionInput: boolean;
     onSubmit?: (
         event:
             | React.MouseEvent<HTMLButtonElement>
@@ -20,6 +20,7 @@ export type PopupWindowProps = {
             | React.MouseEvent<HTMLButtonElement>
             | React.FormEvent<HTMLFormElement>
     ) => void;
-    inputValue: string;
+    titleValue: string;
+    descriptionValue: string;
     onInputChange: (value: string) => void;
 };

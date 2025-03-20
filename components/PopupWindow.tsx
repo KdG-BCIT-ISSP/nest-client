@@ -4,13 +4,14 @@ import React from "react";
 
 export default function PopupWindow({
     title,
-    content,
     submitButtonText,
     deleteButton,
+    descriptionInput,
     onSubmit,
     onDelete,
     onClose,
-    inputValue, 
+    titleValue, 
+    descriptionValue,
     onInputChange
 }: PopupWindowProps) {
 
@@ -28,10 +29,14 @@ export default function PopupWindow({
                     <div className="p-4 md:p-5">
 
                         <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">{title}</h3>
-                        <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
-                            value={inputValue}
+                        <input type="text" name="title" id="title" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white mb-3" 
+                            value={titleValue}
                             onChange={(e) => onInputChange(e.target.value)}
                         required />
+                        {descriptionInput && <textarea name="description" id="description" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white h-40"
+                            value={descriptionValue}
+                            onChange={(e) => onInputChange(e.target.value)}
+                            required />}
                         <div className="flex justify-between w-full mt-5">
                             {deleteButton && (<button data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center" onClick={onDelete}>
                                 Delete
