@@ -12,19 +12,3 @@ export type ArticleTypeWithID = {
   imagePreview?: string | null;
   link?: string;
 };
-
-export type ArticleGridType = {
-  id: number;
-  title: string;
-  content: string;
-  creatorName: string;
-  createdAt: string;
-  likesCount: number;
-  coverImage?: string;
-  postImage: string;
-  tags: string[];
-  topic: string;
-  viewCount: number;
-  shareCount: number;
-  comments?: string;
-};
