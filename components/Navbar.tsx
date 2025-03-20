@@ -35,6 +35,7 @@ export default function Navbar() {
   ];
 
   const USER_DROPDOWN_LINKS = [
+    { href: "/admin/user-access", label: t("navigation.admin") },
     { href: "/profile", label: t("navigation.profile") },
     { href: "/profile/saved-posts", label: t("navigation.savedPosts") },
     { href: "/profile/notifications", label: t("navigation.notifications") },
