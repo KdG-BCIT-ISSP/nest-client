@@ -1,14 +1,17 @@
 export type PostCardType = {
-  id?: number;
-  saved?: boolean;
-  className?: string;
+  id: number;
   title?: string;
   content?: string;
   tags?: string[];
   imageBase64?: string[];
   author?: string;
-  timestamp?: string;
+  createdAt?: string;
   isBookmarked?: boolean;
   isLiked?: boolean;
   postImage?: string;
+  saved?: boolean;
+  className?: string;
+  likesCount?: number;
+  viewCount?: number;
+  shareCount?: number;
 };

@@ -1,12 +1,15 @@
 export type PostType = {
-  id?: number;
+  id: number;
   title?: string;
   content?: string;
   type?: string;
   topicId: number;
   tagNames?: string[];
   memberUsername?: string;
-  timestamp?: string;
+  memberId?: number;
+  memberAvatar?: string[];
+  comment?: string[];
+  createdAt?: string;
   imageBase64?: string[];
   bookmarked?: boolean;
   liked?: boolean;
@@ -14,6 +17,9 @@ export type PostType = {
   className?: string;
   images?: string;
   postImage?: string;
+  likesCount?: number;
+  viewCount?: number;
+  shareCount?: number;
 };
 
 export type ReportPostType = {
