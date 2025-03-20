@@ -24,8 +24,6 @@ interface Tag {
 }
 
 export default function TagManagementPage() {
-
-
   const [modalIndex, setModalIndex] = useState<number | null>(null);
   const [topics, setTopics] = useState<Topic[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
@@ -72,8 +70,6 @@ export default function TagManagementPage() {
   }, []);
 
   const [loading, setLoading] = useState(true);
-
-
 
   const showModal = (index: number, id?: number) => {
     setModalIndex(index);
@@ -123,57 +119,48 @@ export default function TagManagementPage() {
       } catch (error) {
         console.error("Error updating topic:", error);
       }
-
-
     }
-
-  }
+  };
 
   const editTag = (newTag: string) => {
     setTags((prevTags) =>
       prevTags.map((tag) =>
-        tag.id === selectedTag?.id
-          ? { ...tag, tagName: newTag }
-          : tag
+        tag.id === selectedTag?.id ? { ...tag, tagName: newTag } : tag
       )
     );
     closeModal();
-  }
-
-
+  };
 
   const deleteTopic = () => {
     setTopics((prevTopics) =>
-      prevTopics.filter((topic) =>
-        topic.id !== selectedTopic?.id));
+      prevTopics.filter((topic) => topic.id !== selectedTopic?.id)
+    );
     closeModal();
-  }
+  };
 
   const deleteTag = () => {
-    setTags((prevTags) =>
-      prevTags.filter((tag) =>
-        tag.id !== selectedTag?.id));
+    setTags((prevTags) => prevTags.filter((tag) => tag.id !== selectedTag?.id));
     closeModal();
-  }
+  };
 
   const addTopic = async (newTopic: string, description: string) => {
     await createTopic(newTopic, description);
     closeModal();
-  }
+  };
 
-  const addTag = async(newTag: string) => {
+  const addTag = async (newTag: string) => {
     await createTag(newTag);
     closeModal();
-  }
-
-
+  };
 
   return (
     <div className="p-4 sm:ml-64 bg-white">
       <SideMenu admin />
       {/* topic section */}
       <div>
-        <h2 className="text-xl font-semibold mb-4 text-gray-700 mt-5">Topics Management</h2>
+        <h2 className="text-xl font-semibold mb-4 text-gray-700 mt-5">
+          Topics Management
+        </h2>
         <div className="mb-6">
           {topics.map((topic, index) => (
             <div
@@ -184,7 +171,6 @@ export default function TagManagementPage() {
                 <div className="flex">
                   <span className="mr-4 text-gray-700">{index + 1}.</span>
                   <span className="text-gray-700">{topic.name}</span>
-
                 </div>
                 <p className="text-gray-400 ml-8">{topic.description}</p>
               </div>
@@ -197,18 +183,19 @@ export default function TagManagementPage() {
           ))}
         </div>
         <div className="mt-6 border-gray-200 flex justify-end pt-4">
-
           <Button
             label="Add Topic"
             onClick={() => showModal(2)}
-            data-modal-target="static-modal" data-modal-toggle="static-modal"
+            data-modal-target="static-modal"
+            data-modal-toggle="static-modal"
             className="text-secondary bg-container hover:bg-amber-100 font-bold rounded-md text-sm px-5 py-2.5"
           />
-
         </div>
 
         {/* tag section */}
-        <h2 className="text-xl font-semibold mb-4 text-gray-700">Tags Management</h2>
+        <h2 className="text-xl font-semibold mb-4 text-gray-700">
+          Tags Management
+        </h2>
         <div className="flex flex-wrap">
           {tags.map((tag: Tag) => (
             <div
@@ -220,17 +207,29 @@ export default function TagManagementPage() {
                 onClick={() => showModal(3, tag.id)}
               >
                 {tag.name}
-                <svg className="ml-2 w-5 h-5 text-gray-500 dark:text-white hover:text-tertiary" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+                <svg
+                  className="ml-2 w-5 h-5 text-gray-500 dark:text-white hover:text-tertiary"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"
+                  />
                 </svg>
-
               </button>
             </div>
           ))}
         </div>
 
         <div className="mt-6 border-gray-200 flex justify-end pt-4 border-t border-gray-300">
-
           <Button
             label="Add Tag"
             onClick={() => showModal(4)}
@@ -243,7 +242,7 @@ export default function TagManagementPage() {
                 <PopupWindow
                   title="Edit Topic"
                   titleValue={selectedTopic?.name || ""}
-                  onInputChange={()=>{}}
+                  onInputChange={() => {}}
                   submitButtonText="Save"
                   descriptionValue={selectedTopic?.description || ""}
                   deleteButton={true}
@@ -263,14 +262,19 @@ export default function TagManagementPage() {
                 <PopupWindow
                   title="Create a New Topic"
                   titleValue={selectedTopic?.name || ""}
-                  onInputChange={()=>{}}
+                  onInputChange={() => {}}
                   submitButtonText="Add"
                   descriptionValue={selectedTopic?.description || ""}
                   descriptionInput={true}
                   deleteButton={false}
-                  onSubmit={() => addTopic(selectedTopic?.name || "", selectedTopic?.description || "")}
+                  onSubmit={() =>
+                    addTopic(
+                      selectedTopic?.name || "",
+                      selectedTopic?.description || ""
+                    )
+                  }
                   onClose={closeModal}
-                  onDelete={() => { }}
+                  onDelete={() => {}}
                 />
               </div>
             </div>
@@ -283,7 +287,7 @@ export default function TagManagementPage() {
                 <PopupWindow
                   title="Edit Tag"
                   titleValue={selectedTag?.name || ""}
-                  onInputChange={()=>{}}
+                  onInputChange={() => {}}
                   submitButtonText="Save"
                   descriptionValue=""
                   descriptionInput={false}
@@ -303,7 +307,7 @@ export default function TagManagementPage() {
                 <PopupWindow
                   title="Create a New Tag"
                   titleValue={selectedTag?.name || ""}
-                  onInputChange={()=>{}}
+                  onInputChange={() => {}}
                   submitButtonText="Add"
                   descriptionValue=""
                   descriptionInput={false}
