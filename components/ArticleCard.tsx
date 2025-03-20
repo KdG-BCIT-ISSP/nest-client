@@ -8,16 +8,18 @@ import Image from "next/image";
 import { postView } from "@/app/api/content/view/route";
 import parse from "html-react-parser";
 import htmlTruncate from "html-truncate";
+import { useAtom } from "jotai";
+import { userAtom } from "@/atoms/user/atom";
 
 interface ArticleCardProps {
   article: ArticleCardType;
-  onDelete: (id: number) => void;
+  onDelete?: (id: number) => void;
 }
 
 export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
   const router = useRouter();
   const maxLength = 50;
-
+  const [userData] = useAtom(userAtom);
   const truncatedHtmlString = htmlTruncate(article.content, maxLength) + "...";
   const truncatedHtml = parse(truncatedHtmlString);
 
@@ -25,9 +27,12 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
     e.stopPropagation();
     e.preventDefault();
 
+    if (!confirm("Are you sure you want to delete this article?")) return;
+
     try {
       await deleteArticle(article.id);
-      onDelete(article.id);
+      onDelete?.(article.id);
+      alert("Article deleted successfully!");
     } catch (error) {
       console.error("Error deleting article:", error);
     }
@@ -96,14 +101,16 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
         </div>
 
         {/* Delete Button */}
-        <div className="flex justify-end mt-2">
-          <button
-            onClick={handleDelete}
-            className="text-red-600 hover:text-red-800 border-2 border-red-500 w-20 p-1 rounded-md"
-          >
-            Delete
-          </button>
-        </div>
+        {(userData.role === "ADMIN" || userData.role === "SUPER_ADMIN") && (
+          <div className="flex justify-end mt-2">
+            <button
+              onClick={handleDelete}
+              className="text-red-600 hover:text-red-800 border-2 border-red-500 w-20 p-1 rounded-md"
+            >
+              Delete
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

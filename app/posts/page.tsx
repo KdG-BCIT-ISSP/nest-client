@@ -28,6 +28,10 @@ export default function PostsPage() {
     fetchPosts();
   }, []);
 
+  const handleDelete = (id: number) => {
+    setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
@@ -56,6 +60,7 @@ export default function PostsPage() {
               likesCount={post.likesCount ?? 0}
               viewCount={post.viewCount ?? 0}
               shareCount={post.shareCount ?? 0}
+              onDelete={handleDelete}
             />
           ))}
         </div>

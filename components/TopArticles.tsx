@@ -22,9 +22,12 @@ export default function TopArticles({
     async function fetchArticles() {
       try {
         setLoading(true);
-        const articles = await getArticle();
-        setAllArticles(articles);
-        console.log(articles);
+        const data = await getArticle();
+        const updatedArticles = data.map((article: ArticleCardType) => ({
+          ...article,
+          content: decodeURIComponent(article.content),
+        }));
+        setAllArticles(updatedArticles);
       } catch (error) {
         console.error("Error fetching articles:", error);
       } finally {
