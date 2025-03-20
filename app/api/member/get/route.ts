@@ -8,3 +8,10 @@ export const getProfile = async () => {
   } as CustomAxiosRequestConfig);
   return response.data;
 };
+
+export const getAllUsers = async () => {
+  const response = await axiosInterceptor.get("/member/all", {
+    requiresAuth: true,
+  } as CustomAxiosRequestConfig);
+  return response.data;
+};

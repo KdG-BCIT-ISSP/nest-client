@@ -18,6 +18,9 @@ import { ArticleType } from "@/types/ArticleType";
 import { reportArticle } from "@/app/api/report/article/post/route";
 import XIcon from "@/public/svg/XIcon";
 import { getViewsById } from "@/app/api/content/views/route";
+import { getContentLikes } from "@/app/api/content/likes/route";
+import { getContentisLiked } from "@/app/api/content/isLiked/route";
+import { toggleLike } from "@/app/api/content/toggleLike/route";
 
 export default function ArticleDetailsPage() {
   const params = useParams();
@@ -30,23 +33,39 @@ export default function ArticleDetailsPage() {
   const [showCopied, setShowCopied] = useState(false);
   const [views, setViews] = useState(0);
 
+  const isAuthenticated =
+    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
   useEffect(() => {
     async function fetchData() {
       try {
         setLoading(true);
-        const [articles, views] = await Promise.all([
+
+        const promises = [
           getArticle(),
           getViewsById(articleId),
-        ]);
+          getContentLikes(articleId),
+        ];
+
+        if (isAuthenticated) {
+          promises.push(getContentisLiked(articleId));
+        }
+
+        const [articles, views, likes, isLiked] = await Promise.all(promises);
+
         const foundArticle = articles.find(
           (item: ArticleType) => item.id === articleId
         );
+
         if (foundArticle) {
           setArticle({
             ...foundArticle,
             content: decodeURIComponent(foundArticle.content),
+            likes,
+            isLiked: isAuthenticated ? isLiked : false,
           });
         }
+
         setViews(views);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -54,8 +73,53 @@ export default function ArticleDetailsPage() {
         setLoading(false);
       }
     }
+
     fetchData();
-  }, [articleId]);
+  }, [articleId, isAuthenticated]);
+
+  const handleToggleLike = async () => {
+    if (!article || !isAuthenticated) {
+      alert("Please log in to like this article.");
+      return;
+    }
+
+    const previousState = { isLiked: article.isLiked, likes: article.likes };
+
+    setArticle((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        isLiked: !prev.isLiked,
+        likes: !prev.isLiked ? (prev.likes || 0) + 1 : (prev.likes || 0) - 1,
+      };
+    });
+
+    try {
+      const { isLiked: newIsLiked } = await toggleLike(articleId);
+
+      const updatedLikes = await getContentLikes(articleId);
+
+      setArticle((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          isLiked: newIsLiked,
+          likes: updatedLikes,
+        };
+      });
+    } catch (error) {
+      console.error("Error toggling like:", error);
+      setArticle((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          isLiked: previousState.isLiked || false,
+          likes: previousState.likes || 0,
+        };
+      });
+      alert("Failed to toggle like. Please try again.");
+    }
+  };
 
   if (loading) return <div>Loading...</div>;
   if (!article) return <div>Article not found</div>;
@@ -165,7 +229,12 @@ export default function ArticleDetailsPage() {
 
         <div className="prose prose-green mb-8">{html}</div>
         <div className="flex justify-end gap-4">
-          <ArticleThumpsUp count={224} />
+          <button onClick={handleToggleLike} disabled={!isAuthenticated}>
+            <ArticleThumpsUp
+              count={article.likes || 0}
+              isLiked={article.isLiked || false}
+            />
+          </button>
           <ArticleComment count={32} />
           <ArticleBookmark count={212} />
           <button onClick={handleShareClick}>

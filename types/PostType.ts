@@ -16,6 +16,7 @@ export type PostType = {
   saved?: boolean;
   className?: string;
   images?: string;
+  postImage?: string;
   likesCount?: number;
   viewCount?: number;
   shareCount?: number;
@@ -38,3 +39,24 @@ export interface Report {
   reason: string;
   createdAt: string;
 }
+
+export type PostGridType = {
+  id: number;
+  title: string;
+  content: string;
+  memberUsername: string;
+  memberAvatar: string;
+  createdAt: string;
+  likesCount: number;
+  imageBase64: string;
+  coverImage?: string;
+  tagNames: string[];
+  topic: string;
+  viewCount: number;
+  shareCount: number;
+  comments?: string;
+  comment: [];
+  liked: boolean;
+  bookmarked: boolean;
+  onDelete?: () => void;
+};
