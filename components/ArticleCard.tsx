@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { deleteArticle } from "@/app/api/article/delete/route";
 import { ArticleTypeWithID } from "@/types/ArticleTypeWithID";
-import { ArticleGridType } from "@/types/ArticleTypeWithID";
 import React, { useCallback } from "react";
 import Image from "next/image";
 import { postView } from "@/app/api/content/view/route";
@@ -11,19 +10,17 @@ import parse from "html-react-parser";
 import htmlTruncate from "html-truncate";
 
 interface ArticleCardProps {
-  article: ArticleTypeWithID | ArticleGridType;
+  article: ArticleTypeWithID;
   onDelete: (id: number) => void;
 }
 
 export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
   const router = useRouter();
-  const maxLength = 100;
-  const truncatedHtmlString = htmlTruncate(article.content, maxLength, {
-    reserveLastWord: true,
-  });
-  console.log(truncatedHtmlString);
+  const maxLength = 50;
+
+  const truncatedHtmlString = htmlTruncate(article.content, maxLength) + "...";
   const truncatedHtml = parse(truncatedHtmlString);
-  console.log(truncatedHtml);
+
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     e.preventDefault();
