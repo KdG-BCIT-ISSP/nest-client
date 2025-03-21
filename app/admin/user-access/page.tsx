@@ -1,12 +1,12 @@
 "use client";
 
 import { getAllUsers } from "@/app/api/member/get/route";
-import Button from "@/components/Button";
 import SideMenu from "@/components/SideMenu";
 import UserRoleToggle from "@/components/UserRoleToggle";
 import { useEffect, useState } from "react";
 
 interface User {
+  id: number;
   username: string;
   email: string;
   role: string;
@@ -14,6 +14,7 @@ interface User {
 
 export default function UserAccessPage() {
   const [loading, setLoading] = useState(true);
+  const [allUsers, setAllUsers] = useState<User[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [, setError] = useState(null);
 
@@ -23,13 +24,21 @@ export default function UserAccessPage() {
       setError(null);
 
       const data = await getAllUsers();
-      console.log(data);
+      setAllUsers(data);
       setUsers(data);
     } catch (err) {
       console.error("Failed to fetch users:", err);
     } finally {
       setLoading(false);
     }
+  }
+
+  function getUserRole(users: User[]) {
+    let uniqueRoles = [...new Set(users.map((user) => user.role))];
+    if (uniqueRoles.includes("SUPER_ADMIN")) {
+      uniqueRoles = uniqueRoles.filter((role) => role !== "SUPER_ADMIN");
+    }
+    return uniqueRoles;
   }
 
   useEffect(() => {
@@ -43,6 +52,18 @@ export default function UserAccessPage() {
 
   const tableHeaders = ["Username", "Email", "Role"];
 
+  const searchUsers = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchValue = e.target.value;
+    if (searchValue === "") {
+      setUsers(allUsers);
+    } else {
+      const filteredUsers = allUsers.filter((user) =>
+        user.email.toLowerCase().includes(searchValue.toLowerCase())
+      );
+      setUsers(filteredUsers);
+    }
+  }
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -52,10 +73,7 @@ export default function UserAccessPage() {
       <SideMenu admin />
       <div className="container mr-auto max-w-7xl">
         {/* search bar */}
-        <form className="max-w-md mx-auto">
-          <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
-            Search
-          </label>
+        
           <div className="relative">
             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
               <svg
@@ -79,16 +97,10 @@ export default function UserAccessPage() {
               id="default-search"
               className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-md bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="enter email..."
-              required
+              onChange={searchUsers}
             />
-            <button
-              type="submit"
-              className="text-secondary absolute end-2.5 bottom-2.5 hover:text-tertiary font-medium rounded-md text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700"
-            >
-              Search
-            </button>
           </div>
-        </form>
+        
 
         <div className="relative pt-2">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -112,20 +124,17 @@ export default function UserAccessPage() {
                   </th>
                   <td className="px-6 py-4">{user.email}</td>
                   <td className="px-6 py-4">
-                    <UserRoleToggle currentRole={user.role} />
+                    <UserRoleToggle
+                      id={user.id}
+                      currentRole={user.role}
+                      menuItems={getUserRole(users)}
+                    />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
-      <div className="mt-6 border-t border-gray-200 flex justify-end pt-4">
-        <Button
-          label="Save"
-          type="submit"
-          className="text-white bg-tertiary hover:bg-secondary font-medium rounded-md text-sm px-5 py-2.5"
-        />
       </div>
     </div>
   );

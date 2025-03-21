@@ -18,3 +18,14 @@ export const updateProfile = async (
   );
   return response.data;
 };
+
+export const updateUserRole = async (id: number, role: string) => {
+  const response = await axiosInterceptor.put(
+    `/member/role/${id}`,
+    {
+      memberRole: role,
+    },
+    { requiresAuth: true } as CustomAxiosRequestConfig
+  );
+  return response.data;
+};
