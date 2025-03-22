@@ -9,7 +9,7 @@ const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 import { ArticleType } from "@/types/ArticleType";
 import TagsSelector from "./TagsSelector";
 import imageCompression from "browser-image-compression";
-import { post } from "@/app/lib/fetchClient";
+import { post } from "@/app/lib/fetchInterceptor";
 
 export default function CreateArticle() {
   const [article, setArticle] = useState<ArticleType>({
