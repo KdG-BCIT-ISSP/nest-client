@@ -14,7 +14,7 @@ export default function UserRoleToggle({
 }: UserRoleToggleProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [role, setRole] = useState(currentRole);
-  let isSuperAdmin = currentRole === "SUPER_ADMIN";
+  const isSuperAdmin = currentRole === "SUPER_ADMIN";
 
   const changeUserRole = async (id: number, role: string) => {
     console.log("changeUserRole", role);
