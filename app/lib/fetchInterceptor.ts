@@ -23,7 +23,10 @@ function handleLogout() {
   window.location.href = "/auth/login";
 }
 
-export async function fetchClient(endpoint: string, options: RequestInit = {}) {
+export async function fetchInterceptor(
+  endpoint: string,
+  options: RequestInit = {}
+) {
   const accessToken = localStorage.getItem("accessToken");
 
   const defaultHeaders = {
@@ -95,21 +98,21 @@ export async function fetchClient(endpoint: string, options: RequestInit = {}) {
 }
 
 export const get = (endpoint: string, options: RequestInit = {}) =>
-  fetchClient(endpoint, { ...options, method: "GET" });
+  fetchInterceptor(endpoint, { ...options, method: "GET" });
 
 export const post = <T>(endpoint: string, body: T, options: RequestInit = {}) =>
-  fetchClient(endpoint, {
+  fetchInterceptor(endpoint, {
     ...options,
     method: "POST",
     body: JSON.stringify(body),
   });
 
 export const put = <T>(endpoint: string, body: T, options: RequestInit = {}) =>
-  fetchClient(endpoint, {
+  fetchInterceptor(endpoint, {
     ...options,
     method: "PUT",
     body: JSON.stringify(body),
   });
 
 export const del = (endpoint: string, options: RequestInit = {}) =>
-  fetchClient(endpoint, { ...options, method: "DELETE" });
+  fetchInterceptor(endpoint, { ...options, method: "DELETE" });

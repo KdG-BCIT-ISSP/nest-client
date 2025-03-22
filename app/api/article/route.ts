@@ -1,6 +1,6 @@
 // app/api/article/route.ts
 import { NextResponse } from "next/server";
-import { API_BASE_URL } from "@/app/lib/fetchClient";
+import { API_BASE_URL } from "@/app/lib/fetchInterceptor";
 
 export async function POST(request: Request) {
   try {
