@@ -10,6 +10,6 @@ export type ArticleType = {
   coverImage: string;
   imagePreview?: string | null;
   link?: string;
-  likes: number;
-  isLiked: boolean;
+  likes?: number;
+  isLiked?: boolean;
 };
