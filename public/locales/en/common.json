@@ -18,5 +18,12 @@
     "email": "Email",
     "region": "Region",
     "save": "Save"
+  },
+  "general": {
+    "title": "Title",
+    "content": "Content",
+    "loading": "Loading...",
+    "anonymous": "Anonymous",
+    "unknownDate": "Unknown Date"
   }
 }
