@@ -16,7 +16,7 @@ import { getPost } from "@/app/api/post/get/route";
 import { PostType } from "@/types/PostType";
 import { reportArticle } from "@/app/api/report/article/post/route";
 import XIcon from "@/public/svg/XIcon";
-import { getViewsById } from "@/app/api/content/views/route";
+import { get } from "@/app/lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
 
 export default function PostDetailPage() {
@@ -36,7 +36,7 @@ export default function PostDetailPage() {
         setLoading(true);
         const [posts, views] = await Promise.all([
           getPost(),
-          getViewsById(postId),
+          get(`/api/content/${postId}/views`),
         ]);
         const foundPosts = posts.find((item: PostType) => item.id === postId);
         if (foundPosts) {

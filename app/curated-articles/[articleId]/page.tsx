@@ -15,12 +15,8 @@ import CommentsSection from "@/components/Comments";
 import { ArticleType } from "@/types/ArticleType";
 import { reportArticle } from "@/app/api/report/article/post/route";
 import XIcon from "@/public/svg/XIcon";
-import { getViewsById } from "@/app/api/content/views/route";
-import { getContentLikes } from "@/app/api/content/likes/route";
-import { getContentisLiked } from "@/app/api/content/isLiked/route";
-import { toggleLike } from "@/app/api/content/toggleLike/route";
 import Tags from "@/components/Tags";
-import { get } from "@/app/lib/fetchInterceptor";
+import { get, post } from "@/app/lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
 import { useTranslation } from "react-i18next";
 
@@ -46,12 +42,12 @@ export default function ArticleDetailsPage() {
 
         const promises = [
           get("/api/article"),
-          getViewsById(articleId),
-          getContentLikes(articleId),
+          get(`/api/content/${articleId}/views`),
+          get(`/api/content/${articleId}/likes`),
         ];
 
         if (isAuthenticated) {
-          promises.push(getContentisLiked(articleId));
+          promises.push(get(`/api/content/${articleId}/isLiked`));
         }
 
         const [articles, views, likes, isLiked] = await Promise.all(promises);
@@ -76,7 +72,6 @@ export default function ArticleDetailsPage() {
         setLoading(false);
       }
     }
-
     fetchData();
   }, [articleId, isAuthenticated]);
 
@@ -98,9 +93,12 @@ export default function ArticleDetailsPage() {
     });
 
     try {
-      const { isLiked: newIsLiked } = await toggleLike(articleId);
+      const { isLiked: newIsLiked } = await post(
+        `/api/content/${articleId}/toggleLike`,
+        { articleId }
+      );
 
-      const updatedLikes = await getContentLikes(articleId);
+      const updatedLikes = await get(`/api/content/${articleId}/likes`);
 
       setArticle((prev) => {
         if (!prev) return prev;

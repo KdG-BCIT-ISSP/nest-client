@@ -7,10 +7,10 @@ import Share from "@/public/svg/Post/Share";
 import { PostCardType } from "@/types/PostCardType";
 import BookmarkToggle from "../components/Bookmark";
 import { useRouter } from "next/navigation";
-import { postView } from "@/app/api/content/view/route";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
 import { deletePost } from "@/app/api/post/delete/route";
+import { post } from "@/app/lib/fetchInterceptor";
 import { useTranslation } from "react-i18next";
 
 export default function PostCard({
@@ -67,9 +67,7 @@ export default function PostCard({
 
   const handleClick = useCallback(() => {
     if (id) {
-      postView(id).catch((error) =>
-        console.error("Error posting view:", error)
-      );
+      post(`/api/content/${id}/view`, { id: id });
       router.push(`/posts/${id}`);
     }
   }, [id, router]);

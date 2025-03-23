@@ -4,12 +4,11 @@ import { useRouter } from "next/navigation";
 import { ArticleCardType } from "@/types/ArticleCardType";
 import React, { useCallback } from "react";
 import Image from "next/image";
-import { postView } from "@/app/api/content/view/route";
 import parse from "html-react-parser";
 import htmlTruncate from "html-truncate";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
-import { del } from "@/app/lib/fetchInterceptor";
+import { del, post } from "@/app/lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
 import { useTranslation } from "react-i18next";
 
@@ -42,9 +41,7 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
   };
 
   const handleClick = useCallback(() => {
-    postView(article.id).catch((error) =>
-      console.error("Error posting view:", error)
-    );
+    post(`/api/content/${article.id}/view`, { id: article.id });
     router.push(`/curated-articles/${article.id}`);
   }, [article.id, router]);
 
