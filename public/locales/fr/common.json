@@ -4,12 +4,13 @@
     "articles": "Articles",
     "community": "Communauté",
     "profile": "Profil",
-    "savedPosts": "Publications enregistrées",
+    "savedPosts": "Publications enregistrés",
     "notifications": "Notifications",
     "signOut": "Se déconnecter",
     "login": "Se connecter",
     "register": "S'inscrire",
-    "searchSomething": "Rechercher quelque chose..."
+    "searchSomething": "Rechercher quelque chose...",
+    "admin": "Admin"
   },
   "profile": {
     "uploadImage": "Téléverser l'image",
@@ -17,5 +18,12 @@
     "email": "Email",
     "region": "Région",
     "save": "Enregistrer"
+  },
+  "general": {
+    "title": "Titre",
+    "content": "Contenu",
+    "loading": "Chargement...",
+    "anonymous": "Anonyme",
+    "unknownDate": "Date inconnue"
   }
 }

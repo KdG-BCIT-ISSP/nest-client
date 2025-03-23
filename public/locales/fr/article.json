@@ -1,0 +1,13 @@
+{
+  "article": {
+    "likes": "J'aime",
+    "views": "Vues",
+    "shares": "Partages",
+    "delete": "Supprimer",
+    "confirmDelete": "Voulez-vous vraiment supprimer cet article?",
+    "deletedSuccess": "Article supprimé avec succès!",
+    "untitled": "Article sans titre",
+    "noContent": "Aucun contenu disponible",
+    "viewComments": "Voir tous les commentaires"
+  }
+}
