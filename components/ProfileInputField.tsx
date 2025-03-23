@@ -142,7 +142,7 @@ export default function ProfileInputField({
   };
 
   return (
-    <div className="bg-white border border-2 rounded-md relative m-10">
+    <div className="bg-white border-2 rounded-md relative m-10">
       <div className="flex items-center gap-3 py-2 pl-10 pt-10">
         {/* Avatar Section */}
         <div className="flex flex-col items-center">
@@ -208,7 +208,7 @@ export default function ProfileInputField({
                 type="text"
                 name="category"
                 id="category"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-500 sm:text-sm rounded-lg block w-full p-2.5 bg-gray-100 pointer-events-none focus:outline-none"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-500 sm:text-sm rounded-lg block w-full p-2.5 pointer-events-none focus:outline-none"
                 value={formData.email}
                 readOnly
               />
