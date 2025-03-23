@@ -4,8 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { login } from "@/app/api/member/login/route";
 import { useCookies } from "react-cookie";
+import { post } from "@/app/lib/fetchInterceptor";
 
 export default function LoginPage() {
   const [, setCookie] = useCookies(["refreshToken"]);
@@ -37,7 +37,10 @@ export default function LoginPage() {
     }
 
     try {
-      const response = await login(formData.email, formData.password);
+      const response = await post("/api/member/login", {
+        email: formData.email,
+        password: formData.password,
+      });
 
       setSuccess("Login successful!");
       localStorage.setItem("accessToken", response.accessToken);

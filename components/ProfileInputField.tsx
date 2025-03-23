@@ -1,15 +1,14 @@
 "use client";
 
 import { ProfileDataType } from "@/types/ProfileDataType";
-import { updateProfile } from "@/app/api/member/update/route";
 import { useEffect, useState } from "react";
 import React from "react";
 import Image from "next/image";
-import { getProfile } from "@/app/api/member/get/route";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
 import imageCompression from "browser-image-compression";
 import { useTranslation } from "react-i18next";
+import { get, put } from "@/app/lib/fetchInterceptor";
 
 export default function ProfileInputField({
   username,
@@ -112,11 +111,11 @@ export default function ProfileInputField({
     if (!validateForm()) return;
 
     try {
-      const response = await updateProfile(
-        formData.username,
-        formData.region,
-        formData.avatar
-      );
+      const response = await put("/api/member/me", {
+        username: formData.username,
+        region: formData.region,
+        avatar: formData.avatar,
+      });
 
       if (response) {
         setFormData((prev) => ({
@@ -131,7 +130,7 @@ export default function ProfileInputField({
         }
       }
 
-      const data = await getProfile();
+      const data = await get("/api/member/me");
       setUserData(data);
       window.alert(t("profile.updateSuccess"));
     } catch (error) {

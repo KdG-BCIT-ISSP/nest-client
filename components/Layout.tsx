@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { useEffect } from "react";
 import { userAtom } from "@/atoms/user/atom";
 import { useAtom } from "jotai";
-import { getProfile } from "@/app/api/member/get/route";
+import { get } from "@/app/lib/fetchInterceptor";
 import { useTranslation } from "react-i18next";
 
 const geistSans = Geist({
@@ -28,7 +28,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
     const fetchData = async () => {
       try {
-        const data = await getProfile();
+        const data = await get("/api/member/me");
+
         setUserData(data);
       } catch (error) {
         console.error("Failed to fetch profile data:", error);

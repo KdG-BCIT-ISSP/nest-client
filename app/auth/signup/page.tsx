@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { join } from "@/app/api/member/join/route";
+import { post } from "@/app/lib/fetchInterceptor";
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -54,11 +54,11 @@ export default function SignupPage() {
 
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const response = await join(
-        formData.username,
-        formData.email,
-        formData.password
-      );
+      const response = await post("/api/member/join", {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+      });
 
       setSuccess("Account created successfully!");
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { getAllUsers } from "@/app/api/member/get/route";
+import { get } from "@/app/lib/fetchInterceptor";
 import SideMenu from "@/components/SideMenu";
 import UserRoleToggle from "@/components/UserRoleToggle";
 import { useEffect, useState } from "react";
@@ -23,7 +23,7 @@ export default function UserAccessPage() {
       setLoading(true);
       setError(null);
 
-      const data = await getAllUsers();
+      const data = await get("/api/member/all");
       setAllUsers(data);
       setUsers(data);
     } catch (err) {

@@ -1,4 +1,4 @@
-import { updateUserRole } from "@/app/api/member/update/route";
+import { put } from "@/app/lib/fetchInterceptor";
 import React, { useState } from "react";
 
 interface UserRoleToggleProps {
@@ -19,7 +19,7 @@ export default function UserRoleToggle({
   const changeUserRole = async (id: number, role: string) => {
     console.log("changeUserRole", role);
     try {
-      const response = await updateUserRole(id, role);
+      const response = await put(`/api/member/role/${id}`, { role: role });
       if (response) {
         window.alert("User role updated successfully");
       } else {
