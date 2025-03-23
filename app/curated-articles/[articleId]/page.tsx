@@ -21,6 +21,7 @@ import { getViewsById } from "@/app/api/content/views/route";
 import { getContentLikes } from "@/app/api/content/likes/route";
 import { getContentisLiked } from "@/app/api/content/isLiked/route";
 import { toggleLike } from "@/app/api/content/toggleLike/route";
+import { formatDate } from "@/utils/formatDate";
 
 export default function ArticleDetailsPage() {
   const params = useParams();
@@ -205,7 +206,7 @@ export default function ArticleDetailsPage() {
       <div className="max-w-2xl mx-auto p-4 pt-4 text-black">
         <div className="mb-6">
           <p className="text-sm text-gray-700">
-            By <b>{article.memberUsername}</b> | {new Date().toLocaleString()}
+            By <b>{article.memberUsername}</b> | {formatDate(article.createdAt)}
           </p>
           <p className="text-xs mt-2">{views} verified views</p>
 

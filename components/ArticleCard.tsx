@@ -10,6 +10,7 @@ import parse from "html-react-parser";
 import htmlTruncate from "html-truncate";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
+import { formatDate } from "@/utils/formatDate";
 
 interface ArticleCardProps {
   article: ArticleCardType;
@@ -76,7 +77,7 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
         {/* Metadata: Topic, Created At, Stats */}
         <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
           <span className="font-medium text-gray-800">{article.topicName}</span>{" "}
-          • <span>{article.createdAt}</span>
+          • <span>{formatDate(article.createdAt ?? "")}</span>
         </div>
 
         {/* Tags */}
