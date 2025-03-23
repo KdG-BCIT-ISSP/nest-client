@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { deleteArticle } from "@/app/api/article/delete/route";
 import { ArticleCardType } from "@/types/ArticleCardType";
 import React, { useCallback } from "react";
 import Image from "next/image";
@@ -10,6 +9,7 @@ import parse from "html-react-parser";
 import htmlTruncate from "html-truncate";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
+import { del } from "@/app/lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
 import { useTranslation } from "react-i18next";
 
@@ -33,7 +33,7 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
     if (!confirm(t("article.confirmDelete"))) return;
 
     try {
-      await deleteArticle(article.id);
+      await del(`/api/article/${article.id}`);
       onDelete?.(article.id);
       alert(t("article.deletedSuccess"));
     } catch (error) {

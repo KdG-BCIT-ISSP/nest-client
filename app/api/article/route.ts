@@ -69,3 +69,80 @@ export async function GET(request: Request) {
     return NextResponse.json({ message: errorMessage }, { status: 500 });
   }
 }
+
+export async function PUT(request: Request) {
+  try {
+    const { id, title, content, topicId, type, tagNames, coverImage } =
+      await request.json();
+    const backendUrl = `${API_BASE_URL}/article`;
+
+    const apiResponse = await fetch(backendUrl, {
+      method: "PUT",
+      headers: {
+        Authorization: request.headers.get("Authorization") || "",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id,
+        title,
+        content,
+        topicId,
+        type,
+        tagNames,
+        coverImage,
+      }),
+    });
+
+    if (!apiResponse.ok) {
+      const errorData = await apiResponse.json();
+      return NextResponse.json(
+        { message: errorData.message },
+        { status: apiResponse.status }
+      );
+    }
+
+    const data = await apiResponse.json();
+    return NextResponse.json(data);
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Article update failed";
+    return NextResponse.json({ message: errorMessage }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { id } = await request.json();
+    if (!id) {
+      return NextResponse.json(
+        { message: "Article ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const backendUrl = `${API_BASE_URL}/article/${id}`;
+
+    const apiResponse = await fetch(backendUrl, {
+      method: "DELETE",
+      headers: {
+        Authorization: request.headers.get("Authorization") || "",
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!apiResponse.ok) {
+      const errorData = await apiResponse.json();
+      return NextResponse.json(
+        { message: errorData.message },
+        { status: apiResponse.status }
+      );
+    }
+
+    const data = await apiResponse.json();
+    return NextResponse.json(data);
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Article deletion failed";
+    return NextResponse.json({ message: errorMessage }, { status: 500 });
+  }
+}
