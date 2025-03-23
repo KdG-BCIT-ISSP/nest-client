@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import SideMenu from "@/components/SideMenu";
 
-export default function DataPage() {
+export default function StatisticsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
