@@ -17,7 +17,16 @@
     "username": "Benutzername",
     "email": "E-Mail",
     "region": "Region",
-    "save": "Speichern"
+    "save": "Speichern",
+    "usernameRequired": "Benutzername darf nicht leer sein",
+    "usernameLength": "Der Benutzername muss zwischen 4 und 13 Zeichen lang sein",
+    "regionRequired": "Bitte wählen Sie eine Region aus",
+    "updateSuccess": "Profil erfolgreich aktualisiert!",
+    "updateError": "Profilaktualisierung fehlgeschlagen!",
+    "selectRegion": "Region auswählen",
+    "northAmerica": "Nordamerika",
+    "europe": "Europa",
+    "southAmerica": "Südamerika"
   },
   "general": {
     "title": "Titel",

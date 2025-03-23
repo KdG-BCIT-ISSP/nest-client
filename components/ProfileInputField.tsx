@@ -11,13 +11,6 @@ import { userAtom } from "@/atoms/user/atom";
 import imageCompression from "browser-image-compression";
 import { useTranslation } from "react-i18next";
 
-const REGION_VALUES = [
-  { value: "", label: "Select a region" },
-  { value: "north-america", label: "North America" },
-  { value: "europe", label: "Europe" },
-  { value: "south-america", label: "South America" },
-];
-
 export default function ProfileInputField({
   username,
   email,
@@ -34,6 +27,13 @@ export default function ProfileInputField({
     avatar: avatar || "",
   });
 
+  const REGION_VALUES = [
+    { value: "", label: t("profile.selectRegion") },
+    { value: "north-america", label: t("profile.northAmerica") },
+    { value: "europe", label: t("profile.europe") },
+    { value: "south-america", label: t("profile.southAmerica") },
+  ];
+
   const [errors, setErrors] = useState<{ username: string; region: string }>({
     username: "",
     region: "",
@@ -47,16 +47,16 @@ export default function ProfileInputField({
     const newErrors = { username: "", region: "" };
 
     if (!formData.username) {
-      newErrors.username = "Username can not be empty";
+      newErrors.username = t("profile.usernameRequired");
       isValid = false;
     }
     if (formData.username.length > 13 || formData.username.length < 4) {
-      newErrors.username = "Characters can not less than 4 and exceed 13";
+      newErrors.username = t("profile.usernameLength");
       isValid = false;
     }
 
     if (!formData.region) {
-      newErrors.region = "Please select a region";
+      newErrors.region = t("profile.regionRequired");
       isValid = false;
     }
 
@@ -133,10 +133,10 @@ export default function ProfileInputField({
 
       const data = await getProfile();
       setUserData(data);
-      window.alert("Profile updated successfully!");
+      window.alert(t("profile.updateSuccess"));
     } catch (error) {
       console.error("Update failed:", error);
-      window.alert("Profile updated failed!");
+      window.alert(t("profile.updateError"));
     } finally {
     }
   };
