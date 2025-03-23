@@ -9,6 +9,16 @@
     "untitled": "Untitled Post",
     "noContent": "No content available",
     "viewComments": "View all comments",
+    "title": "Title",
+    "titlePlaceholder": "Enter post title...",
+    "content": "Content",
+    "contentPlaceholder": "Write your post content here...",
+    "publish": "Post",
+    "titleRequired": "Title is required.",
+    "contentRequired": "Content is required.",
+    "createSuccess": "Post created successfully!",
+    "createError": "Failed to create post. Please try again.",
+    "requiredField": "{{name}} is required.",
     "communityTitle": "Community posts",
     "subtitle": "This platform offers a supportive community for new mothers to share experiences, access helpful tips, and find guidance throughout their motherhood journey."
   }

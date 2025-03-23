@@ -1,12 +1,15 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { PostType } from "@/types/PostType";
 import Button from "@/components/Button";
 import TagsSelector from "./TagsSelector";
 import { createPost } from "@/app/api/post/create/route";
 import ImageUpload from "./ImageUpload";
+import { useTranslation } from "react-i18next";
 
 export default function CreatePost() {
-  const [isLoading, setIsLoading] = useState(false);
+  const { t } = useTranslation("post");
 
   const [post, setPost] = useState<PostType>({
     id: 0,
@@ -38,12 +41,12 @@ export default function CreatePost() {
     const newErrors = { title: "", content: "" };
 
     if (!post.title?.trim()) {
-      newErrors.title = "Title is required.";
+      newErrors.title = t("post.titleRequired");
       isValid = false;
     }
 
     if (!post.content?.trim()) {
-      newErrors.content = "Content is required.";
+      newErrors.content = t("post.contentRequired");
       isValid = false;
     }
 
@@ -94,26 +97,28 @@ export default function CreatePost() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setPost({ ...post, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // Update the post state with the new input value
+    setPost({ ...post, [name]: value });
+
+    // Validate the input immediately
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: value.trim()
+        ? ""
+        : t("post.requiredField", { name: t(`post.${name}`) }),
+    }));
   };
 
   // handle post submission (WIP)
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setIsLoading(true);
-    console.log("Post:", post);
 
     if (!validateForm()) return;
     const updatedPost = { ...post, tags: selectedTags }; // Create updatedPost
 
     try {
-      console.log("title:", updatedPost.title); //Log the updated post.
-      console.log("content:", updatedPost.content);
-      console.log("topicId:", updatedPost.topicId);
-      console.log("tags:", updatedPost.tags);
-      console.log("image:", post.imageBase64?.[0] || "No image");
-      console.log("image:", post.imageBase64?.[1] || "No image");
-
       const response = await createPost(
         updatedPost.title ?? "",
         updatedPost.content ?? "",
@@ -124,16 +129,13 @@ export default function CreatePost() {
       );
 
       if (response) {
-        console.log("Post created successfully:", response);
-        window.alert("Post created successfully");
+        window.alert(t("post.createSuccess"));
         window.location.href = "/posts/";
       } else {
         console.error("Post creation failed: No response from server.");
       }
     } catch (error) {
       console.error("Failed to create post", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -144,7 +146,7 @@ export default function CreatePost() {
           {/* Title Input */}
           <div className="col-span-6">
             <label className="text-sm font-medium text-gray-900 block mb-2">
-              Title
+              {t("post.title")}
             </label>
             <input
               type="text"
@@ -152,6 +154,7 @@ export default function CreatePost() {
               className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
               value={post.title}
               onChange={handleChange}
+              placeholder={t("post.titlePlaceholder")}
             />
             {errors.title && (
               <p className="text-red-500 text-sm">{errors.title}</p>
@@ -161,13 +164,14 @@ export default function CreatePost() {
           {/* Content Input */}
           <div className="col-span-6">
             <label className="text-sm font-medium text-gray-900 block mb-2">
-              Content
+              {t("post.content")}
             </label>
             <textarea
               name="content"
               className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5 h-32"
               value={post.content}
               onChange={handleChange}
+              placeholder={t("post.contentPlaceholder")}
             />
             {errors.content && (
               <p className="text-red-500 text-sm">{errors.content}</p>
@@ -194,12 +198,11 @@ export default function CreatePost() {
         {/* Submit Button */}
         <div className="mt-6 border-t border-gray-200 flex justify-end pt-4">
           <Button
-            label="Post"
+            label={t("post.publish")}
             type="submit"
             className="text-white bg-red-500 hover:bg-red-600 font-medium rounded-md text-sm px-5 py-2.5"
           />
         </div>
-        {isLoading && <p>Loading...</p>}
       </form>
     </div>
   );

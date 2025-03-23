@@ -9,6 +9,16 @@
     "untitled": "Unbenannter Beitrag",
     "noContent": "Kein Inhalt verfügbar",
     "viewComments": "Alle Kommentare anzeigen",
+    "title": "Titel",
+    "titlePlaceholder": "Geben Sie den Titel des Beitrags ein...",
+    "content": "Inhalt",
+    "contentPlaceholder": "Schreiben Sie hier den Inhalt Ihres Beitrags...",
+    "publish": "Veröffentlichen",
+    "titleRequired": "Titel ist erforderlich.",
+    "contentRequired": "Inhalt ist erforderlich.",
+    "createSuccess": "Beitrag erfolgreich erstellt!",
+    "createError": "Fehler beim Erstellen des Beitrags. Bitte versuchen Sie es erneut.",
+    "requiredField": "{{name}} ist erforderlich.",
     "communityTitle": "Community-Beiträge",
     "subtitle": "Diese Plattform bietet eine unterstützende Community für frischgebackene Mütter, um Erfahrungen auszutauschen, hilfreiche Tipps zu erhalten und Orientierung auf ihrem Weg durch die Mutterschaft zu finden."
   }
