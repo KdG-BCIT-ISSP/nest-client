@@ -2,28 +2,34 @@
 
 import Link from "next/link";
 import { useCookies } from "react-cookie";
-
-const SIDE_MENU_LINKS = [
-  { href: "/profile", label: "Profile" },
-  { href: "/profile/saved-posts", label: "Saved Posts" },
-  { href: "/profile/notifications", label: "Notifications" },
-  { href: "reset", label: "Reset Password" },
-];
-
-const ADMIN_SIDE_MENU_LINKS = [
-  { href: "/admin/user-access", label: "User Access" },
-  { href: "/admin/posts", label: "Posts" },
-  { href: "/admin/articles", label: "Articles" },
-  { href: "/admin/reported-posts", label: "Reported Post" },
-  { href: "/admin/reported-articles", label: "Reported Articles" },
-  { href: "/admin/reported-comments", label: "Reported Comments" },
-  { href: "/admin/statistics", label: "Statistics" },
-  { href: "/admin/tag-management", label: "Tag Management" },
-];
+import { useTranslation } from "react-i18next";
 
 export default function SideMenu({ admin = false }: { admin?: boolean }) {
+  const { t } = useTranslation("dashboard");
   const [, , removeCookie] = useCookies(["refreshToken"]);
-  const links = admin ? ADMIN_SIDE_MENU_LINKS : SIDE_MENU_LINKS;
+  const links = admin
+    ? [
+        { href: "/admin/user-access", label: t("dashboard.userAccess") },
+        { href: "/admin/posts", label: t("dashboard.posts") },
+        { href: "/admin/articles", label: t("dashboard.articles") },
+        { href: "/admin/reported-posts", label: t("dashboard.reportedPosts") },
+        {
+          href: "/admin/reported-articles",
+          label: t("dashboard.reportedArticles"),
+        },
+        {
+          href: "/admin/reported-comments",
+          label: t("dashboard.reportedComments"),
+        },
+        { href: "/admin/statistics", label: t("dashboard.statistics") },
+        { href: "/admin/tag-management", label: t("dashboard.tagManagement") },
+      ]
+    : [
+        { href: "/profile", label: t("dashboard.profile") },
+        { href: "/profile/saved-posts", label: t("dashboard.savedPosts") },
+        { href: "/profile/notifications", label: t("dashboard.notifications") },
+        { href: "reset", label: t("dashboard.resetPassword") },
+      ];
 
   const handleLogout = async () => {
     try {
@@ -61,7 +67,9 @@ export default function SideMenu({ admin = false }: { admin?: boolean }) {
               className="w-full text-left flex items-center p-2 text-gray-900 rounded-lg
                          dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
             >
-              <span className="flex-1 ms-3 whitespace-nowrap">Log out</span>
+              <span className="flex-1 ms-3 whitespace-nowrap">
+                {t("dashboard.logout")}
+              </span>
             </button>
           </li>
         </ul>
