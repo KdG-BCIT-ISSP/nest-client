@@ -12,6 +12,7 @@ export async function POST(request: Request) {
       method: "POST",
       headers: {
         Authorization: request.headers.get("Authorization") || "",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         title,
@@ -36,6 +37,35 @@ export async function POST(request: Request) {
   } catch (error: unknown) {
     const errorMessage =
       error instanceof Error ? error.message : "Article creation failed";
+    return NextResponse.json({ message: errorMessage }, { status: 500 });
+  }
+}
+
+export async function GET(request: Request) {
+  try {
+    const backendUrl = `${API_BASE_URL}/article`;
+
+    const apiResponse = await fetch(backendUrl, {
+      method: "GET",
+      headers: {
+        Authorization: request.headers.get("Authorization") || "",
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!apiResponse.ok) {
+      const errorData = await apiResponse.json();
+      return NextResponse.json(
+        { message: errorData.message },
+        { status: apiResponse.status }
+      );
+    }
+
+    const data = await apiResponse.json();
+    return NextResponse.json(data);
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to fetch articles";
     return NextResponse.json({ message: errorMessage }, { status: 500 });
   }
 }

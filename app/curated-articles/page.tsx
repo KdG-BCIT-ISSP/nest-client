@@ -3,11 +3,11 @@
 
 import ArticleCard from "@/components/ArticleCard";
 import { useEffect, useState } from "react";
-import { getArticle } from "@/app/api/article/get/route";
 import { ArticleCardType } from "@/types/ArticleCardType";
 import HeroSection from "@/components/HeroSection";
 import { articlesAtom } from "@/atoms/articles/atom";
 import { useAtom } from "jotai";
+import { get } from "../lib/fetchInterceptor";
 import { useTranslation } from "react-i18next";
 
 export default function CuratedArticlesPage() {
@@ -20,7 +20,7 @@ export default function CuratedArticlesPage() {
     async function fetchArticles() {
       try {
         setLoading(true);
-        const data = await getArticle();
+        const data = await get("/api/article");
         const updatedArticles = data.map((article: ArticleCardType) => ({
           ...article,
           content: decodeURIComponent(article.content), // If needed, process content here

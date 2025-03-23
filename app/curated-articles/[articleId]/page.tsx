@@ -11,9 +11,7 @@ import ArticleThumpsUp from "@/public/svg/Article/ThumbsUp";
 import ArticleComment from "@/public/svg/Article/Comment";
 import ArticleBookmark from "@/public/svg/Article/Bookmark";
 import ArticleShare from "@/public/svg/Article/Share";
-import Tags from "@/components/Tags";
 import CommentsSection from "@/components/Comments";
-import { getArticle } from "@/app/api/article/get/route";
 import { ArticleType } from "@/types/ArticleType";
 import { reportArticle } from "@/app/api/report/article/post/route";
 import XIcon from "@/public/svg/XIcon";
@@ -21,6 +19,8 @@ import { getViewsById } from "@/app/api/content/views/route";
 import { getContentLikes } from "@/app/api/content/likes/route";
 import { getContentisLiked } from "@/app/api/content/isLiked/route";
 import { toggleLike } from "@/app/api/content/toggleLike/route";
+import Tags from "@/components/Tags";
+import { get } from "@/app/lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
 import { useTranslation } from "react-i18next";
 
@@ -45,7 +45,7 @@ export default function ArticleDetailsPage() {
         setLoading(true);
 
         const promises = [
-          getArticle(),
+          get("/api/article"),
           getViewsById(articleId),
           getContentLikes(articleId),
         ];

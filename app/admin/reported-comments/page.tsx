@@ -1,11 +1,11 @@
 "use client";
 
 import { getArticleReports } from "@/app/api/report/article/getAll/route";
-import { getArticle } from "@/app/api/article/get/route";
 import ReportCard from "@/components/ReportCard";
 import SideMenu from "@/components/SideMenu";
 import { useEffect, useState } from "react";
 import { ReportPostType, Report } from "@/types/PostType";
+import { get } from "@/app/lib/fetchInterceptor";
 
 export default function ReportedCommentsPage() {
   const [loading, setLoading] = useState(true);
@@ -18,7 +18,7 @@ export default function ReportedCommentsPage() {
       try {
         const [reportedPostsData, postsData] = await Promise.all([
           getArticleReports(),
-          getArticle(),
+          get("/api/article"),
         ]);
         setReportedComments(reportedPostsData);
         setComments(postsData);
