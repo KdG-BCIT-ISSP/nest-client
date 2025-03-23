@@ -6,8 +6,10 @@ import { PostType } from "@/types/PostType";
 import PostCard from "@/components/PostCard";
 import HeroSection from "@/components/HeroSection";
 import { formatDate } from "@/utils/formatDate";
+import { useTranslation } from "react-i18next";
 
 export default function PostsPage() {
+  const { t } = useTranslation("post");
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState<PostType[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -40,8 +42,8 @@ export default function PostsPage() {
     <div className="p-6">
       <HeroSection
         img={"/images/mom_and_baby.png"}
-        title="Community posts"
-        subtitle="This platform offers a supportive community for new mothers to share experiences, access helpful tips, and find guidance throughout their motherhood journey."
+        title={t("post.communityTitle")}
+        subtitle={t("post.subtitle")}
         direction="left"
       />
       <div className="max-w-7xl mx-auto px-6">
@@ -55,7 +57,7 @@ export default function PostsPage() {
               tags={post.tagNames}
               imageBase64={post.imageBase64}
               author={post.memberUsername}
-              createdAt={formatDate(post.createdAt ?? "Unknown date")}
+              createdAt={formatDate(post.createdAt ?? "")}
               isBookmarked={post.bookmarked}
               isLiked={post.liked}
               likesCount={post.likesCount ?? 0}
