@@ -16,12 +16,14 @@ type BarGraphProps = {
   title?: string;
   data: { createdAt: string }[];
   months?: number; // How many past months to show
+  colour?: string;
 };
 
 export default function BarGraph({
   title = "Monthly Stats",
   data,
   months = 6,
+  colour,
 }: BarGraphProps) {
   // Memoize the grouped data to avoid recalculating unless data or months change
   const grouped = useMemo(() => {
@@ -59,7 +61,7 @@ export default function BarGraph({
       {
         label: title,
         data: grouped.values,
-        backgroundColor: "#06b6d4",
+        backgroundColor: colour || "#06b6d4",
       },
     ],
   };

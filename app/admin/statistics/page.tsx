@@ -64,8 +64,18 @@ export default function StatisticsPage() {
             data={[postCount, articleCount]}
           />
         </div>
-        <BarGraph title="Posts (Last 6 Months)" data={posts} months={6} />
-        <BarGraph title="Articles (Last 3 Months)" data={articles} months={3} />
+        <BarGraph
+          title="Posts (Last 6 Months)"
+          data={posts}
+          months={6}
+          colour="rgb(96, 165, 250)"
+        />
+        <BarGraph
+          title="Articles (Last 3 Months)"
+          data={articles}
+          months={3}
+          colour="red"
+        />
       </div>
     </div>
   );
