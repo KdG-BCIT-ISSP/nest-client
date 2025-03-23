@@ -5,14 +5,19 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-type Props = {
+type DoughnutChartProps = {
   labels: string[];
   data: number[];
   title?: string;
   colors?: string[];
 };
 
-export default function DoughnutChart({ labels, data, title, colors }: Props) {
+export default function DoughnutChart({
+  labels,
+  data,
+  title,
+  colors,
+}: DoughnutChartProps) {
   const chartData = {
     labels,
     datasets: [
