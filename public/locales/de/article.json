@@ -20,6 +20,8 @@
     "imageRequired": "Bitte laden Sie ein Bild hoch.",
     "contentRequired": "Inhalt ist erforderlich.",
     "createSuccess": "Artikel erfolgreich erstellt!",
-    "requiredField": "{{field}} ist erforderlich."
+    "requiredField": "{{field}} ist erforderlich.",
+    "heroTitle": "Mehr Informationen für Sie und Ihr Baby",
+    "heroSubtitle": "Medizinisch geprüfte Expertenratgeber, Tipps, Erfahrungsberichte und Artikel zu Fruchtbarkeit, Schwangerschaft, Mutterschaft und Wechseljahren."
   }
 }

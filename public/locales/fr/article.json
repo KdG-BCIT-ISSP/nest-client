@@ -20,6 +20,8 @@
     "imageRequired": "Veuillez télécharger une image.",
     "contentRequired": "Le contenu est requis.",
     "createSuccess": "Article créé avec succès !",
-    "requiredField": "{{field}} est requis."
+    "requiredField": "{{field}} est requis.",
+    "heroTitle": "Plus d'informations pour vous et votre bébé",
+    "heroSubtitle": "Des guides d'experts validés médicalement, des conseils, des témoignages et des articles sur la fertilité, la grossesse, la maternité et la ménopause."
   }
 }

@@ -8,8 +8,10 @@ import { ArticleCardType } from "@/types/ArticleCardType";
 import HeroSection from "@/components/HeroSection";
 import { articlesAtom } from "@/atoms/articles/atom";
 import { useAtom } from "jotai";
+import { useTranslation } from "react-i18next";
 
 export default function CuratedArticlesPage() {
+  const { t } = useTranslation("article");
   const [, setArticleData] = useAtom(articlesAtom);
   const [loading, setLoading] = useState(true);
   const [articles, setArticles] = useState<ArticleCardType[]>([]);
@@ -41,16 +43,15 @@ export default function CuratedArticlesPage() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>{t("general.loading")}</div>;
   }
 
   return (
     <div className="p-6 pt-10">
       <HeroSection
         img={"/images/pregnancy1.jpg"}
-        title="More Info for You and Your Baby"
-        subtitle="Medically-reviewed expert guides, tips, real-life stories, and
-            articles across fertility, pregnancy, motherhood and menopause."
+        title={t("article.heroTitle")}
+        subtitle={t("article.heroSubtitle")}
         direction="right"
       />
       <div className="py-10" />

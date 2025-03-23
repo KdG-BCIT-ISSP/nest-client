@@ -20,6 +20,8 @@
     "imageRequired": "Please upload an image.",
     "contentRequired": "Content is required.",
     "createSuccess": "Article created successfully!",
-    "requiredField": "{{field}} is required."
+    "requiredField": "{{field}} is required.",
+    "heroTitle": "More Info for You and Your Baby",
+    "heroSubtitle": "Medically-reviewed expert guides, tips, real-life stories, and articles across fertility, pregnancy, motherhood and menopause."
   }
 }
