@@ -1,0 +1,13 @@
+{
+  "post": {
+    "likes": "Gefällt mir",
+    "views": "Aufrufe",
+    "shares": "Geteilt",
+    "delete": "Löschen",
+    "confirmDelete": "Möchten Sie diesen Beitrag wirklich löschen?",
+    "deletedSuccess": "Beitrag erfolgreich gelöscht!",
+    "untitled": "Unbenannter Beitrag",
+    "noContent": "Kein Inhalt verfügbar",
+    "viewComments": "Alle Kommentare anzeigen"
+  }
+}
