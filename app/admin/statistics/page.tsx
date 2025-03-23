@@ -17,6 +17,13 @@ export default function StatisticsPage() {
   const [posts, setPosts] = useState([]);
   const [articles, setArticles] = useState([]);
 
+  const [totalPostViews, setTotalPostViews] = useState(0);
+  const [totalArticleViews, setTotalArticleViews] = useState(0);
+  const [postShares, setPostShares] = useState(0);
+  const [articleShares, setArticleShares] = useState(0);
+  const [postLikes, setPostLikes] = useState(0);
+  const [articleLikes, setArticleLikes] = useState(0);
+
   useEffect(() => {
     async function fetchStats() {
       try {
@@ -43,6 +50,18 @@ export default function StatisticsPage() {
         setArticleCount(articles.length);
         setPosts(posts);
         setArticles(articles);
+
+        const getTotal = (
+          arr: { [key: string]: number }[],
+          key: string
+        ): number => arr.reduce((sum, item) => sum + Number(item[key] || 0), 0);
+
+        setTotalPostViews(getTotal(posts, "viewCount"));
+        setTotalArticleViews(getTotal(articles, "viewCount"));
+        setPostShares(getTotal(posts, "shareCount"));
+        setArticleShares(getTotal(articles, "shareCount"));
+        setPostLikes(getTotal(posts, "likesCount"));
+        setArticleLikes(getTotal(articles, "likesCount"));
       } catch (error) {
         console.error("Failed to fetch stats:", error);
       } finally {
@@ -59,6 +78,32 @@ export default function StatisticsPage() {
       <SideMenu admin />
       <div className="p-4 sm:ml-64 w-full">
         <h1 className="text-2xl font-bold mb-6">Statistics Overview</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+          <div className="space-y-2">
+            <h2 className="text-lg font-semibold mb-2">Post Stats</h2>
+            <p>
+              Total Post Views: <strong>{totalPostViews}</strong>
+            </p>
+            <p>
+              Total Post Shares: <strong>{postShares}</strong>
+            </p>
+            <p>
+              Total Post Likes: <strong>{postLikes}</strong>
+            </p>
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-lg font-semibold mb-2">Article Stats</h2>
+            <p>
+              Total Article Views: <strong>{totalArticleViews}</strong>
+            </p>
+            <p>
+              Total Article Shares: <strong>{articleShares}</strong>
+            </p>
+            <p>
+              Total Article Likes: <strong>{articleLikes}</strong>
+            </p>
+          </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <DoughnutChart
             title="Users by Role"
