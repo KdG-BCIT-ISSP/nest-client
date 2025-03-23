@@ -8,6 +8,18 @@
     "deletedSuccess": "Artikel erfolgreich gelöscht!",
     "untitled": "Unbenannter Artikel",
     "noContent": "Kein Inhalt verfügbar",
-    "viewComments": "Alle Kommentare anzeigen"
+    "viewComments": "Alle Kommentare anzeigen",
+    "title": "Titel",
+    "titlePlaceholder": "Geben Sie den Artikeltitel ein...",
+    "content": "Inhalt",
+    "contentPlaceholder": "Schreiben Sie den Artikelinhalt hier...",
+    "addCoverImage": "Titelbild hinzufügen",
+    "publish": "Artikel veröffentlichen",
+    "preview": "HTML-Vorschau des Artikels:",
+    "titleRequired": "Titel ist erforderlich.",
+    "imageRequired": "Bitte laden Sie ein Bild hoch.",
+    "contentRequired": "Inhalt ist erforderlich.",
+    "createSuccess": "Artikel erfolgreich erstellt!",
+    "requiredField": "{{field}} ist erforderlich."
   }
 }

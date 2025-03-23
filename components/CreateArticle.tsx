@@ -10,8 +10,10 @@ import { ArticleType } from "@/types/ArticleType";
 import TagsSelector from "./TagsSelector";
 import imageCompression from "browser-image-compression";
 import { createArticle } from "@/app/api/article/create/route";
+import { useTranslation } from "react-i18next";
 
 export default function CreateArticle() {
+  const { t, i18n } = useTranslation("article");
   const [article, setArticle] = useState<ArticleType>({
     title: "",
     content: "",
@@ -20,6 +22,8 @@ export default function CreateArticle() {
     type: "ARTICLE",
     coverImage: "", // Stores uploaded image
     imagePreview: "", // Stores preview URL
+    likes: 0,
+    isLiked: false,
   });
 
   const [errors, setErrors] = useState({
@@ -43,7 +47,7 @@ export default function CreateArticle() {
       ...prevErrors,
       [field]: value.trim()
         ? ""
-        : `${field.charAt(0).toUpperCase() + field.slice(1)} is required.`,
+        : t("article.requiredField", { field: t(`article.${field}`) }),
     }));
   };
   // Handle Image Upload
@@ -87,7 +91,7 @@ export default function CreateArticle() {
     // Live validation for quill content
     setErrors((prevErrors) => ({
       ...prevErrors,
-      content: value.trim() ? "" : "Content is required.",
+      content: value.trim() ? "" : t("article.contentRequired"),
     }));
   };
 
@@ -106,17 +110,17 @@ export default function CreateArticle() {
     const newErrors = { title: "", content: "", image: "" };
 
     if (!article.title?.trim()) {
-      newErrors.title = "Title is required.";
+      newErrors.title = t("article.titleRequired");
       isValid = false;
     }
 
     if (!article.coverImage) {
-      newErrors.image = "Please upload an image.";
+      newErrors.image = t("article.imageRequired");
       isValid = false;
     }
 
     if (!article.content?.trim()) {
-      newErrors.content = "Content is required.";
+      newErrors.content = t("article.contentRequired");
       isValid = false;
     }
 
@@ -143,7 +147,7 @@ export default function CreateArticle() {
       );
 
       if (response) {
-        window.alert("Article created successfully");
+        window.alert(t("article.createSuccess"));
         window.location.href = `/curated-articles/`;
       } else {
         console.error("Post creation failed: No response from server.");
@@ -169,15 +173,15 @@ export default function CreateArticle() {
         <div className="mb-6 flex items-center justify-between gap-6">
           {/* Title Input */}
           <div className="w-3/5 flex flex-col">
-            <label className="block text-lg font-medium text-black">
-              Title
+            <label className="block text-lg font-medium">
+              {t("article.title")}
             </label>
             <input
               type="text"
               value={article.title}
               onChange={(e) => handleChange(e, "title")}
-              className="mt-1 p-3 w-full border border-gray-300 rounded-md text-black h-12"
-              placeholder="Enter article title..."
+              className="mt-1 p-3 w-full border border-gray-300 rounded-md h-12"
+              placeholder={t("article.titlePlaceholder")}
             />
             {errors.title && (
               <p className="text-red-500 text-sm">{errors.title}</p>
@@ -198,10 +202,10 @@ export default function CreateArticle() {
                 <p className="text-red-500 text-sm">{errors.image}</p>
               )}
               <Button
-                label="Add Cover Image"
+                label={t("article.addCoverImage")}
                 onClick={() => document.getElementById("fileUpload")?.click()}
                 type="button"
-                className="bg-gray-200 hover:bg-gray-300 text-black px-4 py-2 h-12 flex items-center rounded-md border border-gray-400"
+                className="bg-gray-200 hover:bg-gray-300 px-4 py-2 h-12 flex items-center rounded-md border border-gray-400"
               />
             </div>
 
@@ -223,15 +227,16 @@ export default function CreateArticle() {
 
         {/* React-Quill Text Editor */}
         <div className="mb-6">
-          <label className="block text-lg font-medium text-black">
-            Content
+          <label className="block text-lg font-medium ">
+            {t("article.content")}
           </label>
           <ReactQuill
+            key={i18n.language}
             value={article.content}
             onChange={handleContentChange}
-            className="mt-2 bg-white text-black"
+            className="mt-2 bg-white "
             theme="snow"
-            placeholder="Write your article content here..."
+            placeholder={t("article.contentPlaceholder")}
             style={{ height: "400px" }}
             modules={{
               toolbar: [
@@ -260,7 +265,7 @@ export default function CreateArticle() {
             onTagClick={handleTagClick}
           />
           <Button
-            label="Publish Article"
+            label={t("article.publish")}
             onClick={handleSubmit}
             className="text-white bg-red-500 h-12 hover:bg-red-600 font-medium rounded-md text-lg px-6 py-3"
           />
@@ -268,9 +273,9 @@ export default function CreateArticle() {
       </form>
 
       {/* HTML Preview */}
-      <div className="prose mt-8 border-t border-gray-200 pt-6 text-black">
+      <div className="prose mt-8 border-t border-gray-200 pt-6 ">
         {" "}
-        <h3>Article HTML Preview:</h3>
+        <h3>{t("article.preview")}</h3>
         <pre style={{ whiteSpace: "pre-wrap" }}>{article.content}</pre>
       </div>
     </div>

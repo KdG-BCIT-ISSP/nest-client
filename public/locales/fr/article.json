@@ -8,6 +8,18 @@
     "deletedSuccess": "Article supprimé avec succès!",
     "untitled": "Article sans titre",
     "noContent": "Aucun contenu disponible",
-    "viewComments": "Voir tous les commentaires"
+    "viewComments": "Voir tous les commentaires",
+    "title": "Titre",
+    "titlePlaceholder": "Entrez le titre de l'article...",
+    "content": "Contenu",
+    "contentPlaceholder": "Écrivez le contenu de votre article ici...",
+    "addCoverImage": "Ajouter une image de couverture",
+    "publish": "Publier l'article",
+    "preview": "Aperçu HTML de l'article :",
+    "titleRequired": "Le titre est requis.",
+    "imageRequired": "Veuillez télécharger une image.",
+    "contentRequired": "Le contenu est requis.",
+    "createSuccess": "Article créé avec succès !",
+    "requiredField": "{{field}} est requis."
   }
 }
