@@ -17,6 +17,7 @@ import { PostType } from "@/types/PostType";
 import { reportArticle } from "@/app/api/report/article/post/route";
 import XIcon from "@/public/svg/XIcon";
 import { getViewsById } from "@/app/api/content/views/route";
+import { formatDate } from "@/utils/formatDate";
 
 export default function PostDetailPage() {
   const params = useParams();
@@ -136,7 +137,8 @@ export default function PostDetailPage() {
       <div className="max-w-2xl mx-auto p-4 pt-4 text-black">
         <div className="mb-6">
           <p className="text-sm text-gray-700">
-            By <b>{post.memberUsername}</b> | {new Date().toLocaleString()}
+            By <b>{post.memberUsername}</b> |{" "}
+            {formatDate(post.createdAt ?? "Unknown date")}
           </p>
           <p className="text-xs mt-2">{views} verified views</p>
 
@@ -171,7 +173,7 @@ export default function PostDetailPage() {
 
         <div className="prose prose-green mb-8">{post.content}</div>
         <div className="flex justify-end gap-4">
-          <ArticleThumpsUp count={224} />
+          <ArticleThumpsUp count={224} isLiked={post.liked ?? false} />
           <ArticleComment count={32} />
           <ArticleBookmark count={212} />
           <button onClick={handleShareClick}>

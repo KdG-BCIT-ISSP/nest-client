@@ -5,6 +5,7 @@ import { getPost } from "@/app/api/post/get/route";
 import { PostType } from "@/types/PostType";
 import PostCard from "@/components/PostCard";
 import HeroSection from "@/components/HeroSection";
+import { formatDate } from "@/utils/formatDate";
 
 export default function PostsPage() {
   const [loading, setLoading] = useState(true);
@@ -54,7 +55,7 @@ export default function PostsPage() {
               tags={post.tagNames}
               imageBase64={post.imageBase64}
               author={post.memberUsername}
-              createdAt={post.createdAt}
+              createdAt={formatDate(post.createdAt ?? "Unknown date")}
               isBookmarked={post.bookmarked}
               isLiked={post.liked}
               likesCount={post.likesCount ?? 0}
