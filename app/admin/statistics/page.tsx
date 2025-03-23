@@ -11,6 +11,7 @@ import SideMenu from "@/components/SideMenu";
 export default function StatisticsPage() {
   const [loading, setLoading] = useState(true);
   const [userRoles, setUserRoles] = useState<{ [key: string]: number }>({});
+  const [regionCount, setRegionCount] = useState<{ [key: string]: number }>({});
   const [postCount, setPostCount] = useState(0);
   const [articleCount, setArticleCount] = useState(0);
   const [posts, setPosts] = useState([]);
@@ -27,11 +28,17 @@ export default function StatisticsPage() {
 
         // Count user roles
         const roleCount: { [key: string]: number } = {};
-        users.forEach((user: { role: string | number }) => {
+        const regionCount: { [key: string]: number } = {};
+
+        users.forEach((user: { role: string; region?: string }) => {
           roleCount[user.role] = (roleCount[user.role] || 0) + 1;
+          if (user.region) {
+            regionCount[user.region] = (regionCount[user.region] || 0) + 1;
+          }
         });
 
         setUserRoles(roleCount);
+        setRegionCount(regionCount);
         setPostCount(posts.length);
         setArticleCount(articles.length);
         setPosts(posts);
@@ -70,6 +77,24 @@ export default function StatisticsPage() {
             title="Content Distribution"
             labels={["Posts", "Articles"]}
             data={[postCount, articleCount]}
+          />
+          <DoughnutChart
+            title="Users by Region"
+            labels={Object.keys(regionCount)}
+            data={Object.values(regionCount)}
+            colours={[
+              "#f87171", // red
+              "#60a5fa", // blue
+              "#34d399", // green
+              "#fbbf24", // yellow
+              "#a78bfa", // purple
+              "#f472b6", // pink
+              "#fb923c", // orange
+              "#818cf8", // indigo
+              "#4ade80", // lime
+              "#38bdf8", // sky
+              "#c084fc", // violet
+            ]}
           />
         </div>
         <BarGraph
