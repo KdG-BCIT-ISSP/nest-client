@@ -78,7 +78,7 @@ export default function StatisticsPage() {
       <SideMenu admin />
       <div className="p-4 sm:ml-64 w-full">
         <h1 className="text-2xl font-bold mb-6">Statistics Overview</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 mb-10">
           <div className="space-y-2">
             <h2 className="text-lg font-semibold mb-2">Post Stats</h2>
             <p>
@@ -104,7 +104,7 @@ export default function StatisticsPage() {
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
           <DoughnutChart
             title="Users by Role"
             labels={Object.keys(userRoles)}
@@ -142,18 +142,20 @@ export default function StatisticsPage() {
             ]}
           />
         </div>
-        <BarGraph
-          title="Posts (Last 6 Months)"
-          data={posts}
-          months={6}
-          colour="rgb(96, 165, 250)"
-        />
-        <BarGraph
-          title="Articles (Last 3 Months)"
-          data={articles}
-          months={3}
-          colour="red"
-        />
+        <div className="space-y-10">
+          <BarGraph
+            title="Posts (Last 6 Months)"
+            data={posts}
+            months={6}
+            colour="rgb(96, 165, 250)"
+          />
+          <BarGraph
+            title="Articles (Last 3 Months)"
+            data={articles}
+            months={3}
+            colour="red"
+          />
+        </div>
       </div>
     </div>
   );
