@@ -17,7 +17,7 @@ const ADMIN_SIDE_MENU_LINKS = [
   { href: "/admin/reported-posts", label: "Reported Post" },
   { href: "/admin/reported-articles", label: "Reported Articles" },
   { href: "/admin/reported-comments", label: "Reported Comments" },
-  { href: "/admin/data", label: "Data" },
+  { href: "/admin/statistics", label: "Statistics" },
   { href: "/admin/tag-management", label: "Tag Management" },
 ];
 
