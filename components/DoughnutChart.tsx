@@ -9,14 +9,14 @@ type DoughnutChartProps = {
   labels: string[];
   data: number[];
   title?: string;
-  colors?: string[];
+  colours?: string[];
 };
 
 export default function DoughnutChart({
   labels,
   data,
   title,
-  colors,
+  colours,
 }: DoughnutChartProps) {
   const chartData = {
     labels,
@@ -24,7 +24,7 @@ export default function DoughnutChart({
       {
         label: title || "Dataset",
         data,
-        backgroundColor: colors || [
+        backgroundColor: colours || [
           "#f87171",
           "#60a5fa",
           "#34d399",

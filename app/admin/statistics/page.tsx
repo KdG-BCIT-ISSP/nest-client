@@ -57,6 +57,14 @@ export default function StatisticsPage() {
             title="Users by Role"
             labels={Object.keys(userRoles)}
             data={Object.values(userRoles)}
+            colours={[
+              "#f87171", // hex red
+              "rgb(96, 165, 250)", // rgb blue
+              "green", // named color
+              "#fbbf24", // hex yellow
+              "purple", // named
+              "rgb(244, 114, 182)", // rgb pink
+            ]}
           />
           <DoughnutChart
             title="Content Distribution"
