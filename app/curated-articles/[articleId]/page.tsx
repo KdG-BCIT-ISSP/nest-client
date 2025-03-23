@@ -22,8 +22,10 @@ import { getContentLikes } from "@/app/api/content/likes/route";
 import { getContentisLiked } from "@/app/api/content/isLiked/route";
 import { toggleLike } from "@/app/api/content/toggleLike/route";
 import { formatDate } from "@/utils/formatDate";
+import { useTranslation } from "react-i18next";
 
 export default function ArticleDetailsPage() {
+  useTranslation(); // TODO: Finish translating
   const params = useParams();
   const articleId = Number(params.articleId);
   const [article, setArticle] = useState<ArticleType>();
@@ -206,7 +208,8 @@ export default function ArticleDetailsPage() {
       <div className="max-w-2xl mx-auto p-4 pt-4 text-black">
         <div className="mb-6">
           <p className="text-sm text-gray-700">
-            By <b>{article.memberUsername}</b> | {formatDate(article.createdAt)}
+            By <b>{article.memberUsername}</b> |{" "}
+            {formatDate(article.createdAt ?? "")}
           </p>
           <p className="text-xs mt-2">{views} verified views</p>
 
