@@ -5,7 +5,6 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
-import { getNewAccessToken } from "./auth/accessToken/route";
 import { getCookie, deleteCookie, setCookie } from "cookies-next";
 
 const axiosInterceptor: AxiosInstance = axios.create({
@@ -54,17 +53,17 @@ axiosInterceptor.interceptors.response.use(
       if (!originalRequest._retry) {
         originalRequest._retry = true;
 
-        if (EXPIRED_TOKEN_ERROR.includes(responseType)) {
-          try {
-            const response = await getNewAccessToken(refreshToken);
-            localStorage.setItem("accessToken", response.accessToken);
-            setCookie("refreshToken", response.refreshToken);
-            return axiosInterceptor(originalRequest);
-          } catch (refreshError) {
-            handleLogout();
-            return Promise.reject(refreshError);
-          }
-        }
+        // if (EXPIRED_TOKEN_ERROR.includes(responseType)) {
+        //   try {
+        //     const response = await getNewAccessToken(refreshToken);
+        //     localStorage.setItem("accessToken", response.accessToken);
+        //     setCookie("refreshToken", response.refreshToken);
+        //     return axiosInterceptor(originalRequest);
+        //   } catch (refreshError) {
+        //     handleLogout();
+        //     return Promise.reject(refreshError);
+        //   }
+        // }
 
         if (responseType === INVALID_TOKEN_ERROR) {
           handleLogout();

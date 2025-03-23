@@ -1,38 +1,10 @@
-// app/api/article/route.ts
 import { NextResponse } from "next/server";
-import { API_BASE_URL } from "@/app/lib/fetchInterceptor";
+import { get, post, put, del } from "@/app/lib/fetchInterceptor";
 
 export async function POST(request: Request) {
   try {
-    const { title, content, topicId, type, tagNames, coverImage } =
-      await request.json();
-    const backendUrl = `${API_BASE_URL}/article`;
-
-    const apiResponse = await fetch(backendUrl, {
-      method: "POST",
-      headers: {
-        Authorization: request.headers.get("Authorization") || "",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title,
-        content,
-        topicId,
-        type,
-        tagNames,
-        coverImage,
-      }),
-    });
-
-    if (!apiResponse.ok) {
-      const errorData = await apiResponse.json();
-      return NextResponse.json(
-        { message: errorData.message },
-        { status: apiResponse.status }
-      );
-    }
-
-    const data = await apiResponse.json();
+    const body = await request.json();
+    const data = await post("/article", body);
     return NextResponse.json(data);
   } catch (error: unknown) {
     const errorMessage =
@@ -41,27 +13,9 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
-    const backendUrl = `${API_BASE_URL}/article`;
-
-    const apiResponse = await fetch(backendUrl, {
-      method: "GET",
-      headers: {
-        Authorization: request.headers.get("Authorization") || "",
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!apiResponse.ok) {
-      const errorData = await apiResponse.json();
-      return NextResponse.json(
-        { message: errorData.message },
-        { status: apiResponse.status }
-      );
-    }
-
-    const data = await apiResponse.json();
+    const data = await get("/article");
     return NextResponse.json(data);
   } catch (error: unknown) {
     const errorMessage =
@@ -72,36 +26,8 @@ export async function GET(request: Request) {
 
 export async function PUT(request: Request) {
   try {
-    const { id, title, content, topicId, type, tagNames, coverImage } =
-      await request.json();
-    const backendUrl = `${API_BASE_URL}/article`;
-
-    const apiResponse = await fetch(backendUrl, {
-      method: "PUT",
-      headers: {
-        Authorization: request.headers.get("Authorization") || "",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id,
-        title,
-        content,
-        topicId,
-        type,
-        tagNames,
-        coverImage,
-      }),
-    });
-
-    if (!apiResponse.ok) {
-      const errorData = await apiResponse.json();
-      return NextResponse.json(
-        { message: errorData.message },
-        { status: apiResponse.status }
-      );
-    }
-
-    const data = await apiResponse.json();
+    const body = await request.json();
+    const data = await put("/article", body);
     return NextResponse.json(data);
   } catch (error: unknown) {
     const errorMessage =
@@ -119,26 +45,7 @@ export async function DELETE(request: Request) {
         { status: 400 }
       );
     }
-
-    const backendUrl = `${API_BASE_URL}/article/${id}`;
-
-    const apiResponse = await fetch(backendUrl, {
-      method: "DELETE",
-      headers: {
-        Authorization: request.headers.get("Authorization") || "",
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!apiResponse.ok) {
-      const errorData = await apiResponse.json();
-      return NextResponse.json(
-        { message: errorData.message },
-        { status: apiResponse.status }
-      );
-    }
-
-    const data = await apiResponse.json();
+    const data = await del(`/article/${id}`);
     return NextResponse.json(data);
   } catch (error: unknown) {
     const errorMessage =

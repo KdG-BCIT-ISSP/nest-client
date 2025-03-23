@@ -6,9 +6,12 @@ const INVALID_TOKEN_ERROR = "Invalid token";
 const EXPIRED_TOKEN_ERROR = ["Expired token", "Token expired"];
 
 async function refreshAccessToken(refreshToken: string) {
-  const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+  const response = await fetch(`${API_BASE_URL}auth/getNewAccessToken`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${refreshToken}`,
+    },
     body: JSON.stringify({ refreshToken }),
   });
   if (!response.ok) throw new Error("Failed to refresh token");
