@@ -34,5 +34,8 @@
     "loading": "Chargement...",
     "anonymous": "Anonyme",
     "unknownDate": "Date inconnue"
+  },
+  "footer": {
+    "copyright": "Tous droits réservés."
   }
 }

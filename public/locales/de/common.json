@@ -34,5 +34,8 @@
     "loading": "Lädt...",
     "anonymous": "Anonym",
     "unknownDate": "Unbekanntes Datum"
+  },
+  "footer": {
+    "copyright": "Alle Rechte vorbehalten."
   }
 }
