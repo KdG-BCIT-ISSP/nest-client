@@ -19,7 +19,6 @@ export async function POST(request: Request) {
     const { title, content, topicId, type, tagNames, imageBase64 } =
       await request.json();
 
-    // Validation
     if (!title || !content || !topicId || !type) {
       return NextResponse.json(
         { message: "Title, content, topicId, and type are required" },
@@ -58,7 +57,6 @@ export async function PUT(request: Request) {
       imageBase64,
     } = await request.json();
 
-    // Validation
     if (!id || !memberId || !title || !content || !topicId || !type) {
       return NextResponse.json(
         {
@@ -89,17 +87,16 @@ export async function PUT(request: Request) {
 }
 
 // DELETE /api/v1/posts/{postId} - Delete a post
-export async function DELETE(
-  request: Request,
-  { params }: { params: { postId: string } }
-) {
+export async function DELETE(request: Request) {
   try {
-    const postId = parseInt(params.postId);
-    if (isNaN(postId)) {
-      return NextResponse.json({ message: "Invalid post ID" }, { status: 400 });
+    const { id } = await request.json();
+    if (!id) {
+      return NextResponse.json(
+        { message: "Post ID is required" },
+        { status: 400 }
+      );
     }
-
-    const data = await del(`/posts/${postId}`);
+    const data = await del(`/posts/${id}`);
     return NextResponse.json(data);
   } catch (error: unknown) {
     const errorMessage =

@@ -23,7 +23,7 @@ export async function GET(request: Request) {
       }
     }
 
-    // Specific ID path: /api/v1/report/[type]/[id]
+    // Specific ID path: /api/report/[type]/[id]
     if (segments.length === 4) {
       const type = segments[2];
       const id = parseInt(segments[3]);
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     const { pathname } = new URL(request.url);
     const segments = pathname.split("/").filter(Boolean);
 
-    // Specific ID path: /api/v1/report/[type]/[id]
+    // Specific ID path: /api/report/[type]/[id]
     if (segments.length === 4) {
       const type = segments[2];
       const id = parseInt(segments[3]);
@@ -105,7 +105,7 @@ export async function DELETE(request: Request) {
     const { pathname } = new URL(request.url);
     const segments = pathname.split("/").filter(Boolean);
 
-    // DELETE /api/v1/report/[reportId]
+    // DELETE /api/report/[reportId]
     if (segments.length === 3) {
       const reportId = parseInt(segments[2]);
 

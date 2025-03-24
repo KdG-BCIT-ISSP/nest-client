@@ -5,7 +5,6 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const pathname = url.pathname;
 
-  // Use switch-case to determine GET route based on the URL
   switch (true) {
     case pathname.endsWith("/all"): {
       // GET /api/member/all - Get all users
@@ -82,7 +81,6 @@ export async function PUT(request: Request) {
   const url = new URL(request.url);
   const pathname = url.pathname;
 
-  // Use switch-case to differentiate profile update from role update
   switch (true) {
     case pathname.includes("/role/"): {
       // PUT /api/member/role/[id] - Update user role
