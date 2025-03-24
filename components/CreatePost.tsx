@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import React, { useState, useEffect } from "react";
 import { PostType } from "@/types/PostType";
@@ -114,7 +115,6 @@ export default function CreatePost() {
   // handle userPost submission (WIP)
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setIsLoading(true);
 
     if (!validateForm()) return;
     const updatedPost = { ...userPost, tags: selectedTags }; // Create updatedPost

@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { useRouter } from "next/navigation";
 import { ArticleCardType } from "@/types/ArticleCardType";
@@ -48,7 +49,7 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
   return (
     <div
       onClick={handleClick}
-      className="flex flex-col bg-white shadow-md md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 cursor-pointer"
+      className="flex flex-col bg-white shadow-md md:flex-row md:max-w-xl hover:bg-gray-100 cursor-pointer"
     >
       {/* Cover Image */}
       <div className="md:w-48">
@@ -63,7 +64,7 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
 
       {/* Article Details */}
       <div className="flex flex-col justify-between p-4 leading-normal w-full">
-        <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+        <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900">
           {article.title}
         </h5>
         <div
@@ -74,7 +75,7 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
         </div>
 
         {/* Metadata: Topic, Created At, Stats */}
-        <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+        <div className="text-sm text-gray-500 mb-2">
           <span className="font-medium text-gray-800">{article.topicName}</span>{" "}
           • <span>{formatDate(article.createdAt ?? "")}</span>
         </div>
@@ -94,7 +95,7 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
         )}
 
         {/* Likes, Views, Shares */}
-        <div className="flex justify-between text-gray-600 dark:text-gray-300 text-xs">
+        <div className="flex justify-between text-gray-600 text-xs">
           <span>
             {article.likesCount ?? 0} {t("article.likes")}
           </span>

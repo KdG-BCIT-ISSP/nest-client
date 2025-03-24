@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import Button from "@/components/Button";
 import SideMenu from "@/components/SideMenu";
@@ -312,7 +313,7 @@ export default function TagManagementPage() {
               >
                 {tag.name}
                 <svg
-                  className="ml-2 w-5 h-5 text-gray-500 dark:text-white hover:text-tertiary"
+                  className="ml-2 w-5 h-5 text-gray-500 hover:text-tertiary"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"

@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -170,7 +171,7 @@ export default function PostDetailPage() {
 
         <div className="prose prose-green mb-8">{userPost.content}</div>
         <div className="flex justify-end gap-4">
-          <ArticleThumpsUp count={224} isLiked={post.liked ?? false} />
+          <ArticleThumpsUp count={224} isLiked={userPost.liked ?? false} />
           <ArticleComment count={32} />
           <ArticleBookmark count={212} />
           <button onClick={handleShareClick}>

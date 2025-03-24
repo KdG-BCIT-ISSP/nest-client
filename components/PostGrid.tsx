@@ -1,5 +1,3 @@
-"use client";
-
 import { PostGridType } from "@/types/PostType";
 import ThumbsUp from "@/public/svg/Article/ThumbsUp";
 import Bookmark from "@/public/svg/Article/Bookmark";

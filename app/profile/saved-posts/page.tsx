@@ -1,4 +1,6 @@
 "use client";
+export const dynamic = "force-dynamic";
+
 import PostCard from "@/components/PostCard";
 import SideMenu from "@/components/SideMenu";
 import { useEffect, useState } from "react";

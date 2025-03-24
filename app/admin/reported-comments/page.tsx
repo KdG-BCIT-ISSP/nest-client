@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import ReportCard from "@/components/ReportCard";
 import SideMenu from "@/components/SideMenu";

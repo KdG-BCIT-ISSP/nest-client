@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { useState } from "react";
 import Image from "next/image";
@@ -79,7 +80,7 @@ export default function SignupPage() {
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
         <Link
           href="/"
-          className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
+          className="flex items-center mb-6 text-2xl font-semibold text-gray-900"
         >
           <Image
             className="w-8 h-8 mr-2"
@@ -91,9 +92,9 @@ export default function SignupPage() {
           NEST
         </Link>
 
-        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+        <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 className="text-xl font-bold text-gray-900 md:text-2xl dark:text-white text-center">
+            <h1 className="text-xl font-bold text-gray-900 md:text-2xl text-center">
               Sign Up
             </h1>
 
@@ -106,13 +107,13 @@ export default function SignupPage() {
 
             <form className="space-y-4" onSubmit={handleSignup}>
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                <label className="block mb-2 text-sm font-medium text-gray-900">
                   Username
                 </label>
                 <input
                   type="text"
                   name="username"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="Your username"
                   value={formData.username}
                   onChange={handleChange}
@@ -121,13 +122,13 @@ export default function SignupPage() {
               </div>
 
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                <label className="block mb-2 text-sm font-medium text-gray-900">
                   Your email
                 </label>
                 <input
                   type="email"
                   name="email"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="name@company.com"
                   value={formData.email}
                   onChange={handleChange}
@@ -136,13 +137,13 @@ export default function SignupPage() {
               </div>
 
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                <label className="block mb-2 text-sm font-medium text-gray-900">
                   Password
                 </label>
                 <input
                   type="password"
                   name="password"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
@@ -151,13 +152,13 @@ export default function SignupPage() {
               </div>
 
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                <label className="block mb-2 text-sm font-medium text-gray-900">
                   Re-enter Password
                 </label>
                 <input
                   type="password"
                   name="repassword"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="••••••••"
                   value={formData.repassword}
                   onChange={handleChange}
@@ -167,17 +168,17 @@ export default function SignupPage() {
 
               <button
                 type="submit"
-                className="w-full text-black bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:opacity-50"
+                className="w-full text-black bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50"
                 disabled={isLoading}
               >
                 {isLoading ? "Signing up..." : "Sign Up"}
               </button>
 
-              <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+              <p className="text-sm font-light text-gray-500">
                 Already have an account?
                 <Link
                   href="/auth/login"
-                  className="ml-2 font-medium text-primary-600 hover:underline dark:text-primary-500"
+                  className="ml-2 font-medium text-primary-600 hover:underline"
                 >
                   Sign in
                 </Link>

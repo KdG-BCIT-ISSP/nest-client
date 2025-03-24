@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import ReportCard from "@/components/ReportCard";
 import SideMenu from "@/components/SideMenu";
@@ -14,11 +15,13 @@ export default function ReportedPostsPage() {
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
+      console.time("fetchData");
       try {
         const [reportedPostsData, postsData] = await Promise.all([
           get("/api/report/post"),
           get("/api/posts"),
         ]);
+        console.timeEnd("fetchData");
         setReportedPosts(reportedPostsData);
         setPosts(postsData);
       } catch (err) {

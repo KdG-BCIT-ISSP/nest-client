@@ -1,21 +1,11 @@
 "use client";
+export const dynamic = "force-dynamic";
 
-import { Geist, Geist_Mono } from "next/font/google";
 import { useEffect } from "react";
 import { userAtom } from "@/atoms/user/atom";
 import { useAtom } from "jotai";
 import { get } from "@/app/lib/fetchInterceptor";
 import { useTranslation } from "react-i18next";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { i18n } = useTranslation();
@@ -39,9 +29,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [i18n.language, setUserData]);
 
   return (
-    <div
-      className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col p-12`}
-    >
+    <div className={` antialiased min-h-screen flex flex-col p-12`}>
       <main className="flex-grow" style={{ backgroundColor: "#ffffff" }}>
         {children}
       </main>

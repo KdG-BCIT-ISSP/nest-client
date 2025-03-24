@@ -1,14 +1,11 @@
-import type { Metadata } from "next";
+"use client";
+export const dynamic = "force-dynamic";
+
 import Layout from "@/components/Layout";
 import Providers from "./providers";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
-export const metadata: Metadata = {
-  title: "NEST",
-  description: "Nurturing Engagement & Support Toolkit",
-};
 
 export default function RootLayout({
   children,

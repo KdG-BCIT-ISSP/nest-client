@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import ArticleCard from "@/components/ArticleCard";
 import { useEffect, useState } from "react";

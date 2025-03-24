@@ -1,20 +1,10 @@
 "use client";
+export const dynamic = "force-dynamic";
 
-import { useEffect, useState } from "react";
 import SideMenu from "@/components/SideMenu";
 import TopPosts from "@/components/TopPosts";
 
 export default function AdminPostPage() {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setLoading(false);
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div className="flex">
       <SideMenu admin />

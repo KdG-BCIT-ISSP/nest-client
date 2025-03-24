@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { ProfileDataType } from "@/types/ProfileDataType";
 import { useEffect, useState } from "react";
@@ -147,7 +148,7 @@ export default function ProfileInputField({
         <div className="flex flex-col items-center">
           <Image
             src={imagePreview || avatar || "/images/default_profile_image.png"}
-            className="object-cover rounded-full shrink-0 md:w-16 md:h-16 dark:border-none"
+            className="object-cover rounded-full shrink-0 md:w-16 md:h-16"
             alt="avatar"
             width={70}
             height={70}

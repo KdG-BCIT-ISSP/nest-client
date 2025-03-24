@@ -7,7 +7,7 @@ function ArticleThumpsUp({
 }: {
   count: number;
   reported?: boolean;
-  isLiked: boolean;
+  isLiked?: boolean;
 }) {
   const baseColor = isLiked ? "#3B82F6" : "#CD6A6A";
   const fillColor = "#fff";

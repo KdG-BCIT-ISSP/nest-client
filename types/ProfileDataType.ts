@@ -1,6 +1,6 @@
 export type ProfileDataType = {
-  username: string;
-  email: string;
+  username?: string;
+  email?: string;
   region: string;
   avatar?: string;
 };

@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import MenuIcon from "@/public/svg/Menu";
 import SearchBar from "./SearchBar";
@@ -59,10 +60,10 @@ export default function Navbar() {
   const isSearchPage = pathname === "/search";
 
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-primary border-gray-200 dark:bg-gray-900 z-50">
+    <nav className="fixed top-0 left-0 right-0 bg-primary border-gray-200 z-50">
       <div className="max-w-screen-xl flex items-center justify-between mx-auto p-5">
         <Link href="/" className="flex items-center space-x-3">
-          <span className="text-2xl font-semibold whitespace-nowrap dark:text-white text-secondary">
+          <span className="text-2xl font-semibold whitespace-nowrap text-secondary">
             LOGO
           </span>
         </Link>
@@ -77,7 +78,7 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-gray-900 hover:text-secondary dark:text-white dark:hover:text-secondary"
+              className="text-gray-900 hover:text-secondary"
             >
               {link.label}
             </Link>
@@ -90,7 +91,7 @@ export default function Navbar() {
               <button
                 onClick={toggleUserDropdown}
                 type="button"
-                className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300"
               >
                 <span className="sr-only">Open user menu</span>
                 <Image
@@ -104,12 +105,12 @@ export default function Navbar() {
               </button>
 
               {isUserDropdownOpen && (
-                <div className="z-50 absolute right-0 mt-2 w-48 bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg dark:bg-gray-700 dark:border-gray-600 dark:divide-gray-600">
+                <div className="z-50 absolute right-0 mt-2 w-48 bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg">
                   <div className="px-4 py-3">
-                    <span className="block text-sm text-gray-900 dark:text-white">
+                    <span className="block text-sm text-gray-900">
                       {userData.username}
                     </span>
-                    <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
+                    <span className="block text-sm text-gray-500 truncate">
                       {userData.email}
                     </span>
                   </div>
@@ -118,7 +119,7 @@ export default function Navbar() {
                       <li key={link.href}>
                         <Link
                           href={link.href}
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         >
                           {link.label}
                         </Link>
@@ -127,7 +128,7 @@ export default function Navbar() {
                     <li>
                       <button
                         onClick={handleLogout}
-                        className="block px-4 py-2 w-full text-left text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200"
+                        className="block px-4 py-2 w-full text-left text-sm text-red-600 hover:bg-gray-100"
                       >
                         {t("navigation.signOut")}
                       </button>
@@ -156,7 +157,7 @@ export default function Navbar() {
           <button
             data-collapse-toggle="navbar-user"
             type="button"
-            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
             aria-controls="navbar-user"
             aria-expanded="false"
           >
