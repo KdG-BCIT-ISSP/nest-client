@@ -9,12 +9,8 @@ const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 import { ArticleType } from "@/types/ArticleType";
 import TagsSelector from "./TagsSelector";
 import imageCompression from "browser-image-compression";
-<<<<<<< HEAD
-import { post } from "@/app/lib/fetchClient";
 import { useTranslation } from "react-i18next";
-=======
 import { post } from "@/app/lib/fetchInterceptor";
->>>>>>> 931b03d ([NEST-COMMON-NEXTAPI] change filename to fetchInterceptor)
 
 export default function CreateArticle() {
   const { t, i18n } = useTranslation("article");
