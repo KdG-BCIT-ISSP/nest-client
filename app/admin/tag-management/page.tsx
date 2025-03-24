@@ -4,10 +4,6 @@ import Button from "@/components/Button";
 import SideMenu from "@/components/SideMenu";
 import PopupWindow from "@/components/PopupWindow";
 import { useEffect, useState } from "react";
-import { updateTopic } from "@/app/api/topic/update/route";
-import { getTopic } from "@/app/api/topic/get/route";
-import { createTopic } from "@/app/api/topic/create/route";
-import { deleteTopic } from "@/app/api/topic/delete/route";
 import { del, get, post, put } from "@/app/lib/fetchInterceptor";
 
 interface Topic {
@@ -31,7 +27,7 @@ export default function TagManagementPage() {
 
   async function fetchTopics() {
     try {
-      const data = await getTopic();
+      const data = await get("/api/topic");
       const formattedTopics: Topic[] = data.map((topic: Topic) => ({
         id: topic.id,
         name: topic.name,
@@ -96,11 +92,10 @@ export default function TagManagementPage() {
   const editTopic = async () => {
     if (selectedTopic) {
       try {
-        const response = await updateTopic(
-          selectedTopic.id,
-          selectedTopic.name,
-          selectedTopic.description || ""
-        );
+        const response = await put(`/api/topic/update/${selectedTopic.id}`, {
+          name: selectedTopic.name,
+          description: selectedTopic.description || "",
+        });
         closeModal();
 
         if (response) {
@@ -151,7 +146,7 @@ export default function TagManagementPage() {
   const deleteSelectedTopic = async () => {
     if (selectedTopic) {
       try {
-        const response = await deleteTopic(selectedTopic?.id);
+        const response = await del(`/api/topic/delete/${selectedTopic?.id}`);
         closeModal();
 
         if (response) {
@@ -188,10 +183,10 @@ export default function TagManagementPage() {
   const addTopic = async () => {
     if (selectedTopic) {
       try {
-        const response = await createTopic(
-          selectedTopic.name,
-          selectedTopic.description || ""
-        );
+        const response = await post("/api/topic/create", {
+          name: selectedTopic.name,
+          description: selectedTopic.description || "",
+        });
         closeModal();
 
         if (response) {
