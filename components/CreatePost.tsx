@@ -114,6 +114,7 @@ export default function CreatePost() {
   // handle userPost submission (WIP)
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setIsLoading(true);
 
     if (!validateForm()) return;
     const updatedPost = { ...userPost, tags: selectedTags }; // Create updatedPost

@@ -17,7 +17,6 @@ export default function UserRoleToggle({
   const isSuperAdmin = currentRole === "SUPER_ADMIN";
 
   const changeUserRole = async (id: number, role: string) => {
-    console.log("changeUserRole", role);
     try {
       const response = await put(`/api/member/role/${id}`, { role: role });
       if (response) {

@@ -6,12 +6,9 @@ import PopupWindow from "@/components/PopupWindow";
 import { useEffect, useState } from "react";
 import { updateTopic } from "@/app/api/topic/update/route";
 import { getTopic } from "@/app/api/topic/get/route";
-import { getTag } from "@/app/api/tag/get/route";
 import { createTopic } from "@/app/api/topic/create/route";
-import { createTag } from "@/app/api/tag/create/route";
-import { updateTag } from "@/app/api/tag/update/route";
 import { deleteTopic } from "@/app/api/topic/delete/route";
-import { deleteTag } from "@/app/api/tag/delete/route";
+import { del, get, post, put } from "@/app/lib/fetchInterceptor";
 
 interface Topic {
   id: number;
@@ -50,7 +47,7 @@ export default function TagManagementPage() {
       setLoading(true);
       setError(null);
 
-      const data = await getTag();
+      const data = await get("/api/tag");
       // const formattedTags: Tag[] = data.map((tag: Tag) => ({
       //   id: tag.id,
       //   name: tag.name,
@@ -118,7 +115,6 @@ export default function TagManagementPage() {
                 : topic
             )
           );
-          console.log("Topic created successfully:", response);
         } else {
           console.error("Topic creation failed: No response from server.");
         }
@@ -131,7 +127,9 @@ export default function TagManagementPage() {
   const editTag = async () => {
     if (selectedTag) {
       try {
-        const response = await updateTag(selectedTag.id, selectedTag.name);
+        const response = await put(`/api/tag/update/${selectedTag.id}`, {
+          name: selectedTag.name,
+        });
         closeModal();
         if (response) {
           setTags((prevTags) =>
@@ -141,7 +139,6 @@ export default function TagManagementPage() {
                 : tag
             )
           );
-          console.log("tag created successfully:", response);
         } else {
           console.error("tag creation failed: No response from server.");
         }
@@ -161,7 +158,6 @@ export default function TagManagementPage() {
           setTopics((prevTopics) =>
             prevTopics.filter((topic) => topic.id !== selectedTopic.id)
           );
-          console.log("topic created successfully:", response);
         } else {
           console.error("topic creation failed: No response from server.");
         }
@@ -174,13 +170,12 @@ export default function TagManagementPage() {
   const deleteSelectedTag = async () => {
     if (selectedTag) {
       try {
-        const response = await deleteTag(selectedTag?.id);
+        const response = await del(`/api/tag/delete/${selectedTag?.id}`);
         closeModal();
         if (response) {
           setTags((prevTags) =>
             prevTags.filter((tag) => tag.id !== selectedTag.id)
           );
-          console.log("tag created successfully:", response);
         } else {
           console.error("tag creation failed: No response from server.");
         }
@@ -208,7 +203,6 @@ export default function TagManagementPage() {
               description: selectedTopic.description || "",
             },
           ]);
-          console.log("topic created successfully:", response);
         } else {
           console.error("topic creation failed: No response from server.");
         }
@@ -221,7 +215,9 @@ export default function TagManagementPage() {
   const addTag = async () => {
     if (selectedTag) {
       try {
-        const response = await createTag(selectedTag.name);
+        const response = await post("/api/tag/create", {
+          name: selectedTag.name,
+        });
         closeModal();
         if (response) {
           setTags((prevTags) => [
@@ -231,7 +227,6 @@ export default function TagManagementPage() {
               name: selectedTag.name,
             },
           ]);
-          console.log("tag created successfully:", response);
         } else {
           console.error("tag creation failed: No response from server.");
         }

@@ -13,9 +13,6 @@ export default function SearchBar() {
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      console.log(
-        "Navigating to /search?query=" + encodeURIComponent(searchQuery)
-      );
       router.push(`/search?query=${encodeURIComponent(searchQuery)}`);
     }
   };
