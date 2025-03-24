@@ -7,7 +7,7 @@ const SIDE_MENU_LINKS = [
   { href: "/profile", label: "Profile" },
   { href: "/profile/saved-posts", label: "Saved Posts" },
   { href: "/profile/notifications", label: "Notifications" },
-  { href: "reset", label: "Reset Password" },
+  { href: "/profile/reset-password", label: "Reset Password" },
 ];
 
 const ADMIN_SIDE_MENU_LINKS = [
