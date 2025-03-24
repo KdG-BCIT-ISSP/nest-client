@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { userAtom } from "@/atoms/user/atom";
 import { useAtom } from "jotai";
 import { getProfile } from "@/app/api/member/get/route";
+import { useTranslation } from "react-i18next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,6 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const { i18n } = useTranslation();
   const [, setUserData] = useAtom(userAtom);
 
   useEffect(() => {
@@ -32,9 +34,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         console.error("Failed to fetch profile data:", error);
       }
     };
-
     fetchData();
-  }, [setUserData]);
+  }, [i18n.language, setUserData]);
 
   return (
     <div

@@ -1,0 +1,27 @@
+{
+  "article": {
+    "likes": "Likes",
+    "views": "Views",
+    "shares": "Shares",
+    "delete": "Delete",
+    "confirmDelete": "Are you sure you want to delete this article?",
+    "deletedSuccess": "Article deleted successfully!",
+    "untitled": "Untitled Article",
+    "noContent": "No content available",
+    "viewComments": "View all comments",
+    "title": "Title",
+    "titlePlaceholder": "Enter article title...",
+    "content": "Content",
+    "contentPlaceholder": "Write your article content here...",
+    "addCoverImage": "Add Cover Image",
+    "publish": "Publish Article",
+    "preview": "Article HTML Preview:",
+    "titleRequired": "Title is required.",
+    "imageRequired": "Please upload an image.",
+    "contentRequired": "Content is required.",
+    "createSuccess": "Article created successfully!",
+    "requiredField": "{{field}} is required.",
+    "heroTitle": "More Info for You and Your Baby",
+    "heroSubtitle": "Medically-reviewed expert guides, tips, real-life stories, and articles across fertility, pregnancy, motherhood and menopause."
+  }
+}

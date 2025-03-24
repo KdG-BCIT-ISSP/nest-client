@@ -17,6 +17,25 @@
     "username": "Username",
     "email": "Email",
     "region": "Region",
-    "save": "Save"
+    "save": "Save",
+    "usernameRequired": "Username cannot be empty",
+    "usernameLength": "Username must be between 4 and 13 characters",
+    "regionRequired": "Please select a region",
+    "updateSuccess": "Profile updated successfully!",
+    "updateError": "Profile update failed!",
+    "selectRegion": "Select a region",
+    "northAmerica": "North America",
+    "europe": "Europe",
+    "southAmerica": "South America"
+  },
+  "general": {
+    "title": "Title",
+    "content": "Content",
+    "loading": "Loading...",
+    "anonymous": "Anonymous",
+    "unknownDate": "Unknown Date"
+  },
+  "footer": {
+    "copyright": "All rights reserved."
   }
 }

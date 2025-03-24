@@ -10,6 +10,7 @@ import { useCookies } from "react-cookie";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
 import { useTranslation } from "react-i18next";
+import LocaleSwitcher from "./LocaleSwitcher";
 
 export default function Navbar() {
   const [mounted, setMounted] = useState(false);
@@ -65,7 +66,6 @@ export default function Navbar() {
             LOGO
           </span>
         </Link>
-
         {!isSearchPage && (
           <div className="flex-1 mx-4 max-w-sm">
             <SearchBar />
@@ -83,7 +83,7 @@ export default function Navbar() {
             </Link>
           ))}
         </div>
-
+        <LocaleSwitcher />
         <div className="flex items-center space-x-3">
           {isAuthenticated ? (
             <div className="relative">

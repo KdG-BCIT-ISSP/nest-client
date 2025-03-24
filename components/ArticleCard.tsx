@@ -10,6 +10,8 @@ import parse from "html-react-parser";
 import htmlTruncate from "html-truncate";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
+import { formatDate } from "@/utils/formatDate";
+import { useTranslation } from "react-i18next";
 
 interface ArticleCardProps {
   article: ArticleCardType;
@@ -17,6 +19,7 @@ interface ArticleCardProps {
 }
 
 export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
+  const { t } = useTranslation("article");
   const router = useRouter();
   const maxLength = 50;
   const [userData] = useAtom(userAtom);
@@ -27,12 +30,12 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
     e.stopPropagation();
     e.preventDefault();
 
-    if (!confirm("Are you sure you want to delete this article?")) return;
+    if (!confirm(t("article.confirmDelete"))) return;
 
     try {
       await deleteArticle(article.id);
       onDelete?.(article.id);
-      alert("Article deleted successfully!");
+      alert(t("article.deletedSuccess"));
     } catch (error) {
       console.error("Error deleting article:", error);
     }
@@ -76,7 +79,7 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
         {/* Metadata: Topic, Created At, Stats */}
         <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
           <span className="font-medium text-gray-800">{article.topicName}</span>{" "}
-          • <span>{article.createdAt}</span>
+          • <span>{formatDate(article.createdAt ?? "")}</span>
         </div>
 
         {/* Tags */}
@@ -95,9 +98,15 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
 
         {/* Likes, Views, Shares */}
         <div className="flex justify-between text-gray-600 dark:text-gray-300 text-xs">
-          <span>{article.likesCount ?? 0} Likes</span>
-          <span>{article.viewCount ?? 0} Views</span>
-          <span>{article.shareCount ?? 0} Shares</span>
+          <span>
+            {article.likesCount ?? 0} {t("article.likes")}
+          </span>
+          <span>
+            {article.viewCount ?? 0} {t("article.views")}
+          </span>
+          <span>
+            {article.shareCount ?? 0} {t("article.shares")}
+          </span>
         </div>
 
         {/* Delete Button */}
@@ -107,7 +116,7 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
               onClick={handleDelete}
               className="text-red-600 hover:text-red-800 border-2 border-red-500 w-20 p-1 rounded-md"
             >
-              Delete
+              {t("article.delete")}
             </button>
           </div>
         )}

@@ -1,0 +1,17 @@
+{
+  "dashboard": {
+    "profile": "Profil",
+    "savedPosts": "Posts enregistrés",
+    "notifications": "Notifications",
+    "resetPassword": "Réinitialiser le mot de passe",
+    "logout": "Déconnexion",
+    "userAccess": "Accès utilisateur",
+    "posts": "Posts",
+    "articles": "Articles",
+    "reportedPosts": "Posts signalés",
+    "reportedArticles": "Articles signalés",
+    "reportedComments": "Commentaires signalés",
+    "statistics": "Statistiques",
+    "tagManagement": "Gestion des tags"
+  }
+}

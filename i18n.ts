@@ -12,7 +12,7 @@ i18n
     backend: {
       loadPath: "/locales/{{lng}}/{{ns}}.json",
     },
-    ns: ["common"],
+    ns: ["common", "post", "article", "dashboard"],
     defaultNS: "common",
     interpolation: {
       escapeValue: false,

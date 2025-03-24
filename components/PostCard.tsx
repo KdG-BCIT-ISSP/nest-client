@@ -11,16 +11,17 @@ import { postView } from "@/app/api/content/view/route";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
 import { deletePost } from "@/app/api/post/delete/route";
+import { useTranslation } from "react-i18next";
 
 export default function PostCard({
   id,
   className,
-  title = "Untitled Post",
-  content = "No content available.",
+  title,
+  content,
   tags = [],
   imageBase64 = [],
-  author = "Anonymous",
-  createdAt = "Unknown date",
+  author,
+  createdAt,
   isBookmarked = false,
   isLiked = false,
   likesCount = 0,
@@ -28,6 +29,12 @@ export default function PostCard({
   shareCount = 0,
   onDelete,
 }: PostCardType & { onDelete?: (id: number) => void }) {
+  const { t } = useTranslation("post");
+  const displayTitle = title || t("post.untitled");
+  const displayContent = content || t("post.noContent");
+  const displayAuthor = author || t("post.anonymous");
+  const displayDate = createdAt || t("post.unknownDate");
+
   const router = useRouter();
   const [userData] = useAtom(userAtom);
   const [upvoteCount, setUpvoteCount] = useState(likesCount);
@@ -47,12 +54,12 @@ export default function PostCard({
     e.stopPropagation();
     e.preventDefault();
 
-    if (!confirm("Are you sure you want to delete this post?")) return;
+    if (!confirm(t("post.confirmDelete"))) return;
 
     try {
       await deletePost(id);
       onDelete?.(id);
-      alert("Post deleted successfully!");
+      alert(t("post.deletedSuccess"));
     } catch (error) {
       console.error("Error deleting post:", error);
     }
@@ -114,12 +121,14 @@ export default function PostCard({
           </div>
           <div className="flex-1">
             <div className="text-sm text-gray-500 mb-2">
-              <span className="font-medium text-gray-800">{author}</span> •{" "}
-              <span>{createdAt}</span>
+              <span className="font-medium text-gray-800">{displayAuthor}</span>{" "}
+              • <span>{displayDate}</span>
             </div>
-            <h1 className="text-lg font-bold text-gray-900 mb-2">{title}</h1>
+            <h1 className="text-lg font-bold text-gray-900 mb-2">
+              {displayTitle}
+            </h1>
             <p className="text-base text-gray-700 whitespace-pre-wrap mb-4">
-              {content}
+              {displayContent}
             </p>
             {tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
@@ -149,8 +158,12 @@ export default function PostCard({
             </div>
             {/* View Count & Share Count */}
             <div className="flex justify-between text-gray-500 mt-2">
-              <span>{viewCount} Views</span>
-              <span>{shareCount} Shares</span>
+              <span>
+                {viewCount} {t("post.views")}
+              </span>
+              <span>
+                {shareCount} {t("post.shares")}
+              </span>
             </div>
           </div>
         </div>
@@ -175,12 +188,14 @@ export default function PostCard({
         </div>
         <div className="flex-1 flex flex-col">
           <div className="text-sm text-gray-500 mb-2">
-            <span className="font-medium text-gray-800">{author}</span> •{" "}
-            <span>{createdAt}</span>
+            <span className="font-medium text-gray-800">{displayAuthor}</span> •{" "}
+            <span>{displayDate}</span>
           </div>
-          <h1 className="text-lg font-bold text-gray-900 mb-2">{title}</h1>
+          <h1 className="text-lg font-bold text-gray-900 mb-2">
+            {displayTitle}
+          </h1>
           <p className="text-base text-gray-700 whitespace-pre-wrap mb-4">
-            {content}
+            {displayContent}
           </p>
           {tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
@@ -210,8 +225,12 @@ export default function PostCard({
           </div>
           {/* View Count & Share Count */}
           <div className="flex justify-between text-gray-500 mt-2">
-            <span>{viewCount} Views</span>
-            <span>{shareCount} Shares</span>
+            <span>
+              {viewCount} {t("post.views")}
+            </span>
+            <span>
+              {shareCount} {t("post.shares")}
+            </span>
           </div>
         </div>
         {imageBase64.length > 0 && (
@@ -235,7 +254,7 @@ export default function PostCard({
             onClick={handleDelete}
             className="text-red-600 hover:text-red-800 border-2 border-red-500 w-20 p-1 rounded-md"
           >
-            Delete
+            {t("post.delete")}
           </button>
         </div>
       )}
