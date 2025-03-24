@@ -1,6 +1,5 @@
 "use client";
 
-import { getPostReports } from "@/app/api/report/post/getAll/route";
 import ReportCard from "@/components/ReportCard";
 import SideMenu from "@/components/SideMenu";
 import { useEffect, useState } from "react";
@@ -17,7 +16,7 @@ export default function ReportedPostsPage() {
       setLoading(true);
       try {
         const [reportedPostsData, postsData] = await Promise.all([
-          getPostReports(),
+          get("/api/report/post"),
           get("/api/posts"),
         ]);
         setReportedPosts(reportedPostsData);

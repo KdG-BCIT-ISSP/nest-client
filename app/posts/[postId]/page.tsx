@@ -13,15 +13,14 @@ import ArticleShare from "@/public/svg/Article/Share";
 import Tags from "@/components/Tags";
 import CommentsSection from "@/components/Comments";
 import { PostType } from "@/types/PostType";
-import { reportArticle } from "@/app/api/report/article/post/route";
 import XIcon from "@/public/svg/XIcon";
-import { get } from "@/app/lib/fetchInterceptor";
+import { get, post } from "@/app/lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
 
 export default function PostDetailPage() {
   const params = useParams();
   const postId = Number(params.postId);
-  const [post, setPost] = useState<PostType>();
+  const [userPost, setPost] = useState<PostType>();
   const [loading, setLoading] = useState(true);
   const [showReport, setShowReport] = useState(false);
   const [showReportButton, setShowReportButton] = useState(false);
@@ -33,13 +32,13 @@ export default function PostDetailPage() {
     async function fetchData() {
       try {
         setLoading(true);
-        const [post, views] = await Promise.all([
+        const [userPost, views] = await Promise.all([
           get(`/api/content/id/${postId}`),
           get(`/api/content/${postId}/views`),
         ]);
         setPost({
-          ...post,
-          content: decodeURIComponent(post.content),
+          ...userPost,
+          content: decodeURIComponent(userPost.content),
         });
         setViews(views);
       } catch (error) {
@@ -52,12 +51,14 @@ export default function PostDetailPage() {
   }, [postId]);
 
   if (loading) return <div>Loading...</div>;
-  if (!post) return <div>Article not found</div>;
+  if (!userPost) return <div>Article not found</div>;
 
   const handleReportSubmit = async () => {
-    if (!post || !post.id) return;
+    if (!userPost || !userPost.id) return;
     try {
-      await reportArticle(post.id, reportReason);
+      await post(`/api/report/article/${userPost.id}`, {
+        reason: reportReason,
+      });
       alert("Reported successfully");
       setShowReport(false);
       setReportReason("");
@@ -133,17 +134,17 @@ export default function PostDetailPage() {
       <div className="max-w-2xl mx-auto p-4 pt-4 text-black">
         <div className="mb-6">
           <p className="text-sm text-gray-700">
-            By <b>{post.memberUsername}</b> |{" "}
-            {formatDate(post.createdAt ?? "Unknown date")}
+            By <b>{userPost.memberUsername}</b> |{" "}
+            {formatDate(userPost.createdAt ?? "Unknown date")}
           </p>
           <p className="text-xs mt-2">{views} verified views</p>
 
           <h1 className="text-3xl text-black font-bold mt-2 mb-2 font-serif">
-            {post.title}
+            {userPost.title}
           </h1>
 
           <div style={{ display: "flex", overflowX: "auto", gap: "10px" }}>
-            {post.imageBase64?.map((x, index) => (
+            {userPost.imageBase64?.map((x, index) => (
               <div
                 key={index}
                 style={{
@@ -165,9 +166,9 @@ export default function PostDetailPage() {
           </div>
         </div>
 
-        <Tags tagsList={post.tagNames ?? []} />
+        <Tags tagsList={userPost.tagNames ?? []} />
 
-        <div className="prose prose-green mb-8">{post.content}</div>
+        <div className="prose prose-green mb-8">{userPost.content}</div>
         <div className="flex justify-end gap-4">
           <ArticleThumpsUp count={224} isLiked={post.liked ?? false} />
           <ArticleComment count={32} />

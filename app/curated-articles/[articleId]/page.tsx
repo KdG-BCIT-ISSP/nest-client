@@ -13,7 +13,6 @@ import ArticleBookmark from "@/public/svg/Article/Bookmark";
 import ArticleShare from "@/public/svg/Article/Share";
 import CommentsSection from "@/components/Comments";
 import { ArticleType } from "@/types/ArticleType";
-import { reportArticle } from "@/app/api/report/article/post/route";
 import XIcon from "@/public/svg/XIcon";
 import Tags from "@/components/Tags";
 import { get, post } from "@/app/lib/fetchInterceptor";
@@ -124,7 +123,7 @@ export default function ArticleDetailsPage() {
   const handleReportSubmit = async () => {
     if (!article || !article.id) return;
     try {
-      await reportArticle(article.id, reportReason);
+      await post(`/api/report/article/${article.id}`, { reason: reportReason });
       alert("Reported successfully");
       setShowReport(false);
       setReportReason("");

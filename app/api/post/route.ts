@@ -27,7 +27,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const data = await post("/api/v1/posts", {
+    const data = await post("/posts", {
       title,
       content,
       topicId,
@@ -69,7 +69,7 @@ export async function PUT(request: Request) {
       );
     }
 
-    const data = await put("/api/v1/posts", {
+    const data = await put("/posts", {
       id,
       memberId,
       title,
@@ -99,7 +99,7 @@ export async function DELETE(
       return NextResponse.json({ message: "Invalid post ID" }, { status: 400 });
     }
 
-    const data = await del(`/api/v1/posts/${postId}`);
+    const data = await del(`/posts/${postId}`);
     return NextResponse.json(data);
   } catch (error: unknown) {
     const errorMessage =
