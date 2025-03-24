@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef, useState, useEffect } from "react";
 import ArrowLeft from "@/public/svg/ArrowLeft";
 import ArrowRight from "@/public/svg/ArrowRight";

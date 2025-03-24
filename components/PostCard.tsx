@@ -7,10 +7,9 @@ import Share from "@/public/svg/Post/Share";
 import { PostCardType } from "@/types/PostCardType";
 import BookmarkToggle from "../components/Bookmark";
 import { useRouter } from "next/navigation";
-import { postView } from "@/app/api/content/view/route";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
-import { deletePost } from "@/app/api/post/delete/route";
+import { del, post } from "@/app/lib/fetchInterceptor";
 import { useTranslation } from "react-i18next";
 
 export default function PostCard({
@@ -57,7 +56,7 @@ export default function PostCard({
     if (!confirm(t("post.confirmDelete"))) return;
 
     try {
-      await deletePost(id);
+      await del(`/api/posts/${id}`);
       onDelete?.(id);
       alert(t("post.deletedSuccess"));
     } catch (error) {
@@ -67,9 +66,7 @@ export default function PostCard({
 
   const handleClick = useCallback(() => {
     if (id) {
-      postView(id).catch((error) =>
-        console.error("Error posting view:", error)
-      );
+      post(`/api/content/${id}/view`, { id: id });
       router.push(`/posts/${id}`);
     }
   }, [id, router]);
@@ -80,7 +77,6 @@ export default function PostCard({
         "border rounded-md relative mx-auto my-6 p-4 shadow-md w-full cursor-pointer",
         className
       )}
-      onClick={handleClick}
     >
       {/* Mobile View */}
       <div className="block sm:hidden">
@@ -97,6 +93,7 @@ export default function PostCard({
                   fill
                   className="object-cover"
                   unoptimized
+                  onClick={handleClick}
                 />
               </div>
             ))}
@@ -242,6 +239,7 @@ export default function PostCard({
                 fill
                 className="object-cover"
                 unoptimized
+                onClick={handleClick}
               />
             </div>
           </div>

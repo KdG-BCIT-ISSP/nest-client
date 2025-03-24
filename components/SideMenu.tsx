@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { useCookies } from "react-cookie";
 import { useTranslation } from "react-i18next";
@@ -47,13 +45,13 @@ export default function SideMenu({ admin = false }: { admin?: boolean }) {
       className="fixed top-0 left-0 z-10 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
       aria-label="Sidebar"
     >
-      <div className="h-full pt-32 px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+      <div className="h-full pt-32 px-3 py-4 overflow-y-auto bg-gray-50">
         <ul className="space-y-2 font-medium">
           {links.map((link) => (
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                className="flex items-center p-2 text-gray-900 rounded-lg group"
               >
                 <span className="flex-1 ms-3 whitespace-nowrap">
                   {link.label}
@@ -64,8 +62,7 @@ export default function SideMenu({ admin = false }: { admin?: boolean }) {
           <li>
             <button
               onClick={handleLogout}
-              className="w-full text-left flex items-center p-2 text-gray-900 rounded-lg
-                         dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              className="w-full text-left flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
             >
               <span className="flex-1 ms-3 whitespace-nowrap">
                 {t("dashboard.logout")}

@@ -9,8 +9,8 @@ const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 import { ArticleType } from "@/types/ArticleType";
 import TagsSelector from "./TagsSelector";
 import imageCompression from "browser-image-compression";
-import { createArticle } from "@/app/api/article/create/route";
 import { useTranslation } from "react-i18next";
+import { post } from "@/app/lib/fetchInterceptor";
 
 export default function CreateArticle() {
   const { t, i18n } = useTranslation("article");
@@ -128,8 +128,9 @@ export default function CreateArticle() {
     return isValid;
   };
 
-  // Handle Form Submission
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>
+  ) => {
     e.preventDefault();
 
     if (!validateForm()) return;
@@ -137,23 +138,25 @@ export default function CreateArticle() {
     const encodedContent = encodeURIComponent(article.content);
 
     try {
-      const response = await createArticle(
-        article.title,
-        encodedContent,
-        article.topicId,
-        article.type,
-        article.tagNames,
-        article.coverImage
-      );
+      const articleData = {
+        title: article.title,
+        content: encodedContent,
+        topicId: article.topicId,
+        type: article.type,
+        tagNames: article.tagNames,
+        coverImage: article.coverImage,
+      };
 
-      if (response) {
-        window.alert(t("article.createSuccess"));
-        window.location.href = `/curated-articles/`;
-      } else {
-        console.error("Post creation failed: No response from server.");
-      }
-    } catch (error) {
-      console.error("Failedddd to create article", error);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const response = await post("/api/article", articleData);
+
+      window.alert(t("article.createSuccess"));
+      window.location.href = "/curated-articles/";
+    } catch (error: unknown) {
+      console.error("Failed to create article:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "An unknown error occurred";
+      window.alert(`Failed to create article: ${errorMessage}`);
     }
   };
 

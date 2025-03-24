@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import SideMenu from "@/components/SideMenu";
 import ProfileInputField from "@/components/ProfileInputField";

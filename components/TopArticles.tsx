@@ -1,9 +1,10 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { useState, useEffect } from "react";
-import { getArticle } from "@/app/api/article/get/route";
 import { ArticleCardType } from "@/types/ArticleCardType";
 import ArticleCard from "@/components/ArticleCard";
+import { get } from "@/app/lib/fetchInterceptor";
 
 export default function TopArticles({
   limit = 3,
@@ -22,7 +23,7 @@ export default function TopArticles({
     async function fetchArticles() {
       try {
         setLoading(true);
-        const data = await getArticle();
+        const data = await get("/api/article");
         const updatedArticles = data.map((article: ArticleCardType) => ({
           ...article,
           content: decodeURIComponent(article.content),

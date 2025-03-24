@@ -1,11 +1,11 @@
 "use client";
+export const dynamic = "force-dynamic";
 
-import { getArticleReports } from "@/app/api/report/article/getAll/route";
-import { getArticle } from "@/app/api/article/get/route";
 import ReportCard from "@/components/ReportCard";
 import SideMenu from "@/components/SideMenu";
 import { useEffect, useState } from "react";
 import { ReportPostType, Report } from "@/types/PostType";
+import { get } from "@/app/lib/fetchInterceptor";
 
 export default function ReportedArticlesPage() {
   const [loading, setLoading] = useState(true);
@@ -17,8 +17,8 @@ export default function ReportedArticlesPage() {
       setLoading(true);
       try {
         const [reportedPostsData, postsData] = await Promise.all([
-          getArticleReports(),
-          getArticle(),
+          get("/api/report/article"),
+          get("/api/article"),
         ]);
         setReportedPosts(reportedPostsData);
         setPosts(postsData);

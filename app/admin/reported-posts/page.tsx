@@ -1,11 +1,11 @@
 "use client";
+export const dynamic = "force-dynamic";
 
-import { getPostReports } from "@/app/api/report/post/getAll/route";
-import { getPost } from "@/app/api/post/get/route";
 import ReportCard from "@/components/ReportCard";
 import SideMenu from "@/components/SideMenu";
 import { useEffect, useState } from "react";
 import { ReportPostType, Report } from "@/types/PostType";
+import { get } from "@/app/lib/fetchInterceptor";
 
 export default function ReportedPostsPage() {
   const [loading, setLoading] = useState(true);
@@ -15,11 +15,13 @@ export default function ReportedPostsPage() {
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
+      console.time("fetchData");
       try {
         const [reportedPostsData, postsData] = await Promise.all([
-          getPostReports(),
-          getPost(),
+          get("/api/report/post"),
+          get("/api/posts"),
         ]);
+        console.timeEnd("fetchData");
         setReportedPosts(reportedPostsData);
         setPosts(postsData);
       } catch (err) {

@@ -1,4 +1,4 @@
-import { updateUserRole } from "@/app/api/member/update/route";
+import { put } from "@/app/lib/fetchInterceptor";
 import React, { useState } from "react";
 
 interface UserRoleToggleProps {
@@ -17,9 +17,8 @@ export default function UserRoleToggle({
   const isSuperAdmin = currentRole === "SUPER_ADMIN";
 
   const changeUserRole = async (id: number, role: string) => {
-    console.log("changeUserRole", role);
     try {
-      const response = await updateUserRole(id, role);
+      const response = await put(`/api/member/role/${id}`, { role: role });
       if (response) {
         window.alert("User role updated successfully");
       } else {
@@ -42,7 +41,7 @@ export default function UserRoleToggle({
     <div className="relative flex flex-wrap gap-2 mb-3">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="text-black bg-white border border-gray-500 hover:bg-gray-100 font-medium rounded-md text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 w-40 space-between flex justify-between"
+        className="text-black bg-white border border-gray-500 hover:bg-gray-100 font-medium rounded-md text-sm px-5 py-2.5 text-center inline-flex items-center w-40 space-between flex justify-between"
         type="button"
         {...(isSuperAdmin && {
           disabled: true,
@@ -68,13 +67,13 @@ export default function UserRoleToggle({
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 z-10 bg-white divide-y divide-gray-100 rounded-md shadow-sm w-44 dark:bg-gray-700">
-          <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
+        <div className="absolute top-full left-0 mt-2 z-10 bg-white divide-y divide-gray-100 rounded-md shadow-sm w-44">
+          <ul className="py-2 text-sm text-gray-700">
             {menuItems.map((item, index) => (
               <li key={index}>
                 <button
                   onClick={() => handleRoleChange(item)}
-                  className="block px-4 py-2 text-sm text-black hover:bg-gray-100 dark:text-blue-500 dark:hover:bg-gray-600 w-full"
+                  className="block px-4 py-2 text-sm text-black hover:bg-gray-100 w-full"
                 >
                   {item}
                 </button>

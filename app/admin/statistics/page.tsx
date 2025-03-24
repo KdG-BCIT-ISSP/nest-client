@@ -1,12 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAllUsers } from "@/app/api/member/get/route";
-import { getPost } from "@/app/api/post/get/route";
-import { getArticle } from "@/app/api/article/get/route";
 import DoughnutChart from "@/components/DoughnutChart";
 import BarGraph from "@/components/BarGraph";
 import SideMenu from "@/components/SideMenu";
+import { get } from "@/app/lib/fetchInterceptor";
 
 export default function StatisticsPage() {
   const [loading, setLoading] = useState(true);
@@ -28,9 +26,9 @@ export default function StatisticsPage() {
     async function fetchStats() {
       try {
         const [users, posts, articles] = await Promise.all([
-          getAllUsers(),
-          getPost(),
-          getArticle(),
+          get("/api/member/all"),
+          get("/api/posts"),
+          get("/api/article"),
         ]);
 
         // Count user roles

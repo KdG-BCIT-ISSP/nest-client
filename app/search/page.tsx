@@ -1,34 +1,38 @@
 "use client";
-
+export const dynamic = "force-dynamic";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import { PostGridType } from "@/types/PostType";
-import { searchPosts } from "../api/search/post/route";
-import { searchArticles } from "../api/search/article/route";
-import { getTopic } from "../api/topic/get/route";
-import { getTag } from "../api/tag/get/route";
+import { ArticleType } from "@/types/ArticleType";
 import SearchBar from "@/components/SearchBar";
 import PostGrid from "@/components/PostGrid";
 import ArticleGrid from "@/components/ArticleGrid";
+import { get } from "@/app/lib/fetchInterceptor";
 
 type OptionType = {
   id: string;
   name: string;
 };
 
-export default function SearchPage() {
+type FilterParams = {
+  search_query?: string;
+  topic?: string[];
+  tag?: string[];
+  order_by?: string;
+  order?: string;
+};
+
+function SearchPageContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get("query");
-
   const [activeTab, setActiveTab] = useState<"posts" | "articles">("posts");
-  const [results, setResults] = useState<PostGridType[]>([]);
+  const [results, setResults] = useState<PostGridType[] | ArticleType[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [availableTopics, setAvailableTopics] = useState<OptionType[]>([]);
   const [availableTags, setAvailableTags] = useState<OptionType[]>([]);
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-
   const [appliedFilters, setAppliedFilters] = useState({
     topics: [] as string[],
     tags: [] as string[],
@@ -37,8 +41,10 @@ export default function SearchPage() {
   useEffect(() => {
     const fetchOptions = async () => {
       try {
-        const topicsData = await getTopic();
-        const tagsData = await getTag();
+        const [topicsData, tagsData] = await Promise.all([
+          get("/api/topic"),
+          get("/api/tag"),
+        ]);
         setAvailableTopics(topicsData || []);
         setAvailableTags(tagsData || []);
       } catch (error) {
@@ -60,20 +66,23 @@ export default function SearchPage() {
       setLoading(true);
       const fetchData = async () => {
         try {
-          const filterParams: Record<string, string | string[]> = {
+          const filterParams: FilterParams = {
             search_query: query,
             ...(appliedFilters.topics.length > 0 && {
               topic: appliedFilters.topics,
             }),
             ...(appliedFilters.tags.length > 0 && { tag: appliedFilters.tags }),
           };
-
-          let data;
-          if (activeTab === "posts") {
-            data = await searchPosts(filterParams);
-          } else {
-            data = await searchArticles(filterParams);
-          }
+          const params = new URLSearchParams();
+          if (filterParams.search_query)
+            params.append("search_query", filterParams.search_query);
+          if (filterParams.topic)
+            filterParams.topic.forEach((t) => params.append("topic", t));
+          if (filterParams.tag)
+            filterParams.tag.forEach((t) => params.append("tag", t));
+          const queryString = params.toString() ? `?${params.toString()}` : "";
+          const endpoint = activeTab === "posts" ? "post" : "article";
+          const data = await get(`/api/search/${endpoint}${queryString}`);
           setResults(data || []);
         } catch (err) {
           console.error(err);
@@ -82,7 +91,6 @@ export default function SearchPage() {
           setLoading(false);
         }
       };
-
       fetchData();
     }
   }, [query, activeTab, appliedFilters]);
@@ -93,7 +101,6 @@ export default function SearchPage() {
         <div className="mb-6">
           <SearchBar />
         </div>
-
         <div className="mb-6">
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             TOPICS
@@ -118,7 +125,6 @@ export default function SearchPage() {
             </div>
           ))}
         </div>
-
         <div className="mb-6">
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             TAGS
@@ -145,7 +151,6 @@ export default function SearchPage() {
             ))}
           </div>
         </div>
-
         <button
           onClick={handleFilterApply}
           className="w-full bg-secondary text-white py-2 rounded-md hover:bg-green-700"
@@ -153,12 +158,10 @@ export default function SearchPage() {
           Apply Filters
         </button>
       </div>
-
       <div className="w-3/4 p-10">
         <h1 className="text-2xl font-semibold text-gray-800 mb-4">
           Search Results for &quot;{query}&quot;
         </h1>
-
         <div className="mb-4">
           <button
             onClick={() => {
@@ -187,27 +190,33 @@ export default function SearchPage() {
             Articles
           </button>
         </div>
-
         {loading && <p className="text-gray-600">Loading...</p>}
         {error && <p className="text-red-600">{error}</p>}
         {!loading && !error && results.length === 0 && (
           <p className="text-gray-600">No results found.</p>
         )}
-
         {activeTab === "posts" ? (
           <div className="grid grid-cols-2 gap-6 items-start">
             {results.map((item) => (
-              <PostGrid key={item.id} post={item} />
+              <PostGrid key={item.id} post={item as PostGridType} />
             ))}
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-6">
             {results.map((item) => (
-              <ArticleGrid key={item.id} article={item} />
+              <ArticleGrid key={item.id} article={item as PostGridType} />
             ))}
           </div>
         )}
       </div>
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+      <SearchPageContent />
+    </Suspense>
   );
 }

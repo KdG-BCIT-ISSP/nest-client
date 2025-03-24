@@ -1,10 +1,11 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
-import { getPost } from "@/app/api/post/get/route";
 import { PostType } from "@/types/PostType";
 import PostCard from "@/components/PostCard";
 import HeroSection from "@/components/HeroSection";
+import { get } from "../lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
 import { useTranslation } from "react-i18next";
 
@@ -18,7 +19,7 @@ export default function PostsPage() {
     async function fetchPosts() {
       try {
         setLoading(true);
-        const data = await getPost();
+        const data = await get("/api/posts");
         setPosts(data);
       } catch (err) {
         console.error("Failed to fetch posts:", err);

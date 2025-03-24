@@ -1,25 +1,8 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Container from "@/components/Container";
 import Carousel from "@/components/Carousel";
 import { cardsData } from "@/utils/cardData";
 
 export default function Home() {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setLoading(false);
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen text-lg font-semibold">
-        Loading...
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col bg-white font-[family-name:var(--font-geist-sans)]">
       <main className="flex-grow p-8 sm:p-20">

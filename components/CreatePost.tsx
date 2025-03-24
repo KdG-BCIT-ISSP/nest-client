@@ -1,17 +1,18 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import React, { useState, useEffect } from "react";
 import { PostType } from "@/types/PostType";
 import Button from "@/components/Button";
 import TagsSelector from "./TagsSelector";
-import { createPost } from "@/app/api/post/create/route";
 import ImageUpload from "./ImageUpload";
+import { post } from "@/app/lib/fetchInterceptor";
 import { useTranslation } from "react-i18next";
 
 export default function CreatePost() {
   const { t } = useTranslation("post");
 
-  const [post, setPost] = useState<PostType>({
+  const [userPost, setUserPost] = useState<PostType>({
     id: 0,
     title: "",
     content: "",
@@ -40,12 +41,12 @@ export default function CreatePost() {
     let isValid = true;
     const newErrors = { title: "", content: "" };
 
-    if (!post.title?.trim()) {
+    if (!userPost.title?.trim()) {
       newErrors.title = t("post.titleRequired");
       isValid = false;
     }
 
-    if (!post.content?.trim()) {
+    if (!userPost.content?.trim()) {
       newErrors.content = t("post.contentRequired");
       isValid = false;
     }
@@ -61,7 +62,7 @@ export default function CreatePost() {
         : [...prevTags, tag]
     );
 
-    setPost((prevPost) => ({
+    setUserPost((prevPost) => ({
       ...prevPost,
       tagNames: prevPost.tagNames?.includes(tag)
         ? prevPost.tagNames.filter((t) => t !== tag)
@@ -73,7 +74,7 @@ export default function CreatePost() {
     const newPreviews = [...imagePreviews];
     newPreviews.splice(index, 1);
     setImagePreviews(newPreviews);
-    setPost((prevPost) => ({
+    setUserPost((prevPost) => ({
       ...prevPost,
       imageBase64: prevPost.imageBase64?.filter((_, i) => i !== index),
     }));
@@ -87,20 +88,20 @@ export default function CreatePost() {
 
     setImagePreviews((prevPreviews) => [...prevPreviews, compressedImage]);
 
-    setPost((prevPost) => ({
+    setUserPost((prevPost) => ({
       ...prevPost,
       imageBase64: [...(prevPost.imageBase64 ?? []), compressedImage], // Ensure this is valid type
     }));
   };
 
-  // Dynamically updates the post state whenever the user types something.
+  // Dynamically updates the userPost state whenever the user types something.
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
 
     // Update the post state with the new input value
-    setPost({ ...post, [name]: value });
+    setUserPost({ ...userPost, [name]: value });
 
     // Validate the input immediately
     setErrors((prevErrors) => ({
@@ -111,31 +112,32 @@ export default function CreatePost() {
     }));
   };
 
-  // handle post submission (WIP)
+  // handle userPost submission (WIP)
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!validateForm()) return;
-    const updatedPost = { ...post, tags: selectedTags }; // Create updatedPost
+    const updatedPost = { ...userPost, tags: selectedTags }; // Create updatedPost
 
     try {
-      const response = await createPost(
-        updatedPost.title ?? "",
-        updatedPost.content ?? "",
-        updatedPost.topicId ?? 2,
-        updatedPost.type || "USERPOST",
-        updatedPost.tagNames || [],
-        post.imageBase64 || []
-      );
+      const response = await post("/api/posts", {
+        title: updatedPost.title ?? "",
+        content: updatedPost.content ?? "",
+        topicId: updatedPost.topicId ?? 2,
+        type: updatedPost.type || "USERPOST",
+        tagNames: updatedPost.tagNames || [],
+        imageBase64: userPost.imageBase64 || [],
+      });
 
       if (response) {
         window.alert(t("post.createSuccess"));
         window.location.href = "/posts/";
       } else {
-        console.error("Post creation failed: No response from server.");
+        console.error("userPost creation failed: No response from server.");
       }
     } catch (error) {
-      console.error("Failed to create post", error);
+      console.error("Failed to create userPost", error);
+    } finally {
     }
   };
 
@@ -152,7 +154,7 @@ export default function CreatePost() {
               type="text"
               name="title"
               className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-              value={post.title}
+              value={userPost.title}
               onChange={handleChange}
               placeholder={t("post.titlePlaceholder")}
             />
@@ -169,7 +171,7 @@ export default function CreatePost() {
             <textarea
               name="content"
               className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5 h-32"
-              value={post.content}
+              value={userPost.content}
               onChange={handleChange}
               placeholder={t("post.contentPlaceholder")}
             />

@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -11,16 +12,11 @@ import ArticleThumpsUp from "@/public/svg/Article/ThumbsUp";
 import ArticleComment from "@/public/svg/Article/Comment";
 import ArticleBookmark from "@/public/svg/Article/Bookmark";
 import ArticleShare from "@/public/svg/Article/Share";
-import Tags from "@/components/Tags";
 import CommentsSection from "@/components/Comments";
-import { getArticle } from "@/app/api/article/get/route";
 import { ArticleType } from "@/types/ArticleType";
-import { reportArticle } from "@/app/api/report/article/post/route";
 import XIcon from "@/public/svg/XIcon";
-import { getViewsById } from "@/app/api/content/views/route";
-import { getContentLikes } from "@/app/api/content/likes/route";
-import { getContentisLiked } from "@/app/api/content/isLiked/route";
-import { toggleLike } from "@/app/api/content/toggleLike/route";
+import Tags from "@/components/Tags";
+import { get, post } from "@/app/lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
 import { useTranslation } from "react-i18next";
 
@@ -45,29 +41,23 @@ export default function ArticleDetailsPage() {
         setLoading(true);
 
         const promises = [
-          getArticle(),
-          getViewsById(articleId),
-          getContentLikes(articleId),
+          get(`/api/content/id/${articleId}`),
+          get(`/api/content/${articleId}/views`),
+          get(`/api/content/${articleId}/likes`),
         ];
 
         if (isAuthenticated) {
-          promises.push(getContentisLiked(articleId));
+          promises.push(get(`/api/content/${articleId}/isLiked`));
         }
 
-        const [articles, views, likes, isLiked] = await Promise.all(promises);
+        const [article, views, likes, isLiked] = await Promise.all(promises);
 
-        const foundArticle = articles.find(
-          (item: ArticleType) => item.id === articleId
-        );
-
-        if (foundArticle) {
-          setArticle({
-            ...foundArticle,
-            content: decodeURIComponent(foundArticle.content),
-            likes,
-            isLiked: isAuthenticated ? isLiked : false,
-          });
-        }
+        setArticle({
+          ...article,
+          content: decodeURIComponent(article.content),
+          likes,
+          isLiked: isAuthenticated ? isLiked : false,
+        });
 
         setViews(views);
       } catch (error) {
@@ -76,7 +66,6 @@ export default function ArticleDetailsPage() {
         setLoading(false);
       }
     }
-
     fetchData();
   }, [articleId, isAuthenticated]);
 
@@ -98,9 +87,12 @@ export default function ArticleDetailsPage() {
     });
 
     try {
-      const { isLiked: newIsLiked } = await toggleLike(articleId);
+      const { isLiked: newIsLiked } = await post(
+        `/api/content/${articleId}/toggleLike`,
+        { articleId }
+      );
 
-      const updatedLikes = await getContentLikes(articleId);
+      const updatedLikes = await get(`/api/content/${articleId}/likes`);
 
       setArticle((prev) => {
         if (!prev) return prev;
@@ -132,7 +124,7 @@ export default function ArticleDetailsPage() {
   const handleReportSubmit = async () => {
     if (!article || !article.id) return;
     try {
-      await reportArticle(article.id, reportReason);
+      await post(`/api/report/article/${article.id}`, { reason: reportReason });
       alert("Reported successfully");
       setShowReport(false);
       setReportReason("");
