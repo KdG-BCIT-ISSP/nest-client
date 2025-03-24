@@ -1,8 +1,7 @@
 import { SvgPost } from "@/types/SvgPost";
-import { addBookmark } from "@/app/api/bookmark/add/route";
-import { removeBookmark } from "@/app/api/bookmark/remove/route";
 import { useState, useEffect } from "react";
 import Bookmark from "../public/svg/Post/Bookmark";
+import { put } from "@/app/lib/fetchInterceptor";
 
 export default function BookmarkToggle({
   count,
@@ -21,11 +20,7 @@ export default function BookmarkToggle({
   const handleBookmarkToggle = async () => {
     try {
       if (typeof postId === "number") {
-        if (isBookmarked) {
-          await removeBookmark(postId);
-        } else {
-          await addBookmark(postId);
-        }
+        await put(`/api/content/${postId}/toggleBookmark`, {});
         setIsBookmarked(!isBookmarked);
         if (onClick) {
           onClick();

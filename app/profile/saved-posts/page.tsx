@@ -3,7 +3,7 @@ import PostCard from "@/components/PostCard";
 import SideMenu from "@/components/SideMenu";
 import { useEffect, useState } from "react";
 import { PostType } from "@/types/PostType";
-import { getPostBookmarks } from "@/app/api/bookmark/post/get/route";
+import { get } from "@/app/lib/fetchInterceptor";
 
 export default function SavedPostsPage() {
   const [loading, setLoading] = useState(true);
@@ -13,7 +13,7 @@ export default function SavedPostsPage() {
   useEffect(() => {
     async function fetchBookmarkedPosts() {
       try {
-        const data = await getPostBookmarks();
+        const data = await get("/api/content/post/bookmark");
         setBookmarkedPosts(data);
       } catch (err) {
         console.error("Failed to fetch bookmarked posts:", err);

@@ -78,7 +78,6 @@ export default function PostCard({
         "border rounded-md relative mx-auto my-6 p-4 shadow-md w-full cursor-pointer",
         className
       )}
-      onClick={handleClick}
     >
       {/* Mobile View */}
       <div className="block sm:hidden">
@@ -95,6 +94,7 @@ export default function PostCard({
                   fill
                   className="object-cover"
                   unoptimized
+                  onClick={handleClick}
                 />
               </div>
             ))}
@@ -240,6 +240,7 @@ export default function PostCard({
                 fill
                 className="object-cover"
                 unoptimized
+                onClick={handleClick}
               />
             </div>
           </div>
