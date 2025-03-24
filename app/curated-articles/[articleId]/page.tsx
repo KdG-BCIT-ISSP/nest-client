@@ -41,7 +41,7 @@ export default function ArticleDetailsPage() {
         setLoading(true);
 
         const promises = [
-          get("/api/article"),
+          get(`/api/content/id/${articleId}`),
           get(`/api/content/${articleId}/views`),
           get(`/api/content/${articleId}/likes`),
         ];
@@ -50,20 +50,14 @@ export default function ArticleDetailsPage() {
           promises.push(get(`/api/content/${articleId}/isLiked`));
         }
 
-        const [articles, views, likes, isLiked] = await Promise.all(promises);
+        const [article, views, likes, isLiked] = await Promise.all(promises);
 
-        const foundArticle = articles.find(
-          (item: ArticleType) => item.id === articleId
-        );
-
-        if (foundArticle) {
-          setArticle({
-            ...foundArticle,
-            content: decodeURIComponent(foundArticle.content),
-            likes,
-            isLiked: isAuthenticated ? isLiked : false,
-          });
-        }
+        setArticle({
+          ...article,
+          content: decodeURIComponent(article.content),
+          likes,
+          isLiked: isAuthenticated ? isLiked : false,
+        });
 
         setViews(views);
       } catch (error) {

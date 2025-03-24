@@ -12,7 +12,6 @@ import ArticleBookmark from "@/public/svg/Article/Bookmark";
 import ArticleShare from "@/public/svg/Article/Share";
 import Tags from "@/components/Tags";
 import CommentsSection from "@/components/Comments";
-import { getPost } from "@/app/api/post/get/route";
 import { PostType } from "@/types/PostType";
 import { reportArticle } from "@/app/api/report/article/post/route";
 import XIcon from "@/public/svg/XIcon";
@@ -34,18 +33,15 @@ export default function PostDetailPage() {
     async function fetchData() {
       try {
         setLoading(true);
-        const [posts, views] = await Promise.all([
-          getPost(),
+        const [post, views] = await Promise.all([
+          get(`/api/content/id/${postId}`),
           get(`/api/content/${postId}/views`),
         ]);
-        const foundPosts = posts.find((item: PostType) => item.id === postId);
-        if (foundPosts) {
-          setPost({
-            ...foundPosts,
-            content: decodeURIComponent(foundPosts.content),
-          });
-          setViews(views);
-        }
+        setPost({
+          ...post,
+          content: decodeURIComponent(post.content),
+        });
+        setViews(views);
       } catch (error) {
         console.error("Error fetching article:", error);
       } finally {

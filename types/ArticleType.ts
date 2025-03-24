@@ -12,5 +12,6 @@ export type ArticleType = {
   link?: string;
   likes?: number;
   isLiked?: boolean;
+  bookmarked?: boolean;
   createdAt?: string;
 };

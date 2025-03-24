@@ -9,8 +9,7 @@ import BookmarkToggle from "../components/Bookmark";
 import { useRouter } from "next/navigation";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
-import { deletePost } from "@/app/api/post/delete/route";
-import { post } from "@/app/lib/fetchInterceptor";
+import { del, post } from "@/app/lib/fetchInterceptor";
 import { useTranslation } from "react-i18next";
 
 export default function PostCard({
@@ -57,7 +56,7 @@ export default function PostCard({
     if (!confirm(t("post.confirmDelete"))) return;
 
     try {
-      await deletePost(id);
+      await del(`/api/posts/${id}`);
       onDelete?.(id);
       alert(t("post.deletedSuccess"));
     } catch (error) {

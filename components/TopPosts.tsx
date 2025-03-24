@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getPost } from "@/app/api/post/get/route";
 import { PostType } from "@/types/PostType";
 import PostCard from "@/components/PostCard";
+import { get } from "@/app/lib/fetchInterceptor";
 
 export default function TopPosts({
   limit = 3,
@@ -22,7 +22,7 @@ export default function TopPosts({
     async function fetchPosts() {
       try {
         setLoading(true);
-        const posts = await getPost();
+        const posts = await get("/api/posts");
         setAllPosts(posts); // Stores all posts in state
       } catch (error) {
         console.error("Error fetching posts:", error);
