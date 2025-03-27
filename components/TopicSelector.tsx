@@ -4,69 +4,82 @@ import Button from "@/components/Button";
 import { Topic } from "@/types/Topic";
 
 interface TopicSelectorProps {
-  selectedTopics: string[];
-  onTopicClick: (Topic: string) => void;
+  selectedTopic?: Topic;
+  onTopicClick: (topic: Topic) => void; 
+  topics: Topic[];
 }
 
-export default function TopicsSelector({
-  selectedTopics,
+export default function TopicSelector({
+  selectedTopic,
   onTopicClick,
+  topics
 }: TopicSelectorProps) {
-  const [topic, setTopic] = useState<Topic[]>([]);
-  const [loading, setLoading] = useState(true);
+
   const [error, setError] = useState<string | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchTopics = async () => {
-      try {
-        const response = await fetch("/api/topic");
-        if (!response.ok) {
-          throw new Error("Failed to fetch topics");
-        }
-        const data: Topic[] = await response.json();
-        setTopic(data);
-        console.log(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    };
+  
 
-    fetchTopics();
-  }, []);
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
 
-  if (loading) return <div>Loading topics...</div>;
-  if (error) return <div>Error: {error}</div>;
+  const handleTopicClick = (topic: Topic) => {
+    onTopicClick(topic);
+    setIsDropdownOpen(false);
+  };
 
   return (
-    <div className="w-full md:w-1/2">
-
-      <button id="dropdownInformationButton" data-dropdown-toggle="dropdownInformation" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Dropdown header <svg className="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
-      </svg>
+    <div className="w-full md:w-4/5 relative">
+      
+      <button
+        onClick={toggleDropdown}
+        className="text-black bg-white font-medium rounded-md text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:text-white w-3/4 flex justify-between border border-gray-300 dark:border-gray-600"
+        type="button"
+      >
+        {selectedTopic?.name}
+        <svg
+          className="w-2.5 h-2.5 ms-3 stroke-blue-500"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 10 6"
+        >
+          <path
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="m1 1 4 4 4-4"
+          />
+        </svg>
       </button>
 
-      <div id="dropdownInformation" className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600">
-        <div className="px-4 py-3 text-sm text-gray-900 dark:text-white w-">
-          <div>Bonnie Green</div>
-          <div className="font-medium truncate">name@flowbite.com</div>
+      {isDropdownOpen && (
+        <div
+          id="dropdownInformation"
+          className="absolute z-10 mt-2 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600"
+        >
+          <ul
+            className="py-2 text-sm text-gray-700 dark:text-gray-200 max-h-60 overflow-y-auto"
+            aria-labelledby="dropdownInformationButton"
+          >
+            {topics.map((topic) => (
+              <li key={topic.id}>
+                <button
+                  onClick={() => handleTopicClick(topic)} 
+                  className={`block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white ${selectedTopic?.id === topic.id
+                      ? "bg-gray-100 dark:bg-gray-600"
+                      : ""
+                    }`}
+                >
+                  {topic.name}
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
-        <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownInformationButton">
-          <li>
-            <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
-          </li>
-          <li>
-            <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
-          </li>
-          <li>
-            <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</a>
-          </li>
-        </ul>
-        <div className="py-2">
-          <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</a>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
