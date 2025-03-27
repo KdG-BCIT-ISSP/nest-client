@@ -4,21 +4,20 @@ export const dynamic = "force-dynamic";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
 import { useCookies } from "react-cookie";
 import { post } from "@/app/lib/fetchInterceptor";
+import ForgotPassword from "@/components/auth/ForgotPassword";
 
 export default function LoginPage() {
   const [, setCookie] = useCookies(["refreshToken"]);
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -47,7 +46,6 @@ export default function LoginPage() {
       localStorage.setItem("accessToken", response.accessToken);
       setCookie("refreshToken", response.refreshToken, {
         path: "/",
-        // maxAge: 3600,
       });
       setTimeout(() => {
         window.location.href = "/";
@@ -64,7 +62,7 @@ export default function LoginPage() {
   };
 
   return (
-    <section className="pt-5">
+    <section className="pt-10">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
         <Link
           href="/"
@@ -146,17 +144,18 @@ export default function LoginPage() {
                     </label>
                   </div>
                 </div>
-                <a
-                  href="/auth/forgot-password"
-                  className="text-sm font-medium text-primary-600 hover:underline"
+                <button
+                  type="button"
+                  onClick={() => setIsForgotPasswordOpen(true)}
+                  className="text-sm text-gray-600 font-medium text-primary-600 hover:underline"
                 >
                   Forgot password?
-                </a>
+                </button>
               </div>
 
               <button
                 type="submit"
-                className="w-full text-black bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50"
+                className="w-full text-white bg-secondary hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50"
                 disabled={isLoading}
               >
                 {isLoading ? "Logging in..." : "Sign in"}
@@ -175,6 +174,14 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
+
+      {isForgotPasswordOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow sm:max-w-md w-full mx-4">
+            <ForgotPassword onClose={() => setIsForgotPasswordOpen(false)} />
+          </div>
+        </div>
+      )}
     </section>
   );
 }
