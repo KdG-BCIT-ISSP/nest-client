@@ -212,7 +212,7 @@ export default function CreateArticle() {
         {/* Topic Dropdown */}
         <div className="mb-6 flex items-center justify-between gap-6">
           <label className="text-sm font-medium text-gray-900 block mb-2">
-            Topic
+            {t("article.topic")}
           </label>
           <TopicSelector
             selectedTopic={selectedTopic || undefined}

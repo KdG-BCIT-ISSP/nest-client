@@ -28,7 +28,7 @@ export default function TopicSelector({
     <div className="w-full md:w-4/5 relative">
       <button
         onClick={toggleDropdown}
-        className="text-black bg-white font-medium rounded-md text-sm px-5 py-2.5 text-center inline-flex items-center w-3/4 flex justify-between border border-gray-300"
+        className="text-black bg-white font-medium rounded-md text-sm px-5 py-2.5 text-center inline-flex items-center w-3/4 justify-between border border-gray-300"
         type="button"
       >
         {selectedTopic?.name}

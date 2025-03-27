@@ -182,7 +182,7 @@ export default function CreatePost() {
       <form onSubmit={handleSubmit}>
         <div className="gap-6">
           <label className="text-sm font-medium text-gray-900 block mb-2">
-            Topic
+            {t("post.topic")}
           </label>
           <TopicSelector
             selectedTopic={selectedTopic || undefined}
@@ -192,7 +192,7 @@ export default function CreatePost() {
           {/* Topic Dropdown */}
           <div className="col-span-6">
             <label className="text-sm font-medium text-gray-900 block py-2">
-              Title
+              {t("post.title")}
             </label>
             <input
               type="text"
