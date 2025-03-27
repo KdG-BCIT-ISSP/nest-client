@@ -70,7 +70,6 @@ export default function CreateArticle() {
     }));
   };
 
-
   // Handle Change
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -213,12 +212,13 @@ export default function CreateArticle() {
         {/* Topic Dropdown */}
         <div className="mb-6 flex items-center justify-between gap-6">
           <label className="text-sm font-medium text-gray-900 block mb-2">
-                      Topic
-                    </label>
-                    <TopicSelector 
-                    selectedTopic={selectedTopic || undefined}
-                    onTopicClick={handleTopicClick}
-                    topics={topics}/>
+            Topic
+          </label>
+          <TopicSelector
+            selectedTopic={selectedTopic || undefined}
+            onTopicClick={handleTopicClick}
+            topics={topics}
+          />
           {/* Title Input */}
           <div className="w-3/5 flex flex-col">
             <label className="block text-lg font-medium">

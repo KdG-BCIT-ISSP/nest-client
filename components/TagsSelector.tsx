@@ -56,7 +56,9 @@ export default function TagsSelector({
             } text-black`}
           >
             {tag.name}{" "}
-            {selectedTags.includes(tag.name) && <span className="ml-1">✖</span>}
+            {selectedTags.includes(tag.name) && (
+              <span className="ml-1">✖</span>
+            )}
           </Button>
         ))}
       </div>

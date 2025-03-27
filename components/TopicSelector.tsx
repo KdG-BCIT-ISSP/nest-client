@@ -1,24 +1,19 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import Button from "@/components/Button";
+import React, { useState } from "react";
 import { Topic } from "@/types/Topic";
 
 interface TopicSelectorProps {
   selectedTopic?: Topic;
-  onTopicClick: (topic: Topic) => void; 
+  onTopicClick: (topic: Topic) => void;
   topics: Topic[];
 }
 
 export default function TopicSelector({
   selectedTopic,
   onTopicClick,
-  topics
+  topics,
 }: TopicSelectorProps) {
-
-  const [error, setError] = useState<string | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-  
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -31,7 +26,6 @@ export default function TopicSelector({
 
   return (
     <div className="w-full md:w-4/5 relative">
-      
       <button
         onClick={toggleDropdown}
         className="text-black bg-white font-medium rounded-md text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:text-white w-3/4 flex justify-between border border-gray-300 dark:border-gray-600"
@@ -67,11 +61,12 @@ export default function TopicSelector({
             {topics.map((topic) => (
               <li key={topic.id}>
                 <button
-                  onClick={() => handleTopicClick(topic)} 
-                  className={`block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white ${selectedTopic?.id === topic.id
+                  onClick={() => handleTopicClick(topic)}
+                  className={`block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white ${
+                    selectedTopic?.id === topic.id
                       ? "bg-gray-100 dark:bg-gray-600"
                       : ""
-                    }`}
+                  }`}
                 >
                   {topic.name}
                 </button>

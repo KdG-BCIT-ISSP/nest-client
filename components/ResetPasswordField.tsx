@@ -1,17 +1,15 @@
-
 import React, { useState } from "react";
 import Button from "./Button";
 import { put } from "@/app/lib/fetchInterceptor";
 
-
 export default function ResetPasswordField() {
-
   const InputFieldLabels = ["Old Password", "New Password", "Confirm Password"];
 
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState<string | null>(null); useState("");
+  const [error, setError] = useState<string | null>(null);
+  useState("");
   const [success, setSuccess] = useState<string | null>(null);
 
   const handleResetPassword = async (e: React.FormEvent) => {
@@ -19,19 +17,15 @@ export default function ResetPasswordField() {
     setError(null);
     setSuccess(null);
 
-
-
     if (newPassword.length < 8) {
       setError("New password must be at least 8 characters long.");
       return;
     }
 
-
     if (newPassword !== confirmPassword) {
       setError("New password and confirm password do not match.");
       return;
     }
-
 
     try {
       const response = await put("/api/password/change", {
@@ -44,17 +38,24 @@ export default function ResetPasswordField() {
       } else {
         setError("Password change failed. Try again.");
       }
-    } catch (error: any) {
-
-      if (error.response) {
-        const message = error.response.data?.message || "An unexpected error occurred";
+    } catch (error: unknown) {
+      if (
+        error &&
+        typeof error === "object" &&
+        "response" in error &&
+        error.response &&
+        typeof error.response === "object" &&
+        "data" in error.response
+      ) {
+        const message =
+          (error.response as { data?: { message?: string } }).data?.message ||
+          "An unexpected error occurred";
         setError(message);
       } else {
         setError("Network error or server is unavailable.");
       }
     }
   };
-
 
   return (
     <div className="flex flex-wrap gap-2 mb-3">
@@ -107,7 +108,6 @@ export default function ResetPasswordField() {
       {error && <div className="text-red-500 text-sm">{error}</div>}
       {success && <div className="text-green-500 text-sm">{success}</div>}
       <div className="flex justify-end w-full">
-
         <Button
           label="Reset"
           onClick={handleResetPassword}

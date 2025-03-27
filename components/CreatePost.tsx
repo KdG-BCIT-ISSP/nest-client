@@ -32,7 +32,7 @@ export default function CreatePost() {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<Topic>();
-    const [topics, setTopics] = useState<Topic[]>([]);
+  const [topics, setTopics] = useState<Topic[]>([]);
 
   // Cleans up temporary object URLs created for image previews.
   useEffect(() => {
@@ -60,28 +60,28 @@ export default function CreatePost() {
   };
 
   useEffect(() => {
-      const fetchTopics = async () => {
-        try {
-          const response = await fetch("/api/topic");
-          if (!response.ok) {
-            throw new Error("Failed to fetch topics");
-          }
-          const data: Topic[] = await response.json();
-          setTopics(data);
-          if (data.length > 0) {
-            setSelectedTopic(data[0]); 
-            setUserPost((prev) => ({
-              ...prev,
-              topicId: data[0].id,
-            }));
-          }
-        } catch (err) {
-          console.error("Failed to fetch topics:", err);
-        } 
-      };
-  
-      fetchTopics();
-    }, []);
+    const fetchTopics = async () => {
+      try {
+        const response = await fetch("/api/topic");
+        if (!response.ok) {
+          throw new Error("Failed to fetch topics");
+        }
+        const data: Topic[] = await response.json();
+        setTopics(data);
+        if (data.length > 0) {
+          setSelectedTopic(data[0]);
+          setUserPost((prev) => ({
+            ...prev,
+            topicId: data[0].id,
+          }));
+        }
+      } catch (err) {
+        console.error("Failed to fetch topics:", err);
+      }
+    };
+
+    fetchTopics();
+  }, []);
 
   const handleTopicClick = (topic: Topic) => {
     setSelectedTopic(topic);
@@ -184,10 +184,11 @@ export default function CreatePost() {
           <label className="text-sm font-medium text-gray-900 block mb-2">
             Topic
           </label>
-          <TopicSelector 
-          selectedTopic={selectedTopic || undefined}
-          onTopicClick={handleTopicClick}
-          topics={topics}/>
+          <TopicSelector
+            selectedTopic={selectedTopic || undefined}
+            onTopicClick={handleTopicClick}
+            topics={topics}
+          />
           {/* Topic Dropdown */}
           <div className="col-span-6">
             <label className="text-sm font-medium text-gray-900 block mb-2">
