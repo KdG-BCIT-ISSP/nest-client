@@ -6,7 +6,7 @@ import SearchBar from "./SearchBar";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useCookies } from "react-cookie";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
@@ -23,10 +23,30 @@ export default function Navbar() {
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
   const [, , removeCookie] = useCookies(["refreshToken"]);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsUserDropdownOpen(false);
+      }
+    };
+
+    if (isUserDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isUserDropdownOpen]);
 
   if (!mounted) {
     return null;
@@ -89,7 +109,7 @@ export default function Navbar() {
         </div>
         <div className="flex items-center space-x-3">
           {isAuthenticated ? (
-            <div className="relative">
+            <div className="relative" ref={dropdownRef}>
               <button
                 onClick={toggleUserDropdown}
                 type="button"
