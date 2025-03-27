@@ -5,24 +5,13 @@ import SideMenu from "@/components/SideMenu";
 import ProfileInputField from "@/components/ProfileInputField";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { ProfileDataType } from "@/types/ProfileDataType";
 import SavedPosts from "@/components/profile/SavedPosts";
 import ResetPasswordField from "@/components/profile/ResetPasswordField";
 import { useSearchParams } from "next/navigation";
 
-const ProfileView = ({ username, email, region, avatar }: ProfileDataType) => (
-  <ProfileInputField
-    username={username}
-    email={email}
-    region={region}
-    avatar={avatar}
-  />
-);
-
-const Notifications = () => <div>Notifications Content</div>;
-
-export default function ProfilePage() {
+const ProfileContent = () => {
   const [userData] = useAtom(userAtom);
   const searchParams = useSearchParams();
   const [selectedComponent, setSelectedComponent] =
@@ -85,5 +74,24 @@ export default function ProfilePage() {
         {selectedComponent || <ProfileView {...userData} />}
       </div>
     </div>
+  );
+};
+
+const ProfileView = ({ username, email, region, avatar }: ProfileDataType) => (
+  <ProfileInputField
+    username={username}
+    email={email}
+    region={region}
+    avatar={avatar}
+  />
+);
+
+const Notifications = () => <div>Notifications Content</div>;
+
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={<div>Loading profile...</div>}>
+      <ProfileContent />
+    </Suspense>
   );
 }
