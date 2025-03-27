@@ -5,7 +5,7 @@ import MenuIcon from "@/public/svg/Menu";
 import SearchBar from "./SearchBar";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { useCookies } from "react-cookie";
 import { useAtom } from "jotai";
@@ -19,6 +19,7 @@ export default function Navbar() {
   const [userData] = useAtom(userAtom);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const isAuthenticated =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
@@ -62,10 +63,23 @@ export default function Navbar() {
     ...(userData.role === "ADMIN" || userData.role === "SUPER_ADMIN"
       ? [{ href: "/admin/user-access", label: t("navigation.admin") }]
       : []),
-    { href: "/profile", label: t("navigation.profile") },
-    { href: "/profile/saved-posts", label: t("navigation.savedPosts") },
-    { href: "/profile/notifications", label: t("navigation.notifications") },
+    { href: "/profile", label: t("navigation.profile"), section: "profile" },
+    {
+      href: "/profile",
+      label: t("navigation.savedPosts"),
+      section: "saved-posts",
+    },
+    {
+      href: "/profile",
+      label: t("navigation.notifications"),
+      section: "notifications",
+    },
   ];
+
+  const handleProfileLinkClick = (section: string | undefined) => {
+    router.push(`/profile?section=${section}`);
+    setIsUserDropdownOpen(false);
+  };
 
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen((prev) => !prev);
@@ -138,13 +152,13 @@ export default function Navbar() {
                   </div>
                   <ul className="py-2">
                     {USER_DROPDOWN_LINKS.map((link) => (
-                      <li key={link.href}>
-                        <Link
-                          href={link.href}
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      <li key={link.href + (link.section || "")}>
+                        <button
+                          onClick={() => handleProfileLinkClick(link.section)}
+                          className="block px-4 py-2 w-full text-left text-sm text-gray-700 hover:bg-gray-100"
                         >
                           {link.label}
-                        </Link>
+                        </button>
                       </li>
                     ))}
                     <li>

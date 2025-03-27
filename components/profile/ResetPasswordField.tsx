@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Button from "./Button";
+import Button from "../Button";
 import { put } from "@/app/lib/fetchInterceptor";
 
 export default function ResetPasswordField() {
@@ -58,7 +58,7 @@ export default function ResetPasswordField() {
   };
 
   return (
-    <div className="flex flex-wrap gap-2 mb-3">
+    <div className="flex flex-wrap gap-2 mb-3 pt-10">
       <label
         htmlFor="oldPassword"
         className="text-sm font-medium text-gray-900 block mb-2"

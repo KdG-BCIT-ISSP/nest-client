@@ -2,12 +2,11 @@
 export const dynamic = "force-dynamic";
 
 import PostCard from "@/components/PostCard";
-import SideMenu from "@/components/SideMenu";
 import { useEffect, useState } from "react";
 import { PostType } from "@/types/PostType";
 import { get } from "@/app/lib/fetchInterceptor";
 
-export default function SavedPostsPage() {
+export default function SavedPosts() {
   const [loading, setLoading] = useState(true);
   const [bookmarkedPosts, setBookmarkedPosts] = useState<PostType[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -37,20 +36,17 @@ export default function SavedPostsPage() {
   }
 
   return (
-    <div className="p-4 sm:ml-64">
-      <SideMenu />
-      <div className="pl-0 p-8 flex flex-col items-start">
-        <h1 className="text-2xl font-bold text-black mb-4">Saved Posts</h1>
-        <div className="flex flex-col gap-6 w-full">
-          {bookmarkedPosts.map((post) => (
-            <PostCard
-              key={post.id}
-              className="bg-container flex-shrink-0 w-full max-w-5xl ml-0 container"
-              {...post}
-            />
-          ))}
-          {bookmarkedPosts.length === 0 && <p>You have no saved posts.</p>}
-        </div>
+    <div className="pl-0 p-8 flex flex-col items-start">
+      <h1 className="text-2xl font-bold text-black mb-4">Saved Posts</h1>
+      <div className="flex flex-col gap-6 w-full">
+        {bookmarkedPosts.map((post) => (
+          <PostCard
+            key={post.id}
+            className="bg-container flex-shrink-0 w-full max-w-5xl ml-0 container"
+            {...post}
+          />
+        ))}
+        {bookmarkedPosts.length === 0 && <p>You have no saved posts.</p>}
       </div>
     </div>
   );
