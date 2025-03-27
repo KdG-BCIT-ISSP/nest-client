@@ -3,7 +3,7 @@
 First, run the development server:
 
 ```bash
-npm start
+npm run dev
 ```
 
 ## Commit Rules
