@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Button from "@/components/Button";
 import { Tag } from "@/types/Tag";
+import { useTranslation } from "next-i18next";
 
 interface TagSelectorProps {
   selectedTags: string[];
@@ -12,6 +13,7 @@ export default function TagsSelector({
   selectedTags,
   onTagClick,
 }: TagSelectorProps) {
+  const { t } = useTranslation("tag");
   const [availableTags, setAvailableTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -55,7 +57,9 @@ export default function TagsSelector({
                 : "bg-gray-200 border-gray-400"
             } text-black`}
           >
-            {tag.name}{" "}
+            {t(`tag.${tag.name.toLowerCase().replace(/[^\w]/g, "")}`, {
+              defaultValue: tag.name,
+            })}{" "}
             {selectedTags.includes(tag.name) && (
               <span className="ml-1">✖</span>
             )}
