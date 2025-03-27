@@ -2,6 +2,7 @@ import React from "react";
 import Button from "@/components/Button";
 import Image from "next/image";
 import imageCompression from "browser-image-compression";
+import { useTranslation } from "next-i18next";
 
 interface ImageUploadProps {
   onImageChange: (compressedImage: string) => void;
@@ -16,6 +17,7 @@ export default function ImageUpload({
   imagePreviews,
   multiple = false,
 }: ImageUploadProps) {
+  const { t } = useTranslation("post");
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
     if (files) {
@@ -70,7 +72,7 @@ export default function ImageUpload({
             multiple={multiple}
           />
           <Button
-            label="Add image"
+            label={t("post.addImage")}
             onClick={() => document.getElementById("fileUpload")?.click()}
             type="button"
             className="bg-gray-200 hover:bg-gray-300 text-black px-4 py-2 rounded-md border border-gray-400"
