@@ -4,14 +4,14 @@ import { useTranslation } from "next-i18next";
 
 type MenuItem = {
   label: string;
-  component?: React.ReactNode; // The component to render when clicked
-  onClick?: () => void; // Optional click handler
+  component?: React.ReactNode;
+  onClick?: () => void;
 };
 
 interface SideMenuProps {
   admin?: boolean;
-  customItems?: MenuItem[]; // Allow custom menu items
-  onItemSelect?: (item: MenuItem) => void; // Callback for item selection
+  customItems?: MenuItem[];
+  onItemSelect?: (item: MenuItem) => void;
 }
 
 export default function SideMenu({
@@ -22,7 +22,6 @@ export default function SideMenu({
   const { t } = useTranslation("dashboard");
   const [, , removeCookie] = useCookies(["refreshToken"]);
 
-  // Default menu items if no custom items are provided
   const defaultItems: MenuItem[] = admin
     ? [
         { label: t("dashboard.userAccess") },

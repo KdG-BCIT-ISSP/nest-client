@@ -61,7 +61,7 @@ export default function Navbar() {
 
   const USER_DROPDOWN_LINKS = [
     ...(userData.role === "ADMIN" || userData.role === "SUPER_ADMIN"
-      ? [{ href: "/admin/user-access", label: t("navigation.admin") }]
+      ? [{ href: "/admin", label: t("navigation.admin") }]
       : []),
     { href: "/profile", label: t("navigation.profile"), section: "profile" },
     {
@@ -76,8 +76,12 @@ export default function Navbar() {
     },
   ];
 
-  const handleProfileLinkClick = (section: string | undefined) => {
-    router.push(`/profile?section=${section}`);
+  const handleLinkClick = (href: string, section?: string) => {
+    if (section) {
+      router.push(`/profile?section=${section}`);
+    } else {
+      router.push(href);
+    }
     setIsUserDropdownOpen(false);
   };
 
@@ -154,7 +158,9 @@ export default function Navbar() {
                     {USER_DROPDOWN_LINKS.map((link) => (
                       <li key={link.href + (link.section || "")}>
                         <button
-                          onClick={() => handleProfileLinkClick(link.section)}
+                          onClick={() =>
+                            handleLinkClick(link.href, link.section)
+                          }
                           className="block px-4 py-2 w-full text-left text-sm text-gray-700 hover:bg-gray-100"
                         >
                           {link.label}

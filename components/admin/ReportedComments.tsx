@@ -2,12 +2,11 @@
 export const dynamic = "force-dynamic";
 
 import ReportCard from "@/components/ReportCard";
-import SideMenu from "@/components/SideMenu";
 import { useEffect, useState } from "react";
 import { ReportPostType, Report } from "@/types/PostType";
 import { get } from "@/app/lib/fetchInterceptor";
 
-export default function ReportedCommentsPage() {
+export default function ReportedCommentsComponent() {
   const [loading, setLoading] = useState(true);
   const [reportedComments, setReportedComments] = useState<Report[]>([]);
   const [comments, setComments] = useState<ReportPostType[]>([]);
@@ -40,29 +39,26 @@ export default function ReportedCommentsPage() {
   );
 
   return (
-    <div className="p-4 sm:ml-64">
-      <SideMenu admin />
-      <div className="pl-0 p-8 flex flex-col items-start">
-        <h1 className="text-2xl font-bold text-black mb-4 pb-4">
-          Reported Comments
-        </h1>
-        {commentsWithReports.length === 0 && (
-          <div className="text-gray-500">No reported comments</div>
-        )}
-        <div className="flex flex-col gap-6 w-full">
-          {commentsWithReports.map((comment) => {
-            const associatedReports = reportedComments.filter(
-              (report) => report.commentId === comment.id
-            );
-            return (
-              <ReportCard
-                key={comment.id}
-                post={comment}
-                reports={associatedReports}
-              />
-            );
-          })}
-        </div>
+    <div className="p-4">
+      <h1 className="text-2xl font-bold text-black mb-4 pb-4">
+        Reported Comments
+      </h1>
+      {commentsWithReports.length === 0 && (
+        <div className="text-gray-500">No reported comments</div>
+      )}
+      <div className="flex flex-col gap-6 w-full">
+        {commentsWithReports.map((comment) => {
+          const associatedReports = reportedComments.filter(
+            (report) => report.commentId === comment.id
+          );
+          return (
+            <ReportCard
+              key={comment.id}
+              post={comment}
+              reports={associatedReports}
+            />
+          );
+        })}
       </div>
     </div>
   );
