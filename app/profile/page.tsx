@@ -10,8 +10,10 @@ import { ProfileDataType } from "@/types/ProfileDataType";
 import SavedPosts from "@/components/profile/SavedPosts";
 import ResetPasswordField from "@/components/profile/ResetPasswordField";
 import { useSearchParams } from "next/navigation";
+import { useTranslation } from "next-i18next";
 
 const ProfileContent = () => {
+  const { t } = useTranslation("common");
   const [userData] = useAtom(userAtom);
   const searchParams = useSearchParams();
   const [selectedComponent, setSelectedComponent] =
@@ -19,7 +21,7 @@ const ProfileContent = () => {
 
   const profileItems = [
     {
-      label: "Profile",
+      label: t("navigation.profile"),
       component: <ProfileView {...userData} />,
       onClick: () =>
         setSelectedComponent(
@@ -32,17 +34,17 @@ const ProfileContent = () => {
         ),
     },
     {
-      label: "Saved Posts",
+      label: t("navigation.savedPosts"),
       component: <SavedPosts />,
       onClick: () => setSelectedComponent(<SavedPosts />),
     },
     {
-      label: "Notifications",
+      label: t("navigation.notifications"),
       component: <Notifications />,
       onClick: () => setSelectedComponent(<Notifications />),
     },
     {
-      label: "Reset Password",
+      label: t("navigation.resetPassword"),
       component: <ResetPasswordField />,
       onClick: () => setSelectedComponent(<ResetPasswordField />),
     },

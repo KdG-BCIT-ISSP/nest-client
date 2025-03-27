@@ -11,6 +11,7 @@ import SideMenu from "@/components/SideMenu";
 import TopArticles from "@/components/TopArticles";
 import TopPosts from "@/components/TopPosts";
 import { useState } from "react";
+import { useTranslation } from "next-i18next";
 
 const UserAccess = () => <UserAccessComponent />;
 const Posts = () => (
@@ -34,48 +35,49 @@ const Statistics = () => <StatisticsComponent />;
 const TagManagement = () => <TagManagementComponent />;
 
 export default function AdminPage() {
+  const { t } = useTranslation("dashboard");
   const [selectedComponent, setSelectedComponent] = useState<React.ReactNode>(
     <UserAccess />
   );
 
   const adminItems = [
     {
-      label: "User Access",
+      label: t("dashboard.userAccess"),
       component: <UserAccess />,
       onClick: () => setSelectedComponent(<UserAccess />),
     },
     {
-      label: "Posts",
+      label: t("dashboard.posts"),
       component: <Posts />,
       onClick: () => setSelectedComponent(<Posts />),
     },
     {
-      label: "Articles",
+      label: t("dashboard.articles"),
       component: <Articles />,
       onClick: () => setSelectedComponent(<Articles />),
     },
     {
-      label: "Reported Posts",
+      label: t("dashboard.reportedPosts"),
       component: <ReportedPosts />,
       onClick: () => setSelectedComponent(<ReportedPosts />),
     },
     {
-      label: "Reported Articles",
+      label: t("dashboard.reportedArticles"),
       component: <ReportedArticles />,
       onClick: () => setSelectedComponent(<ReportedArticles />),
     },
     {
-      label: "Reported Comments",
+      label: t("dashboard.reportedComments"),
       component: <ReportedComments />,
       onClick: () => setSelectedComponent(<ReportedComments />),
     },
     {
-      label: "Statistics",
+      label: t("dashboard.statistics"),
       component: <Statistics />,
       onClick: () => setSelectedComponent(<Statistics />),
     },
     {
-      label: "Tag Management",
+      label: t("dashboard.tagManagement"),
       component: <TagManagement />,
       onClick: () => setSelectedComponent(<TagManagement />),
     },
