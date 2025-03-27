@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { userAtom } from "@/atoms/user/atom";
 import { useAtom } from "jotai";
 import { get } from "@/app/lib/fetchInterceptor";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { i18n } = useTranslation();

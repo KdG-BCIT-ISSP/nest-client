@@ -7,7 +7,7 @@ export default function ProfilePage() {
   return (
     <div className="p-4 sm:ml-64 bg-white">
       <SideMenu />
-      <div className="container mr-auto max-w-5xl">
+      <div className="container mr-auto max-w-xl pt-10">
         <ResetPasswordField />
       </div>
     </div>

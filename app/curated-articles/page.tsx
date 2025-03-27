@@ -8,13 +8,18 @@ import HeroSection from "@/components/HeroSection";
 import { articlesAtom } from "@/atoms/articles/atom";
 import { useAtom } from "jotai";
 import { get } from "../lib/fetchInterceptor";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
+import Button from "@/components/Button";
+import CreateArticle from "@/components/CreateArticle";
+import { userAtom } from "@/atoms/user/atom";
 
 export default function CuratedArticlesPage() {
+  const [userData] = useAtom(userAtom);
   const { t } = useTranslation("article");
   const [, setArticleData] = useAtom(articlesAtom);
   const [loading, setLoading] = useState(true);
   const [articles, setArticles] = useState<ArticleCardType[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     async function fetchArticles() {
@@ -23,7 +28,7 @@ export default function CuratedArticlesPage() {
         const data = await get("/api/article");
         const updatedArticles = data.map((article: ArticleCardType) => ({
           ...article,
-          content: decodeURIComponent(article.content), // If needed, process content here
+          content: decodeURIComponent(article.content),
         }));
         setArticles(updatedArticles);
         setArticleData(updatedArticles);
@@ -42,19 +47,34 @@ export default function CuratedArticlesPage() {
     );
   };
 
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
   if (loading) {
     return <div>{t("general.loading")}</div>;
   }
 
   return (
     <div className="p-6 pt-10">
-      <HeroSection
-        img={"/images/pregnancy1.jpg"}
-        title={t("article.heroTitle")}
-        subtitle={t("article.heroSubtitle")}
-        direction="right"
-      />
+      <div className="relative">
+        <HeroSection
+          img={"/images/pregnancy1.jpg"}
+          title={t("article.heroTitle")}
+          subtitle={t("article.heroSubtitle")}
+          direction="right"
+        />
+        {(userData.role === "ADMIN" || userData.role === "SUPER_ADMIN") && (
+          <div className="absolute top-full right-6 mt-4">
+            <Button
+              label="Create Article"
+              onClick={openModal}
+              className="bg-secondary text-white px-6 py-3 rounded-md"
+            />
+          </div>
+        )}
+      </div>
       <div className="py-10" />
+
       <div className="w-full mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {articles.map((article) => (
@@ -66,6 +86,21 @@ export default function CuratedArticlesPage() {
           ))}
         </div>
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <Button
+                label="Close"
+                onClick={closeModal}
+                className="bg-red-500 text-white hover:bg-red-600 px-4 py-2 rounded-md"
+              />
+            </div>
+            <CreateArticle />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

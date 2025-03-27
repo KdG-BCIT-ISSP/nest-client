@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useCookies } from "react-cookie";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 
 export default function SideMenu({ admin = false }: { admin?: boolean }) {
   const { t } = useTranslation("dashboard");
@@ -26,7 +26,10 @@ export default function SideMenu({ admin = false }: { admin?: boolean }) {
         { href: "/profile", label: t("dashboard.profile") },
         { href: "/profile/saved-posts", label: t("dashboard.savedPosts") },
         { href: "/profile/notifications", label: t("dashboard.notifications") },
-        { href: "reset", label: t("dashboard.resetPassword") },
+        {
+          href: "/profile/reset-password",
+          label: t("dashboard.resetPassword"),
+        },
       ];
 
   const handleLogout = async () => {

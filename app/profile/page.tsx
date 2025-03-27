@@ -10,7 +10,7 @@ export default function ProfilePage() {
   const [userData] = useAtom(userAtom);
 
   return (
-    <div className="p-4 sm:ml-64 bg-white">
+    <div className="sm:ml-64 bg-white">
       <SideMenu />
       <div className="container mr-auto max-w-5xl">
         <ProfileInputField

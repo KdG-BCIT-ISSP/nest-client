@@ -8,7 +8,7 @@ import Image from "next/image";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
 import imageCompression from "browser-image-compression";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { get, put } from "@/app/lib/fetchInterceptor";
 
 export default function ProfileInputField({

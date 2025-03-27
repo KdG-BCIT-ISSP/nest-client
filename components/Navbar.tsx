@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import LocaleSwitcher from "./LocaleSwitcher";
 
 export default function Navbar() {

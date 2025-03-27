@@ -9,7 +9,7 @@ const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 import { ArticleType } from "@/types/ArticleType";
 import TagsSelector from "./TagsSelector";
 import imageCompression from "browser-image-compression";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { post } from "@/app/lib/fetchInterceptor";
 import { Topic } from "@/types/Topic";
 import TopicSelector from "./TopicSelector";
@@ -219,22 +219,19 @@ export default function CreateArticle() {
             onTopicClick={handleTopicClick}
             topics={topics}
           />
-          {/* Title Input */}
-          <div className="w-3/5 flex flex-col">
-            <label className="block text-lg font-medium">
-              {t("article.title")}
-            </label>
-            <input
-              type="text"
-              value={article.title}
-              onChange={(e) => handleChange(e, "title")}
-              className="mt-1 p-3 w-full border border-gray-300 rounded-md h-12"
-              placeholder={t("article.titlePlaceholder")}
-            />
-            {errors.title && (
-              <p className="text-red-500 text-sm">{errors.title}</p>
-            )}
-          </div>
+          <label className="text-sm font-medium text-gray-900 block mb-2">
+            {t("article.title")}
+          </label>
+          <input
+            type="text"
+            value={article.title}
+            onChange={(e) => handleChange(e, "title")}
+            className="mt-1 p-3 w-full border border-gray-300 rounded-md h-12"
+            placeholder={t("article.titlePlaceholder")}
+          />
+          {errors.title && (
+            <p className="text-red-500 text-sm">{errors.title}</p>
+          )}
 
           <div className="w-2/5 flex flex-col items-center gap-10">
             {/* Upload Button */}

@@ -7,7 +7,7 @@ import Button from "@/components/Button";
 import TagsSelector from "./TagsSelector";
 import ImageUpload from "./ImageUpload";
 import { post } from "@/app/lib/fetchInterceptor";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import TopicSelector from "./TopicSelector";
 import { Topic } from "@/types/Topic";
 
@@ -191,8 +191,8 @@ export default function CreatePost() {
           />
           {/* Topic Dropdown */}
           <div className="col-span-6">
-            <label className="text-sm font-medium text-gray-900 block mb-2">
-              {t("post.title")}
+            <label className="text-sm font-medium text-gray-900 block py-2">
+              Title
             </label>
             <input
               type="text"
@@ -209,7 +209,7 @@ export default function CreatePost() {
 
           {/* Content Input */}
           <div className="col-span-6">
-            <label className="text-sm font-medium text-gray-900 block mb-2">
+            <label className="text-sm font-medium text-gray-900 block py-2">
               {t("post.content")}
             </label>
             <textarea
@@ -224,7 +224,7 @@ export default function CreatePost() {
             )}
           </div>
 
-          <div className="col-span-6 flex flex-wrap items-start gap-4">
+          <div className="col-span-6 flex flex-wrap items-start gap-4 py-2">
             {/* Tag Selection */}
             <TagsSelector
               selectedTags={selectedTags}
