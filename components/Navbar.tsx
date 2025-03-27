@@ -5,12 +5,12 @@ import MenuIcon from "@/public/svg/Menu";
 import SearchBar from "./SearchBar";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState, useRef } from "react";
 import { useCookies } from "react-cookie";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import LocaleSwitcher from "./LocaleSwitcher";
 
 export default function Navbar() {
@@ -19,14 +19,35 @@ export default function Navbar() {
   const [userData] = useAtom(userAtom);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const isAuthenticated =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
   const [, , removeCookie] = useCookies(["refreshToken"]);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsUserDropdownOpen(false);
+      }
+    };
+
+    if (isUserDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isUserDropdownOpen]);
 
   if (!mounted) {
     return null;
@@ -40,12 +61,29 @@ export default function Navbar() {
 
   const USER_DROPDOWN_LINKS = [
     ...(userData.role === "ADMIN" || userData.role === "SUPER_ADMIN"
-      ? [{ href: "/admin/user-access", label: t("navigation.admin") }]
+      ? [{ href: "/admin", label: t("navigation.admin") }]
       : []),
-    { href: "/profile", label: t("navigation.profile") },
-    { href: "/profile/saved-posts", label: t("navigation.savedPosts") },
-    { href: "/profile/notifications", label: t("navigation.notifications") },
+    { href: "/profile", label: t("navigation.profile"), section: "profile" },
+    {
+      href: "/profile",
+      label: t("navigation.savedPosts"),
+      section: "saved-posts",
+    },
+    {
+      href: "/profile",
+      label: t("navigation.notifications"),
+      section: "notifications",
+    },
   ];
+
+  const handleLinkClick = (href: string, section?: string) => {
+    if (section) {
+      router.push(`/profile?section=${section}`);
+    } else {
+      router.push(href);
+    }
+    setIsUserDropdownOpen(false);
+  };
 
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen((prev) => !prev);
@@ -84,10 +122,12 @@ export default function Navbar() {
             </Link>
           ))}
         </div>
-        <LocaleSwitcher />
+        <div className="px-2">
+          <LocaleSwitcher />
+        </div>
         <div className="flex items-center space-x-3">
           {isAuthenticated ? (
-            <div className="relative">
+            <div className="relative" ref={dropdownRef}>
               <button
                 onClick={toggleUserDropdown}
                 type="button"
@@ -116,13 +156,15 @@ export default function Navbar() {
                   </div>
                   <ul className="py-2">
                     {USER_DROPDOWN_LINKS.map((link) => (
-                      <li key={link.href}>
-                        <Link
-                          href={link.href}
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      <li key={link.href + (link.section || "")}>
+                        <button
+                          onClick={() =>
+                            handleLinkClick(link.href, link.section)
+                          }
+                          className="block px-4 py-2 w-full text-left text-sm text-gray-700 hover:bg-gray-100"
                         >
                           {link.label}
-                        </Link>
+                        </button>
                       </li>
                     ))}
                     <li>
@@ -138,7 +180,7 @@ export default function Navbar() {
               )}
             </div>
           ) : (
-            <div className="flex items-center space-x-4 px-2">
+            <div className="flex items-center space-x-2 px-2">
               <Link
                 href="/auth/login"
                 className="px-4 py-2 text-sm font-medium text-white bg-secondary rounded-md"

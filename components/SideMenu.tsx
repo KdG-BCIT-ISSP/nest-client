@@ -1,33 +1,46 @@
-import Link from "next/link";
+"use client";
 import { useCookies } from "react-cookie";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 
-export default function SideMenu({ admin = false }: { admin?: boolean }) {
+type MenuItem = {
+  label: string;
+  component?: React.ReactNode;
+  onClick?: () => void;
+};
+
+interface SideMenuProps {
+  admin?: boolean;
+  customItems?: MenuItem[];
+  onItemSelect?: (item: MenuItem) => void;
+}
+
+export default function SideMenu({
+  admin = false,
+  customItems,
+  onItemSelect,
+}: SideMenuProps) {
   const { t } = useTranslation("dashboard");
   const [, , removeCookie] = useCookies(["refreshToken"]);
-  const links = admin
+
+  const defaultItems: MenuItem[] = admin
     ? [
-        { href: "/admin/user-access", label: t("dashboard.userAccess") },
-        { href: "/admin/posts", label: t("dashboard.posts") },
-        { href: "/admin/articles", label: t("dashboard.articles") },
-        { href: "/admin/reported-posts", label: t("dashboard.reportedPosts") },
-        {
-          href: "/admin/reported-articles",
-          label: t("dashboard.reportedArticles"),
-        },
-        {
-          href: "/admin/reported-comments",
-          label: t("dashboard.reportedComments"),
-        },
-        { href: "/admin/statistics", label: t("dashboard.statistics") },
-        { href: "/admin/tag-management", label: t("dashboard.tagManagement") },
+        { label: t("dashboard.userAccess") },
+        { label: t("dashboard.posts") },
+        { label: t("dashboard.articles") },
+        { label: t("dashboard.reportedPosts") },
+        { label: t("dashboard.reportedArticles") },
+        { label: t("dashboard.reportedComments") },
+        { label: t("dashboard.statistics") },
+        { label: t("dashboard.tagManagement") },
       ]
     : [
-        { href: "/profile", label: t("dashboard.profile") },
-        { href: "/profile/saved-posts", label: t("dashboard.savedPosts") },
-        { href: "/profile/notifications", label: t("dashboard.notifications") },
-        { href: "reset", label: t("dashboard.resetPassword") },
+        { label: t("dashboard.profile") },
+        { label: t("dashboard.savedPosts") },
+        { label: t("dashboard.notifications") },
+        { label: t("dashboard.resetPassword") },
       ];
+
+  const menuItems = customItems || defaultItems;
 
   const handleLogout = async () => {
     try {
@@ -39,6 +52,15 @@ export default function SideMenu({ admin = false }: { admin?: boolean }) {
     }
   };
 
+  const handleItemClick = (item: MenuItem) => {
+    if (item.onClick) {
+      item.onClick();
+    }
+    if (onItemSelect) {
+      onItemSelect(item);
+    }
+  };
+
   return (
     <aside
       id="default-sidebar"
@@ -47,16 +69,16 @@ export default function SideMenu({ admin = false }: { admin?: boolean }) {
     >
       <div className="h-full pt-32 px-3 py-4 overflow-y-auto bg-gray-50">
         <ul className="space-y-2 font-medium">
-          {links.map((link) => (
-            <li key={link.href}>
-              <Link
-                href={link.href}
-                className="flex items-center p-2 text-gray-900 rounded-lg group"
+          {menuItems.map((item, index) => (
+            <li key={index}>
+              <button
+                onClick={() => handleItemClick(item)}
+                className="w-full text-left flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
               >
                 <span className="flex-1 ms-3 whitespace-nowrap">
-                  {link.label}
+                  {item.label}
                 </span>
-              </Link>
+              </button>
             </li>
           ))}
           <li>

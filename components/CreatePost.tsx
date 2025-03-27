@@ -7,7 +7,9 @@ import Button from "@/components/Button";
 import TagsSelector from "./TagsSelector";
 import ImageUpload from "./ImageUpload";
 import { post } from "@/app/lib/fetchInterceptor";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
+import TopicSelector from "./TopicSelector";
+import { Topic } from "@/types/Topic";
 
 export default function CreatePost() {
   const { t } = useTranslation("post");
@@ -17,9 +19,9 @@ export default function CreatePost() {
     title: "",
     content: "",
     tagNames: [],
-    topicId: 2,
     type: "USERPOST",
     imageBase64: [],
+    topicId: 1,
   });
 
   const [errors, setErrors] = useState({
@@ -29,6 +31,8 @@ export default function CreatePost() {
 
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedTopic, setSelectedTopic] = useState<Topic>();
+  const [topics, setTopics] = useState<Topic[]>([]);
 
   // Cleans up temporary object URLs created for image previews.
   useEffect(() => {
@@ -53,6 +57,38 @@ export default function CreatePost() {
 
     setErrors(newErrors);
     return isValid;
+  };
+
+  useEffect(() => {
+    const fetchTopics = async () => {
+      try {
+        const response = await fetch("/api/topic");
+        if (!response.ok) {
+          throw new Error("Failed to fetch topics");
+        }
+        const data: Topic[] = await response.json();
+        setTopics(data);
+        if (data.length > 0) {
+          setSelectedTopic(data[0]);
+          setUserPost((prev) => ({
+            ...prev,
+            topicId: data[0].id,
+          }));
+        }
+      } catch (err) {
+        console.error("Failed to fetch topics:", err);
+      }
+    };
+
+    fetchTopics();
+  }, []);
+
+  const handleTopicClick = (topic: Topic) => {
+    setSelectedTopic(topic);
+    setUserPost((prevPost) => ({
+      ...prevPost,
+      topicId: topic.id,
+    }));
   };
 
   const handleTagClick = (tag: string) => {
@@ -123,7 +159,7 @@ export default function CreatePost() {
       const response = await post("/api/posts", {
         title: updatedPost.title ?? "",
         content: updatedPost.content ?? "",
-        topicId: updatedPost.topicId ?? 2,
+        topicId: updatedPost.topicId,
         type: updatedPost.type || "USERPOST",
         tagNames: updatedPost.tagNames || [],
         imageBase64: userPost.imageBase64 || [],
@@ -144,11 +180,19 @@ export default function CreatePost() {
   return (
     <div className="bg-white border rounded-md relative m-10 p-6">
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-6 gap-6">
-          {/* Title Input */}
+        <div className="gap-6">
+          <label className="text-sm font-medium text-gray-900 block mb-2">
+            Topic
+          </label>
+          <TopicSelector
+            selectedTopic={selectedTopic || undefined}
+            onTopicClick={handleTopicClick}
+            topics={topics}
+          />
+          {/* Topic Dropdown */}
           <div className="col-span-6">
-            <label className="text-sm font-medium text-gray-900 block mb-2">
-              {t("post.title")}
+            <label className="text-sm font-medium text-gray-900 block py-2">
+              Title
             </label>
             <input
               type="text"
@@ -165,7 +209,7 @@ export default function CreatePost() {
 
           {/* Content Input */}
           <div className="col-span-6">
-            <label className="text-sm font-medium text-gray-900 block mb-2">
+            <label className="text-sm font-medium text-gray-900 block py-2">
               {t("post.content")}
             </label>
             <textarea
@@ -180,7 +224,7 @@ export default function CreatePost() {
             )}
           </div>
 
-          <div className="col-span-6 flex flex-wrap items-start gap-4">
+          <div className="col-span-6 flex flex-wrap items-start gap-4 py-2">
             {/* Tag Selection */}
             <TagsSelector
               selectedTags={selectedTags}

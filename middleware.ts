@@ -5,8 +5,7 @@ export function middleware(req: NextRequest) {
 
   const isProtectedRoute =
     req.nextUrl.pathname.startsWith("/admin") ||
-    req.nextUrl.pathname.startsWith("/profile") ||
-    req.nextUrl.pathname.startsWith("/create-post");
+    req.nextUrl.pathname.startsWith("/profile");
 
   if (isProtectedRoute && !refreshToken) {
     return NextResponse.redirect(new URL("/auth/login", req.url));
@@ -24,9 +23,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/(admin|profile|create-post)/:path*",
-    "/api/:path*",
-    "/oauth2/:path*",
-  ],
+  matcher: ["/(admin|profile)/:path*", "/api/:path*", "/oauth2/:path*"],
 };

@@ -18,7 +18,7 @@ import XIcon from "@/public/svg/XIcon";
 import Tags from "@/components/Tags";
 import { get, post } from "@/app/lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 
 export default function ArticleDetailsPage() {
   useTranslation(); // TODO: Finish translating

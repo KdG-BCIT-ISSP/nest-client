@@ -11,7 +11,7 @@ import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
 import { del, post } from "@/app/lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 
 interface ArticleCardProps {
   article: ArticleCardType;

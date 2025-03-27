@@ -9,8 +9,10 @@ const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 import { ArticleType } from "@/types/ArticleType";
 import TagsSelector from "./TagsSelector";
 import imageCompression from "browser-image-compression";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { post } from "@/app/lib/fetchInterceptor";
+import { Topic } from "@/types/Topic";
+import TopicSelector from "./TopicSelector";
 
 export default function CreateArticle() {
   const { t, i18n } = useTranslation("article");
@@ -18,7 +20,7 @@ export default function CreateArticle() {
     title: "",
     content: "",
     tagNames: [],
-    topicId: 2,
+    topicId: 1,
     type: "ARTICLE",
     coverImage: "", // Stores uploaded image
     imagePreview: "", // Stores preview URL
@@ -33,6 +35,40 @@ export default function CreateArticle() {
   });
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedTopic, setSelectedTopic] = useState<Topic>();
+  const [topics, setTopics] = useState<Topic[]>([]);
+
+  useEffect(() => {
+    const fetchTopics = async () => {
+      try {
+        const response = await fetch("/api/topic");
+        if (!response.ok) {
+          throw new Error("Failed to fetch topics");
+        }
+        const data: Topic[] = await response.json();
+        setTopics(data);
+        if (data.length > 0) {
+          setSelectedTopic(data[0]);
+          setArticle((prev) => ({
+            ...prev,
+            topicId: data[0].id,
+          }));
+        }
+      } catch (err) {
+        console.error("Failed to fetch topics:", err);
+      }
+    };
+
+    fetchTopics();
+  }, []);
+
+  const handleTopicClick = (topic: Topic) => {
+    setSelectedTopic(topic);
+    setArticle((prevArticle) => ({
+      ...prevArticle,
+      topicId: topic.id,
+    }));
+  };
 
   // Handle Change
   const handleChange = (
@@ -173,23 +209,29 @@ export default function CreateArticle() {
   return (
     <div className="max-w-6xl mx-auto bg-white p-6 lg:p-12 rounded-lg shadow-md my-10">
       <form onSubmit={handleSubmit}>
+        {/* Topic Dropdown */}
         <div className="mb-6 flex items-center justify-between gap-6">
-          {/* Title Input */}
-          <div className="w-3/5 flex flex-col">
-            <label className="block text-lg font-medium">
-              {t("article.title")}
-            </label>
-            <input
-              type="text"
-              value={article.title}
-              onChange={(e) => handleChange(e, "title")}
-              className="mt-1 p-3 w-full border border-gray-300 rounded-md h-12"
-              placeholder={t("article.titlePlaceholder")}
-            />
-            {errors.title && (
-              <p className="text-red-500 text-sm">{errors.title}</p>
-            )}
-          </div>
+          <label className="text-sm font-medium text-gray-900 block mb-2">
+            Topic
+          </label>
+          <TopicSelector
+            selectedTopic={selectedTopic || undefined}
+            onTopicClick={handleTopicClick}
+            topics={topics}
+          />
+          <label className="text-sm font-medium text-gray-900 block mb-2">
+            {t("article.title")}
+          </label>
+          <input
+            type="text"
+            value={article.title}
+            onChange={(e) => handleChange(e, "title")}
+            className="mt-1 p-3 w-full border border-gray-300 rounded-md h-12"
+            placeholder={t("article.titlePlaceholder")}
+          />
+          {errors.title && (
+            <p className="text-red-500 text-sm">{errors.title}</p>
+          )}
 
           <div className="w-2/5 flex flex-col items-center gap-10">
             {/* Upload Button */}
