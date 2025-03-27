@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import { Topic } from "@/types/Topic";
-import { useTranslation } from "next-i18next";
 
 interface TopicSelectorProps {
   selectedTopic?: Topic;
@@ -14,7 +13,6 @@ export default function TopicSelector({
   onTopicClick,
   topics,
 }: TopicSelectorProps) {
-  const { t } = useTranslation("topic");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -33,10 +31,7 @@ export default function TopicSelector({
         className="text-black bg-white font-medium rounded-md text-sm px-5 py-2.5 text-center inline-flex items-center w-3/4 justify-between border border-gray-300"
         type="button"
       >
-        {selectedTopic &&
-          t(`topic.${selectedTopic.name.toLowerCase().replace(/[^\w]/g, "")}`, {
-            defaultValue: selectedTopic.name,
-          })}
+        {selectedTopic?.name}
         <svg
           className="w-2.5 h-2.5 ms-3 stroke-blue-500"
           aria-hidden="true"
@@ -71,10 +66,7 @@ export default function TopicSelector({
                     selectedTopic?.id === topic.id ? "bg-gray-100" : ""
                   }`}
                 >
-                  {t(
-                    `topic.${topic.name.toLowerCase().replace(/[^\w]/g, "")}`,
-                    { defaultValue: topic.name }
-                  )}
+                  {topic.name}
                 </button>
               </li>
             ))}
