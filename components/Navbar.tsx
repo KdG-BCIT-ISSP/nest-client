@@ -84,7 +84,9 @@ export default function Navbar() {
             </Link>
           ))}
         </div>
-        <LocaleSwitcher />
+        <div className="px-2">
+          <LocaleSwitcher />
+        </div>
         <div className="flex items-center space-x-3">
           {isAuthenticated ? (
             <div className="relative">
@@ -138,7 +140,7 @@ export default function Navbar() {
               )}
             </div>
           ) : (
-            <div className="flex items-center space-x-4 px-2">
+            <div className="flex items-center space-x-2 px-2">
               <Link
                 href="/auth/login"
                 className="px-4 py-2 text-sm font-medium text-white bg-secondary rounded-md"
