@@ -12,6 +12,7 @@ import { useTranslation } from "next-i18next";
 import Button from "@/components/Button";
 import CreateArticle from "@/components/CreateArticle";
 import { userAtom } from "@/atoms/user/atom";
+import Modal from "@/components/Modal";
 
 export default function CuratedArticlesPage() {
   const [userData] = useAtom(userAtom);
@@ -66,7 +67,7 @@ export default function CuratedArticlesPage() {
         {(userData.role === "ADMIN" || userData.role === "SUPER_ADMIN") && (
           <div className="absolute top-full right-6 mt-4">
             <Button
-              label="Create Article"
+              label={t("article.create")}
               onClick={openModal}
               className="bg-secondary text-white px-6 py-3 rounded-md"
             />
@@ -86,21 +87,9 @@ export default function CuratedArticlesPage() {
           ))}
         </div>
       </div>
-
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-6xl max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <Button
-                label="Close"
-                onClick={closeModal}
-                className="bg-red-500 text-white hover:bg-red-600 px-4 py-2 rounded-md"
-              />
-            </div>
-            <CreateArticle />
-          </div>
-        </div>
-      )}
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <CreateArticle />
+      </Modal>
     </div>
   );
 }
