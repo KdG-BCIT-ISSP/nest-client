@@ -8,12 +8,17 @@ import HeroSection from "@/components/HeroSection";
 import { get } from "../lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
 import { useTranslation } from "next-i18next";
+import Button from "@/components/Button";
+import CreatePost from "@/components/CreatePost";
 
 export default function PostsPage() {
+  const isAuthenticated =
+    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
   const { t } = useTranslation("post");
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState<PostType[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     async function fetchPosts() {
@@ -36,6 +41,9 @@ export default function PostsPage() {
     setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
   };
 
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
@@ -47,6 +55,16 @@ export default function PostsPage() {
         subtitle={t("post.subtitle")}
         direction="left"
       />
+      {isAuthenticated && (
+        <div className="max-w-7xl mx-auto p-6 flex justify-end mb-6">
+          <Button
+            label="Create Post"
+            onClick={openModal}
+            className="bg-secondary text-white px-6 py-3 rounded-md"
+          />
+        </div>
+      )}
+      {/* Posts Grid */}
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 gap-8">
           {posts.map((post) => (
@@ -69,6 +87,20 @@ export default function PostsPage() {
           ))}
         </div>
       </div>
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <Button
+                label="Close"
+                onClick={closeModal}
+                className="bg-red-500 text-white hover:bg-red-600 px-4 py-2 rounded-md"
+              />
+            </div>
+            <CreatePost />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
