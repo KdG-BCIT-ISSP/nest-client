@@ -10,4 +10,5 @@ export type ButtonProps = {
   className?: string;
   children?: ReactNode;
   type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 };
