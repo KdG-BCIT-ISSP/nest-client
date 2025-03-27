@@ -34,7 +34,9 @@ export default function TopicSelector({
         type="button"
       >
         {selectedTopic &&
-          t(`topic.${selectedTopic.name.toLowerCase().replace(/[^\w]/g, "")}`)}
+          t(`topic.${selectedTopic.name.toLowerCase().replace(/[^\w]/g, "")}`, {
+            defaultValue: selectedTopic.name,
+          })}
         <svg
           className="w-2.5 h-2.5 ms-3 stroke-blue-500"
           aria-hidden="true"
@@ -69,7 +71,10 @@ export default function TopicSelector({
                     selectedTopic?.id === topic.id ? "bg-gray-100" : ""
                   }`}
                 >
-                  {t(`topic.${topic.name.toLowerCase().replace(/[^\w]/g, "")}`)}
+                  {t(
+                    `topic.${topic.name.toLowerCase().replace(/[^\w]/g, "")}`,
+                    { defaultValue: topic.name }
+                  )}
                 </button>
               </li>
             ))}
