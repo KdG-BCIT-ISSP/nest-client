@@ -34,6 +34,8 @@ export interface ArticleType extends BaseContent {
   isLiked?: boolean;
   topicName?: string;
   memberId?: number;
+  topicId?: number;
+  imagePreview?: string;
 }
 
 export interface PostType extends BaseContent {

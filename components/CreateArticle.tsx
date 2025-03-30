@@ -6,7 +6,7 @@ import Button from "@/components/Button";
 import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
-import { ArticleType } from "@/types/ArticleType";
+import { ArticleType } from "@/types/ContentType";
 import TagsSelector from "./TagsSelector";
 import imageCompression from "browser-image-compression";
 import { useTranslation } from "next-i18next";
@@ -17,15 +17,14 @@ import TopicSelector from "./TopicSelector";
 export default function CreateArticle() {
   const { t, i18n } = useTranslation("article");
   const [article, setArticle] = useState<ArticleType>({
+    id: 0,
     title: "",
     content: "",
     tagNames: [],
     topicId: 1,
     type: "ARTICLE",
     coverImage: "", // Stores uploaded image
-    imagePreview: "", // Stores preview URL
-    likes: 0,
-    isLiked: false,
+    memberUsername: "",
   });
 
   const [errors, setErrors] = useState({
@@ -199,10 +198,10 @@ export default function CreateArticle() {
   const handleTagClick = (tag: string) => {
     if (selectedTags.includes(tag)) {
       setSelectedTags(selectedTags.filter((t) => t !== tag)); // Remove tag if clicked again
-      article.tagNames = article.tagNames.filter((t) => t !== tag);
+      article.tagNames = article.tagNames?.filter((t) => t !== tag) ?? [];
     } else {
       setSelectedTags([...selectedTags, tag]); // Add tag if not already selected
-      article.tagNames = [...article.tagNames, tag];
+      article.tagNames = [...(article.tagNames ?? []), tag];
     }
   };
 
