@@ -1,3 +1,5 @@
+import { Comment } from "./ContentType";
+
 export type PostType = {
   id: number;
   title?: string;
@@ -8,7 +10,7 @@ export type PostType = {
   memberUsername?: string;
   memberId?: number;
   memberAvatar?: string[];
-  comment?: string[];
+  comment?: Comment[];
   createdAt?: string;
   imageBase64?: string[];
   bookmarked?: boolean;

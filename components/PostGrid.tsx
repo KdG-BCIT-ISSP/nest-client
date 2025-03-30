@@ -24,15 +24,17 @@ export default function PostGrid({ post }: PostGridProps) {
       </div>
 
       <div className="w-full h-auto relative">
-        <Image
-          src={post.imageBase64[0]}
-          alt={post.title}
-          width={0}
-          height={0}
-          sizes="100vw"
-          className="w-full h-auto object-cover cursor-pointer"
-          onClick={() => router.push(`/posts/${post.id}`)}
-        />
+        {post.imageBase64.length !== 0 && (
+          <Image
+            src={post.imageBase64[0]}
+            alt={post.title}
+            width={0}
+            height={0}
+            sizes="100vw"
+            className="w-full h-auto object-cover cursor-pointer"
+            onClick={() => router.push(`/posts/${post.id}`)}
+          />
+        )}
       </div>
 
       <div className="flex items-center p-3 space-x-4">

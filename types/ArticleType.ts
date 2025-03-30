@@ -1,17 +1,19 @@
 export type ArticleType = {
-  id?: number;
-  author?: string;
+  id: number;
   memberUsername?: string;
   title: string;
   content: string;
   type: string;
-  topicId: number;
+  topicName?: string;
   tagNames: string[];
   coverImage: string;
-  imagePreview?: string | null;
-  link?: string;
+  createdAt?: string;
   likes?: number;
   isLiked?: boolean;
   bookmarked?: boolean;
-  createdAt?: string;
+  comment?: Comment[];
+  viewCount?: number;
+  shareCount?: number;
+  memberId?: number;
+  memberAvatar?: string;
 };
