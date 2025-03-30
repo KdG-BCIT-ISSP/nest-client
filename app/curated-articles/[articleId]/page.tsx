@@ -175,7 +175,6 @@ export default function ArticleDetailsPage() {
               placeholder="Enter your reason for reporting this article..."
               className="w-full p-2 border-none focus:outline-none focus:ring-0 bg-gray-200"
               rows={8}
-              
             />
             <div className="flex justify-end">
               <button

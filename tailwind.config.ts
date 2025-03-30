@@ -23,7 +23,7 @@ export default {
         black: "#101010", // Custom Black
         darkGray: "#999999",
         lightGray: "#F2F2F2",
-        report: "#EEEEEE", // Custom report 
+        report: "#EEEEEE", // Custom report
         primaryPressed: "#FFCFCF",
         secondaryPressed: "#447346",
         tertiaryPressed: "#BA5656",

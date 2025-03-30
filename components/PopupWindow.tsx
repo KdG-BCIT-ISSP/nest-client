@@ -52,7 +52,9 @@ export default function PopupWindow({
                 required
               />
             )}
-            <div className={`flex ${deleteButton ? 'justify-between' : 'justify-end'} w-full mt-5`}>
+            <div
+              className={`flex ${deleteButton ? "justify-between" : "justify-end"} w-full mt-5`}
+            >
               {deleteButton && (
                 <button
                   data-modal-hide="popup-modal"

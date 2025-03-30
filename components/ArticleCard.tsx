@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 import { ArticleCardType } from "@/types/ArticleCardType";
 import React, { useCallback } from "react";
 import Image from "next/image";
-import parse from "html-react-parser";
-import htmlTruncate from "html-truncate";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
 import { del, post } from "@/app/lib/fetchInterceptor";
@@ -21,10 +19,7 @@ interface ArticleCardProps {
 export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
   const { t } = useTranslation("article");
   const router = useRouter();
-  const maxLength = 50;
   const [userData] = useAtom(userAtom);
-  const truncatedHtmlString = htmlTruncate(article.content, maxLength) + "...";
-  const truncatedHtml = parse(truncatedHtmlString);
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();

@@ -81,7 +81,7 @@ export default function StatisticsComponent() {
           </p>
           <p>
             Total Post Shares: <strong>{postShares}</strong>
-          </p>  
+          </p>
           <p>
             Total Post Likes: <strong>{postLikes}</strong>
           </p>
