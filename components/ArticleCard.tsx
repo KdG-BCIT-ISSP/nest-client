@@ -64,8 +64,8 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
 
       {/* Article Details */}
       <div className="flex flex-col justify-between p-4 leading-normal w-full">
-        <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900">
-          {article.title.length > 80 ? article.title.slice(0, 80) + "..." : article.title}
+        <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900 line-clamp-2">
+          {article.title}
         </h5>
         {/* <div
           className="text-gray-800 overflow-hidden"
@@ -86,7 +86,7 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
             {article.tagNames.map((tag) => (
               <span
                 key={tag}
-                className="bg-gray-200 text-xs px-2 py-1 rounded-full text-gray-700"
+                className="bg-primary text-xs px-2 py-1 rounded-md text-gray-700"
               >
                 #{tag}
               </span>

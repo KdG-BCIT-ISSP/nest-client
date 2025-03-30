@@ -21,7 +21,7 @@ export default {
         muted: "#FFCFCF", // Custom Pink
         container: "#F2FBF3", // Custom Yellow
         black: "#101010", // Custom Black
-        darkGray: "#2A2A2A",
+        darkGray: "#999999",
         lightGray: "#F2F2F2",
         report: "#EEEEEE", // Custom report 
         primaryPressed: "#FFCFCF",
