@@ -12,7 +12,7 @@ import ArticleComment from "@/public/svg/Article/Comment";
 import ArticleBookmark from "@/public/svg/Article/Bookmark";
 import ArticleShare from "@/public/svg/Article/Share";
 import Tags from "@/components/Tags";
-import CommentsSection from "@/components/Comments";
+// import CommentsSection from "@/components/Comments";
 import { PostType } from "@/types/PostType";
 import XIcon from "@/public/svg/XIcon";
 import { get, post } from "@/app/lib/fetchInterceptor";
@@ -178,7 +178,7 @@ export default function PostDetailPage() {
             <ArticleShare count={12} />
           </button>
         </div>
-        <CommentsSection />
+        {/* <CommentsSection /> */}
       </div>
 
       {showCopied && (

@@ -1,8 +1,6 @@
 "use client";
-export const dynamic = "force-dynamic";
-
-import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import Image from "next/image";
 import Back from "@/public/svg/Article/Back";
 import Dots from "@/public/svg/Article/Dots";
@@ -13,7 +11,7 @@ import ArticleComment from "@/public/svg/Article/Comment";
 import ArticleBookmark from "@/public/svg/Article/Bookmark";
 import ArticleShare from "@/public/svg/Article/Share";
 import CommentsSection from "@/components/Comments";
-import { ArticleType } from "@/types/ArticleType";
+import { ArticleType } from "@/types/ContentType";
 import XIcon from "@/public/svg/XIcon";
 import Tags from "@/components/Tags";
 import { get, post } from "@/app/lib/fetchInterceptor";
@@ -21,52 +19,49 @@ import { formatDate } from "@/utils/formatDate";
 import { useTranslation } from "next-i18next";
 
 export default function ArticleDetailsPage() {
-  useTranslation(); // TODO: Finish translating
+  useTranslation();
   const params = useParams();
   const articleId = Number(params.articleId);
-  const [article, setArticle] = useState<ArticleType>();
+  const [article, setArticle] = useState<ArticleType | null>(null);
   const [loading, setLoading] = useState(true);
+  const [views, setViews] = useState(0);
   const [showReport, setShowReport] = useState(false);
   const [showReportButton, setShowReportButton] = useState(false);
   const [reportReason, setReportReason] = useState("");
   const [showCopied, setShowCopied] = useState(false);
-  const [views, setViews] = useState(0);
 
   const isAuthenticated =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setLoading(true);
-
-        const promises = [
-          get(`/api/content/id/${articleId}`),
-          get(`/api/content/${articleId}/views`),
-          get(`/api/content/${articleId}/likes`),
-        ];
-
-        if (isAuthenticated) {
-          promises.push(get(`/api/content/${articleId}/isLiked`));
-        }
-
-        const [article, views, likes, isLiked] = await Promise.all(promises);
-
-        setArticle({
-          ...article,
-          content: decodeURIComponent(article.content),
-          likes,
-          isLiked: isAuthenticated ? isLiked : false,
-        });
-
-        setViews(views);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
+  const fetchArticleData = async () => {
+    try {
+      setLoading(true);
+      const promises = [
+        get(`/api/content/id/${articleId}`),
+        get(`/api/content/${articleId}/views`),
+        get(`/api/content/${articleId}/likes`),
+      ];
+      if (isAuthenticated) {
+        promises.push(get(`/api/content/${articleId}/isLiked`));
       }
+      const [articleData, views, likes, isLiked] = await Promise.all(promises);
+      setArticle({
+        ...articleData,
+        content: decodeURIComponent(articleData.content),
+        likes,
+        isLiked: isAuthenticated ? isLiked : false,
+      });
+      setViews(views);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
     }
-    fetchData();
+  };
+
+  useEffect(() => {
+    fetchArticleData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [articleId, isAuthenticated]);
 
   const handleToggleLike = async () => {
@@ -91,9 +86,7 @@ export default function ArticleDetailsPage() {
         `/api/content/${articleId}/toggleLike`,
         { articleId }
       );
-
       const updatedLikes = await get(`/api/content/${articleId}/likes`);
-
       setArticle((prev) => {
         if (!prev) return prev;
         return {
@@ -176,7 +169,6 @@ export default function ArticleDetailsPage() {
                 <XIcon />
               </button>
             </div>
-
             <textarea
               value={reportReason}
               onChange={(e) => setReportReason(e.target.value)}
@@ -184,7 +176,6 @@ export default function ArticleDetailsPage() {
               className="w-full p-2 border-none focus:outline-none focus:ring-0 bg-gray-200"
               rows={8}
             />
-
             <div className="flex justify-end">
               <button
                 onClick={handleReportSubmit}
@@ -204,13 +195,10 @@ export default function ArticleDetailsPage() {
             {formatDate(article.createdAt ?? "")}
           </p>
           <p className="text-xs mt-2">{views} verified views</p>
-
           <h1 className="text-3xl text-black font-bold mt-2 mb-2 font-serif">
             {article.title}
           </h1>
-
-          <Tags tagsList={article.tagNames} />
-
+          <Tags tagsList={article.tagNames ?? []} />
           <div className="relative w-full h-[400px] rounded-t-lg md:rounded-none overflow-hidden">
             <Image
               src={article.coverImage}
@@ -222,7 +210,6 @@ export default function ArticleDetailsPage() {
           </div>
         </div>
         <hr className="border-gray-600 p-4" />
-
         <div className="prose prose-green mb-8">{html}</div>
         <div className="flex justify-end gap-4">
           <button onClick={handleToggleLike} disabled={!isAuthenticated}>
@@ -237,7 +224,10 @@ export default function ArticleDetailsPage() {
             <ArticleShare count={12} />
           </button>
         </div>
-        <CommentsSection />
+        <CommentsSection
+          contentData={article}
+          refetchContent={fetchArticleData}
+        />
       </div>
 
       {showCopied && (
