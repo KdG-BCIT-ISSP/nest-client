@@ -16,14 +16,14 @@ import { useTranslation } from "next-i18next";
 const UserAccess = () => <UserAccessComponent />;
 const Posts = () => (
   <div className="p-4">
-    <h1 className="text-2xl font-bold mb-4">Top Posts Page</h1>
+    <h1 className="text-2xl font-bold mb-4 text-black">Top Posts Page</h1>
     <TopPosts limit={3} sortBy="likesCount" title="Top Liked Posts" />
     <TopPosts limit={3} sortBy="viewCount" title="Most Viewed Posts" />
     <TopPosts limit={3} sortBy="shareCount" title="Most Shared Posts" />
   </div>
 );
 const Articles = () => (
-  <div className="p-4">
+  <div className="p-4 text-black">
     <h1 className="text-2xl font-bold mb-4">Top Articles Page</h1>
     <TopArticles limit={5} sortBy="viewCount" title="Top Articles" />
   </div>

@@ -185,6 +185,20 @@ export default function PostCard({
         </div>
         <div className="flex-1 flex flex-col p-2">
           <div className="text-sm text-gray-500 mb-2">
+            {imageBase64.length > 0 && (
+              <div className="flex flex-wrap">
+                <div className="relative w-72 h-auto aspect-[16/9] overflow-hidden rounded-sm border border-gray-300">
+                  <Image
+                    src={imageBase64[0]}
+                    alt={`Post Image `}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                    onClick={handleClick}
+                  />
+                </div>
+              </div>
+            )}
 
           </div>
           <h1 className="text-lg font-bold text-gray-900 mb-2  line-clamp-2">
@@ -236,32 +250,8 @@ export default function PostCard({
             </div>
           </div>
         </div>
-        {imageBase64.length > 0 && (
-          <div className="flex flex-wrap">
-            <div className="relative w-72 h-auto aspect-[16/9] overflow-hidden rounded-sm border border-gray-300">
-              <Image
-                src={imageBase64[0]}
-                alt={`Post Image `}
-                fill
-                className="object-cover"
-                unoptimized
-                onClick={handleClick}
-              />
-            </div>
-          </div>
-        )}
       </div>
-      {/* Show Delete Button Only for ADMIN or SUPER_ADMIN */}
-      {(userData.role === "ADMIN" || userData.role === "SUPER_ADMIN") && (
-        <div className="flex justify-end">
-          <button
-            onClick={handleDelete}
-            className="text-red-600 hover:text-red-800 border-2 border-red-500 w-20 p-1 rounded-md"
-          >
-            {t("post.delete")}
-          </button>
-        </div>
-      )}
+
     </div>
   );
 }

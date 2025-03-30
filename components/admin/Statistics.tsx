@@ -71,7 +71,7 @@ export default function StatisticsComponent() {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div className="p-4">
+    <div className="p-4 text-black dark:text-white">
       <h1 className="text-2xl font-bold mb-6">Statistics Overview</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 mb-10">
         <div className="space-y-2">
@@ -81,7 +81,7 @@ export default function StatisticsComponent() {
           </p>
           <p>
             Total Post Shares: <strong>{postShares}</strong>
-          </p>
+          </p>  
           <p>
             Total Post Likes: <strong>{postLikes}</strong>
           </p>
