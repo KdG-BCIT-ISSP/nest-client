@@ -23,7 +23,7 @@ export default function LocaleSwitcher() {
       <select
         value={selected}
         onChange={(e) => handleChange(e.target.value)}
-        className="bg-white border border-gray-300 text-sm rounded-md p-2 pr-6"
+        className="bg-white border border-gray-300 text-sm rounded-md p-2 pr-6 text-black"
       >
         {languages.map((lang) => (
           <option key={lang.code} value={lang.code}>

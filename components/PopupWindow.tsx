@@ -1,3 +1,4 @@
+import XIcon from "@/public/svg/XIcon";
 import { PopupWindowProps } from "@/types/PopupWindowProp";
 import React from "react";
 
@@ -28,22 +29,7 @@ export default function PopupWindow({
             data-modal-hide="popup-modal"
             onClick={onClose}
           >
-            <svg
-              className="w-3 h-3"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 14 14"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-              />
-            </svg>
-            <span className="sr-only">Close modal</span>
+            <XIcon />
           </button>
           <div className="p-4 md:p-5">
             <h3 className="mb-5 text-lg font-normal text-gray-500">{title}</h3>
@@ -66,7 +52,9 @@ export default function PopupWindow({
                 required
               />
             )}
-            <div className="flex justify-between w-full mt-5">
+            <div
+              className={`flex ${deleteButton ? "justify-between" : "justify-end"} w-full mt-5`}
+            >
               {deleteButton && (
                 <button
                   data-modal-hide="popup-modal"
@@ -80,7 +68,7 @@ export default function PopupWindow({
               <button
                 data-modal-hide="popup-modal"
                 type="button"
-                className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100"
+                className="py-2.5 px-5 ms-3 text-sm font-medium text-white focus:outline-none bg-secondary rounded-md border border-gray-200 hover:bg-secondaryPressed"
                 onClick={onSubmit}
               >
                 {submitButtonText}

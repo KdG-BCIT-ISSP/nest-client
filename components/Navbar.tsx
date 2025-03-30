@@ -161,7 +161,7 @@ export default function Navbar() {
                           onClick={() =>
                             handleLinkClick(link.href, link.section)
                           }
-                          className="block px-4 py-2 w-full text-left text-sm text-gray-700 hover:bg-gray-100"
+                          className="block px-4 py-2 w-full text-left text-sm text-gray-700 hover:bg-lightGray"
                         >
                           {link.label}
                         </button>

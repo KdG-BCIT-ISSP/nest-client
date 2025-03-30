@@ -3,13 +3,9 @@ import Image from "next/image";
 import clsx from "clsx";
 import ThumbsUp from "@/public/svg/Post/ThumbsUp";
 import Comments from "@/public/svg/Post/Comment";
-import Share from "@/public/svg/Post/Share";
 import { PostCardType } from "@/types/PostCardType";
-import BookmarkToggle from "../components/Bookmark";
 import { useRouter } from "next/navigation";
-import { useAtom } from "jotai";
-import { userAtom } from "@/atoms/user/atom";
-import { del, post } from "@/app/lib/fetchInterceptor";
+import { post } from "@/app/lib/fetchInterceptor";
 import { useTranslation } from "next-i18next";
 
 export default function PostCard({
@@ -21,12 +17,11 @@ export default function PostCard({
   imageBase64 = [],
   author,
   createdAt,
-  isBookmarked = false,
   isLiked = false,
   likesCount = 0,
   viewCount = 0,
   shareCount = 0,
-  onDelete,
+  // onDelete,
 }: PostCardType & { onDelete?: (id: number) => void }) {
   const { t } = useTranslation("post");
   const displayTitle = title || t("post.untitled");
@@ -35,7 +30,6 @@ export default function PostCard({
   const displayDate = createdAt || t("post.unknownDate");
 
   const router = useRouter();
-  const [userData] = useAtom(userAtom);
   const [upvoteCount, setUpvoteCount] = useState(likesCount);
   const [userLiked, setUserLiked] = useState(isLiked);
 
@@ -49,20 +43,20 @@ export default function PostCard({
     setUpvoteCount((prev) => (prev > 0 ? prev - 1 : 0));
   };
 
-  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    e.preventDefault();
+  // const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   e.stopPropagation();
+  //   e.preventDefault();
 
-    if (!confirm(t("post.confirmDelete"))) return;
+  //   if (!confirm(t("post.confirmDelete"))) return;
 
-    try {
-      await del(`/api/posts/${id}`);
-      onDelete?.(id);
-      alert(t("post.deletedSuccess"));
-    } catch (error) {
-      console.error("Error deleting post:", error);
-    }
-  };
+  //   try {
+  //     await del(`/api/posts/${id}`);
+  //     onDelete?.(id);
+  //     alert(t("post.deletedSuccess"));
+  //   } catch (error) {
+  //     console.error("Error deleting post:", error);
+  //   }
+  // };
 
   const handleClick = useCallback(() => {
     if (id) {
@@ -74,7 +68,7 @@ export default function PostCard({
   return (
     <div
       className={clsx(
-        "border rounded-md relative mx-auto my-6 p-4 shadow-md w-full cursor-pointer",
+        "border rounded-md relative mx-auto p-4 shadow-md w-full cursor-pointer bg-container",
         className
       )}
     >
@@ -117,16 +111,29 @@ export default function PostCard({
             </button>
           </div>
           <div className="flex-1">
-            <div className="text-sm text-gray-500 mb-2">
-              <span className="font-medium text-gray-800">{displayAuthor}</span>{" "}
-              • <span>{displayDate}</span>
-            </div>
             <h1 className="text-lg font-bold text-gray-900 mb-2">
               {displayTitle}
             </h1>
             <p className="text-base text-gray-700 whitespace-pre-wrap mb-4">
               {displayContent}
             </p>
+            <div className="text-sm text-gray-500 mb-2">
+              <div>
+                <span className="font-medium text-gray-800">
+                  {displayAuthor}
+                </span>{" "}
+                • <span>{displayDate}</span>
+              </div>
+
+              <div className="mt-4 flex justify-between text-gray-500 text-sm">
+                <button className="hover:text-cyan-600">
+                  <ThumbsUp count={upvoteCount} filled={userLiked} />
+                </button>
+                <button className="hover:text-cyan-600">
+                  <Comments count={234} container />
+                </button>
+              </div>
+            </div>
             {tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
                 {tags.map((tag) => (
@@ -139,20 +146,7 @@ export default function PostCard({
                 ))}
               </div>
             )}
-            <div className="mt-4 flex justify-between text-gray-500 text-sm">
-              <button className="hover:text-cyan-600">
-                <ThumbsUp count={upvoteCount} filled={userLiked} />
-              </button>
-              <button className="hover:text-cyan-600">
-                <Comments count={234} container />
-              </button>
-              <button className="hover:text-cyan-600">
-                <BookmarkToggle count={32} postId={id} filled={isBookmarked} />
-              </button>
-              <button className="hover:text-cyan-600">
-                <Share />
-              </button>
-            </div>
+
             {/* View Count & Share Count */}
             <div className="flex justify-between text-gray-500 mt-2">
               <span>
@@ -183,15 +177,27 @@ export default function PostCard({
             ▼
           </button>
         </div>
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col p-2">
           <div className="text-sm text-gray-500 mb-2">
-            <span className="font-medium text-gray-800">{displayAuthor}</span> •{" "}
-            <span>{displayDate}</span>
+            {imageBase64.length > 0 && (
+              <div className="flex flex-wrap">
+                <div className="relative w-72 h-auto aspect-[16/9] overflow-hidden rounded-sm border border-gray-300">
+                  <Image
+                    src={imageBase64[0]}
+                    alt={`Post Image `}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                    onClick={handleClick}
+                  />
+                </div>
+              </div>
+            )}
           </div>
-          <h1 className="text-lg font-bold text-gray-900 mb-2">
+          <h1 className="text-lg font-bold text-gray-900 mb-2  line-clamp-2">
             {displayTitle}
           </h1>
-          <p className="text-base text-gray-700 whitespace-pre-wrap mb-4">
+          <p className="text-base text-gray-700 whitespace-pre-wrap mb-4 line-clamp-5">
             {displayContent}
           </p>
           {tags.length > 0 && (
@@ -199,63 +205,43 @@ export default function PostCard({
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="bg-gray-200 text-sm px-3 py-1 rounded-full text-gray-700"
+                  className="bg-primary text-sm px-3 py-1 rounded-md text-darkGray"
                 >
                   #{tag}
                 </span>
               ))}
             </div>
           )}
-          <div className="mt-4 flex justify-between text-gray-500 text-sm">
-            <button className="hover:text-cyan-600">
-              <ThumbsUp count={upvoteCount} filled={userLiked} />
-            </button>
-            <button className="hover:text-cyan-600">
-              <Comments count={234} container />
-            </button>
-            <button className="hover:text-cyan-600">
-              <BookmarkToggle count={32} postId={id} filled={isBookmarked} />
-            </button>
-            <button className="hover:text-cyan-600">
-              <Share />
-            </button>
-          </div>
-          {/* View Count & Share Count */}
-          <div className="flex justify-between text-gray-500 mt-2">
-            <span>
-              {viewCount} {t("post.views")}
-            </span>
-            <span>
-              {shareCount} {t("post.shares")}
-            </span>
-          </div>
-        </div>
-        {imageBase64.length > 0 && (
-          <div className="flex flex-wrap">
-            <div className="relative w-72 h-auto aspect-[16/9] overflow-hidden rounded-sm border border-gray-300">
+
+          <div className="flex flex-wrap gap-2 mb-4 justify-between">
+            <div className="flex justify-start items-center">
               <Image
-                src={imageBase64[0]}
-                alt={`Post Image `}
-                fill
-                className="object-cover"
-                unoptimized
-                onClick={handleClick}
+                className="w-8 h-8 rounded-full mr-2"
+                src={"/images/default_profile_image.png"}
+                alt="User profile"
+                width={70}
+                height={70}
+                priority
               />
+
+              <div className="flex flex-col">
+                <span className="font-medium text-gray-800">
+                  {displayAuthor}
+                </span>
+                <span className="text-darkGray">{displayDate}</span>
+              </div>
+            </div>
+            <div className="mt-4 flex justify-between text-gray-500 text-sm">
+              <button className="hover:text-cyan-600">
+                <ThumbsUp count={upvoteCount} filled={userLiked} />
+              </button>
+              <button className="hover:text-cyan-600 ml-4">
+                <Comments count={234} container />
+              </button>
             </div>
           </div>
-        )}
-      </div>
-      {/* Show Delete Button Only for ADMIN or SUPER_ADMIN */}
-      {(userData.role === "ADMIN" || userData.role === "SUPER_ADMIN") && (
-        <div className="flex justify-end">
-          <button
-            onClick={handleDelete}
-            className="text-red-600 hover:text-red-800 border-2 border-red-500 w-20 p-1 rounded-md"
-          >
-            {t("post.delete")}
-          </button>
         </div>
-      )}
+      </div>
     </div>
   );
 }

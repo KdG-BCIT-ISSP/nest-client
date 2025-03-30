@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 import { ArticleCardType } from "@/types/ArticleCardType";
 import React, { useCallback } from "react";
 import Image from "next/image";
-import parse from "html-react-parser";
-import htmlTruncate from "html-truncate";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
 import { del, post } from "@/app/lib/fetchInterceptor";
@@ -21,10 +19,7 @@ interface ArticleCardProps {
 export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
   const { t } = useTranslation("article");
   const router = useRouter();
-  const maxLength = 50;
   const [userData] = useAtom(userAtom);
-  const truncatedHtmlString = htmlTruncate(article.content, maxLength) + "...";
-  const truncatedHtml = parse(truncatedHtmlString);
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -49,30 +44,30 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
   return (
     <div
       onClick={handleClick}
-      className="flex flex-col bg-white shadow-md md:flex-row md:max-w-xl hover:bg-gray-100 cursor-pointer"
+      className="flex flex-col bg-white md:flex-row md:max-w-2xl hover:bg-lightGray cursor-pointer"
     >
       {/* Cover Image */}
-      <div className="md:w-48">
+      <div className="md:w-80 h-48 md:h-auto relative">
         <Image
           className="object-cover w-full h-full rounded-t-lg md:rounded-none"
           src={article.coverImage || "/images/pregnancy1.jpg"}
           alt={article.title}
-          width={60}
+          width={80}
           height={60}
         />
       </div>
 
       {/* Article Details */}
       <div className="flex flex-col justify-between p-4 leading-normal w-full">
-        <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900">
+        <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900 line-clamp-2">
           {article.title}
         </h5>
-        <div
+        {/* <div
           className="text-gray-800 overflow-hidden"
           style={{ maxHeight: "5rem" }}
         >
           {truncatedHtml}
-        </div>
+        </div> */}
 
         {/* Metadata: Topic, Created At, Stats */}
         <div className="text-sm text-gray-500 mb-2">
@@ -86,7 +81,7 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
             {article.tagNames.map((tag) => (
               <span
                 key={tag}
-                className="bg-gray-200 text-xs px-2 py-1 rounded-full text-gray-700"
+                className="bg-primary text-xs px-2 py-1 rounded-md text-gray-700"
               >
                 #{tag}
               </span>

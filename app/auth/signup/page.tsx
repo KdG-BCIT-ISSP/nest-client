@@ -2,7 +2,6 @@
 export const dynamic = "force-dynamic";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { post } from "@/app/lib/fetchInterceptor";
 
@@ -78,20 +77,6 @@ export default function SignupPage() {
   return (
     <section className="pt-5">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
-        <Link
-          href="/"
-          className="flex items-center mb-6 text-2xl font-semibold text-gray-900"
-        >
-          <Image
-            className="w-8 h-8 mr-2"
-            src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
-            alt="logo"
-            width={32}
-            height={32}
-          />
-          NEST
-        </Link>
-
         <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold text-gray-900 md:text-2xl text-center">
@@ -174,7 +159,7 @@ export default function SignupPage() {
                 {isLoading ? "Signing up..." : "Sign Up"}
               </button>
 
-              <p className="text-sm font-light text-gray-500">
+              <p className="text-sm font-light text-darkGray">
                 Already have an account?
                 <Link
                   href="/auth/login"
