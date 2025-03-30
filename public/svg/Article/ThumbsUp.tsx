@@ -9,7 +9,7 @@ function ArticleThumpsUp({
   reported?: boolean;
   isLiked?: boolean;
 }) {
-  const baseColor = isLiked ? "#3B82F6" : "#CD6A6A";
+  const baseColor = isLiked ? "#BA5656" : "#CD6A6A";
   const fillColor = "#fff";
 
   return (
@@ -22,7 +22,7 @@ function ArticleThumpsUp({
           height={32.7113}
           rx={4.5}
           fill={fillColor}
-          stroke={baseColor}
+          // stroke={baseColor}
         />
       )}
       <path

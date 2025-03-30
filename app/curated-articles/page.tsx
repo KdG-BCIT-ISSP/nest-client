@@ -56,8 +56,8 @@ export default function CuratedArticlesPage() {
   }
 
   return (
-    <div className="p-6 pt-10">
-      <div className="relative">
+    <div className="flex flex-col items-center p-6 pt-10">
+      <div className="relative w-full">
         <HeroSection
           img={"/images/pregnancy1.jpg"}
           title={t("article.heroTitle")}
@@ -76,8 +76,8 @@ export default function CuratedArticlesPage() {
       </div>
       <div className="py-10" />
 
-      <div className="w-full mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="w-auto mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
           {articles.map((article) => (
             <ArticleCard
               key={article.id}

@@ -21,14 +21,14 @@ export default {
         muted: "#FFCFCF", // Custom Pink
         container: "#F2FBF3", // Custom Yellow
         black: "#101010", // Custom Black
-        darkGray: "#2A2A2A", 
-        lightGray: "#D9D9D9",
+        darkGray: "#2A2A2A",
+        lightGray: "#F2F2F2",
         report: "#EEEEEE", // Custom report 
         primaryPressed: "#FFCFCF",
         secondaryPressed: "#447346",
-        tertiaryPressed: "#BA5656", 
+        tertiaryPressed: "#BA5656",
         accentPressed: "#FFF7B8",
-        mutedPressed: "#FFCFCF", 
+        mutedPressed: "#FFCFCF",
         containerPressed: "#FFBFBF",
       },
     },

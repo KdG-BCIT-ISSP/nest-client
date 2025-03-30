@@ -116,7 +116,7 @@ function CommentItem({ comment, onReply }: CommentItemProps) {
             onChange={(e) => setReplyContent(e.target.value)}
           />
           <button
-            className="px-4 py-2 bg-secondary text-white rounded hover:bg-green-600"
+            className="px-4 py-2 bg-secondary text-white rounded hover:bg-secondaryPressed"
             onClick={handleReplySubmit}
           >
             Submit
@@ -201,7 +201,7 @@ export default function CommentsSection() {
           onChange={(e) => setNewComment(e.target.value)}
         />
         <button
-          className="px-4 py-2 bg-secondary text-white rounded hover:bg-green-600"
+          className="px-4 py-2 bg-secondary text-white rounded hover:bg-secondaryPressed"
           onClick={handleAddComment}
         >
           Send

@@ -17,7 +17,7 @@ function ArticleComment({
           height={32.7113}
           rx={4.5}
           fill="#fff"
-          stroke="#CD6A6A"
+          // stroke="#CD6A6A"
         />
       )}
       <path

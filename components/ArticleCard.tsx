@@ -49,15 +49,15 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
   return (
     <div
       onClick={handleClick}
-      className="flex flex-col bg-white shadow-md md:flex-row md:max-w-xl hover:bg-gray-100 cursor-pointer"
+      className="flex flex-col bg-white md:flex-row md:max-w-2xl hover:bg-lightGray cursor-pointer"
     >
       {/* Cover Image */}
-      <div className="md:w-48">
+      <div className="md:w-80 h-48 md:h-auto relative">
         <Image
           className="object-cover w-full h-full rounded-t-lg md:rounded-none"
           src={article.coverImage || "/images/pregnancy1.jpg"}
           alt={article.title}
-          width={60}
+          width={80}
           height={60}
         />
       </div>
@@ -65,14 +65,14 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
       {/* Article Details */}
       <div className="flex flex-col justify-between p-4 leading-normal w-full">
         <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900">
-          {article.title}
+          {article.title.length > 80 ? article.title.slice(0, 80) + "..." : article.title}
         </h5>
-        <div
+        {/* <div
           className="text-gray-800 overflow-hidden"
           style={{ maxHeight: "5rem" }}
         >
           {truncatedHtml}
-        </div>
+        </div> */}
 
         {/* Metadata: Topic, Created At, Stats */}
         <div className="text-sm text-gray-500 mb-2">
