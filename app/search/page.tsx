@@ -83,7 +83,7 @@ function SearchPageContent() {
           const queryString = params.toString() ? `?${params.toString()}` : "";
           const endpoint = activeTab === "posts" ? "post" : "article";
           const data = await get(`/api/search/${endpoint}${queryString}`);
-          setResults(data || []);
+          setResults(data?.content || []);
         } catch (err) {
           console.error(err);
           setError("An error occurred while fetching search results.");
