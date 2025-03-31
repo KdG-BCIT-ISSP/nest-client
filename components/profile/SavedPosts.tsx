@@ -5,8 +5,11 @@ import PostCard from "@/components/post/PostCard";
 import { useEffect, useState } from "react";
 import { PostType } from "@/types/PostType";
 import { get } from "@/app/lib/fetchInterceptor";
+import { useTranslation } from "next-i18next";
+import { formatDate } from "@/utils/formatDate";
 
 export default function SavedPosts() {
+  const { t } = useTranslation("post");
   const [loading, setLoading] = useState(true);
   const [bookmarkedPosts, setBookmarkedPosts] = useState<PostType[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -23,7 +26,6 @@ export default function SavedPosts() {
         setLoading(false);
       }
     }
-
     fetchBookmarkedPosts();
   }, []);
 
@@ -44,6 +46,10 @@ export default function SavedPosts() {
             key={post.id}
             className="bg-container flex-shrink-0 w-full max-w-5xl ml-0 container"
             {...post}
+            author={post.memberUsername || t("post.anonymous")}
+            createdAt={
+              formatDate(post.createdAt ?? "") || t("post.unknownDate")
+            }
           />
         ))}
         {bookmarkedPosts.length === 0 && <p>You have no saved posts.</p>}
