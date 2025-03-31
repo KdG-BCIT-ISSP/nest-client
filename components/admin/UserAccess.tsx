@@ -2,7 +2,7 @@
 export const dynamic = "force-dynamic";
 
 import { get } from "@/app/lib/fetchInterceptor";
-import UserRoleToggle from "@/components/UserRoleToggle";
+import UserRoleToggle from "@/components/admin/UserRoleToggle";
 import { useEffect, useState } from "react";
 
 interface User {

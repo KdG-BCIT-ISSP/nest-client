@@ -4,9 +4,9 @@ import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { PostGridType } from "@/types/PostType";
 import { ArticleType } from "@/types/ArticleType";
-import SearchBar from "@/components/SearchBar";
-import PostGrid from "@/components/PostGrid";
-import ArticleGrid from "@/components/ArticleGrid";
+import SearchBar from "@/components/search/SearchBar";
+import PostGrid from "@/components/search/PostGrid";
+import ArticleGrid from "@/components/search/ArticleGrid";
 import { get } from "@/app/lib/fetchInterceptor";
 
 type OptionType = {

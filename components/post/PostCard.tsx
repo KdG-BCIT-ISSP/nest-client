@@ -1,12 +1,11 @@
 import React, { useCallback, useState } from "react";
 import Image from "next/image";
 import clsx from "clsx";
-import ThumbsUp from "@/public/svg/Post/ThumbsUp";
-import Comments from "@/public/svg/Post/Comment";
 import { PostCardType } from "@/types/PostCardType";
 import { useRouter } from "next/navigation";
 import { post } from "@/app/lib/fetchInterceptor";
 import { useTranslation } from "next-i18next";
+import { Like, Comments } from "../Icons";
 
 export default function PostCard({
   id,
@@ -18,7 +17,7 @@ export default function PostCard({
   author,
   createdAt,
   isLiked = false,
-  likesCount = 0,
+  likesCount,
   viewCount = 0,
   shareCount = 0,
   // onDelete,
@@ -30,7 +29,7 @@ export default function PostCard({
   const displayDate = createdAt || t("post.unknownDate");
 
   const router = useRouter();
-  const [upvoteCount, setUpvoteCount] = useState(likesCount);
+  const [upvoteCount, setUpvoteCount] = useState(likesCount || 0);
   const [userLiked, setUserLiked] = useState(isLiked);
 
   const handleUpvote = () => {
@@ -71,6 +70,7 @@ export default function PostCard({
         "border rounded-md relative mx-auto p-4 shadow-md w-full cursor-pointer bg-container",
         className
       )}
+      onClick={handleClick}
     >
       {/* Mobile View */}
       <div className="block sm:hidden">
@@ -125,13 +125,9 @@ export default function PostCard({
                 • <span>{displayDate}</span>
               </div>
 
-              <div className="mt-4 flex justify-between text-gray-500 text-sm">
-                <button className="hover:text-cyan-600">
-                  <ThumbsUp count={upvoteCount} filled={userLiked} />
-                </button>
-                <button className="hover:text-cyan-600">
-                  <Comments count={234} container />
-                </button>
+              <div className="mt-4 gap-4 flex justify-between text-gray-500 text-sm">
+                <Like count={1} />
+                <Comments count={234} />
               </div>
             </div>
             {tags.length > 0 && (
@@ -162,7 +158,10 @@ export default function PostCard({
 
       {/* Desktop View */}
       <div className="hidden sm:flex gap-4">
-        <div className="flex flex-col items-center text-gray-500">
+        <div
+          className="flex flex-col items-center text-gray-500"
+          onClick={handleClick}
+        >
           <button
             className={`p-1 ${userLiked ? "text-cyan-500" : "text-gray-400"} hover:text-cyan-500`}
             onClick={handleUpvote}
@@ -231,13 +230,9 @@ export default function PostCard({
                 <span className="text-darkGray">{displayDate}</span>
               </div>
             </div>
-            <div className="mt-4 flex justify-between text-gray-500 text-sm">
-              <button className="hover:text-cyan-600">
-                <ThumbsUp count={upvoteCount} filled={userLiked} />
-              </button>
-              <button className="hover:text-cyan-600 ml-4">
-                <Comments count={234} container />
-              </button>
+            <div className="mt-4 gap-4  flex justify-between text-gray-500 text-sm">
+              <Like count={likesCount || 0} />
+              <Comments count={2} />
             </div>
           </div>
         </div>

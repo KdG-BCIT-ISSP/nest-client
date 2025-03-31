@@ -1,6 +1,5 @@
-import Comments from "@/public/svg/Post/Comment";
-import ThumbsUp from "@/public/svg/Post/ThumbsUp";
 import { CardType } from "@/types/CardType";
+import { Like, Comments } from "../Icons";
 
 export default function Card({ header, content, likes, comments }: CardType) {
   return (
@@ -13,12 +12,8 @@ export default function Card({ header, content, likes, comments }: CardType) {
       </h5>
       <p className="font-normal text-gray-700">{content}</p>
       <div className="flex justify-end p-4 gap-2">
-        <span className="text-gray-600">
-          <ThumbsUp count={likes} />
-        </span>
-        <span className="ml-2 text-gray-600">
-          <Comments count={comments} />
-        </span>
+        <Like count={likes || 0} />
+        <Comments count={comments ?? 0} />
       </div>
     </a>
   );

@@ -4,11 +4,11 @@ export const dynamic = "force-dynamic";
 import React, { useState, useEffect } from "react";
 import { PostType } from "@/types/PostType";
 import Button from "@/components/Button";
-import TagsSelector from "./TagsSelector";
-import ImageUpload from "./ImageUpload";
+import TagsSelector from "../TagsSelector";
+import ImageUpload from "../ImageUpload";
 import { post } from "@/app/lib/fetchInterceptor";
 import { useTranslation } from "next-i18next";
-import TopicSelector from "./TopicSelector";
+import TopicSelector from "../TopicSelector";
 import { Topic } from "@/types/Topic";
 
 export default function CreatePost() {

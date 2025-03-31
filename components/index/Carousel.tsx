@@ -1,8 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import ArrowLeft from "@/public/svg/ArrowLeft";
-import ArrowRight from "@/public/svg/ArrowRight";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import Card from "./Card";
 import { CardType } from "@/types/CardType";
 import { chunkArray } from "@/utils/chunkArray";
@@ -70,7 +69,6 @@ export default function Carousel({ cardsData }: { cardsData: CardType[] }) {
         <ArrowRight onClick={handleNext} />
       </button>
 
-      {/* Dots */}
       <div className="flex justify-center gap-2 mt-6">
         {slides.map((_, index) => (
           <button

@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from "react";
-import Dots from "@/public/svg/Article/Dots";
-import Report from "@/public/svg/Article/Report";
-import ThumbsUp from "@/public/svg/Article/ThumbsUp";
-import CommentsIcon from "@/public/svg/Post/Comment";
-import Trash from "@/public/svg/Article/Trash";
-import { del, get, post } from "@/app/lib/fetchInterceptor";
+import { useState, useEffect } from "react";
+import Report from "@/public/svg/Report";
+import Trash from "@/public/svg/Trash";
+import { del, get, post, put } from "@/app/lib/fetchInterceptor";
 import { ContentType, Comment } from "@/types/ContentType";
+import Image from "next/image";
+import { formatDate } from "@/utils/formatDate";
+import { userAtom } from "@/atoms/user/atom";
+import { useAtom } from "jotai";
+import { Like, Comments } from "@/components/Icons";
+import { EllipsisIcon } from "lucide-react";
+
 interface CommentItemProps {
   comment: Comment;
   onReply: (parentId: number, replyContent: string) => void;
@@ -28,6 +32,9 @@ function CommentItem({
   const [showReplyBox, setShowReplyBox] = useState(false);
   const [replyContent, setReplyContent] = useState("");
   const [showOptions, setShowOptions] = useState(false);
+  const [userData] = useAtom(userAtom);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editContent, setEditContent] = useState(comment.content);
 
   const handleReplySubmit = async () => {
     if (!replyContent.trim()) return;
@@ -58,52 +65,117 @@ function CommentItem({
     setShowOptions(false);
   };
 
+  const handleEditSubmit = async () => {
+    if (!editContent.trim()) return;
+    try {
+      await put(`/api/comment`, {
+        id: comment.id,
+        postId: contentId,
+        content: editContent,
+        memberId: Number(comment.memberId),
+      });
+      comment.content = editContent;
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error editing comment:", error);
+      alert("Error editing comment");
+    }
+  };
+
   const canReply = comment.parentId === null;
+  const isOwnComment = userData?.userId == String(comment.memberId);
 
   return (
     <div className="relative ml-4 pl-4 border-l border-gray-300 mb-4">
       <div className="flex items-center mb-1">
-        <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white mr-2 uppercase">
-          {comment.author}
-        </div>
-        <div className="font-semibold">{comment.author}</div>
-        <span className="ml-2 text-xs text-gray-500">{comment.time}</span>
+        <Image
+          className="w-8 h-8 rounded-full object-cover mr-2"
+          src={comment.memberAvatar.image}
+          alt="Member avatar"
+          width={8}
+          height={8}
+        />
+        <div className="font-semibold">{comment.userName}</div>
+        <span className="ml-2 text-xs text-gray-500">
+          {formatDate(comment.createAt)}
+        </span>
         <div className="ml-auto relative">
           <button onClick={() => setShowOptions((prev) => !prev)}>
-            <Dots />
+            <EllipsisIcon />
           </button>
           {showOptions && (
-            <div className="absolute right-0 mt-1 z-10">
-              <button
-                onClick={handleDelete}
-                className="w-full px-2 py-1.5 text-sm text-red-600 bg-gray-200 rounded-md flex items-center justify-center gap-1"
-              >
-                <Trash />
-                Delete
-              </button>
-              <button onClick={handleReport}>
-                <Report />
-              </button>
+            <div className="absolute right-0 mt-1 z-10 flex flex-col gap-1 bg-white shadow-md rounded-md p-1">
+              {isOwnComment ? (
+                <>
+                  <button
+                    onClick={() => {
+                      setIsEditing(true);
+                      setShowOptions(false);
+                    }}
+                    className="w-full px-2 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-md flex items-center justify-center gap-1"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={handleDelete}
+                    className="w-full px-2 py-1.5 text-sm text-red-600 hover:bg-gray-100 rounded-md flex items-center justify-center gap-1"
+                  >
+                    <Trash />
+                    Delete
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={handleReport}
+                  className="w-full px-2 py-1.5 text-sm text-gray-600 rounded-md flex items-center justify-center gap-1"
+                >
+                  <Report />
+                </button>
+              )}
             </div>
           )}
         </div>
       </div>
 
-      <div className="mb-2">{comment.content}</div>
+      {isEditing ? (
+        <div className="flex gap-2 mt-2">
+          <textarea
+            className="flex-1 p-2 border rounded border-gray-300"
+            value={editContent}
+            onChange={(e) => setEditContent(e.target.value)}
+          />
+          <button
+            className="px-4 py-2 bg-secondary text-white rounded hover:bg-secondaryPressed"
+            onClick={handleEditSubmit}
+          >
+            Save
+          </button>
+          <button
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+            onClick={() => {
+              setIsEditing(false);
+              setEditContent(comment.content);
+            }}
+          >
+            Cancel
+          </button>
+        </div>
+      ) : (
+        <div className="mb-2">{comment.content}</div>
+      )}
 
       <div className="flex gap-4 mb-2">
-        <button onClick={handleToggleLike}>
-          <ThumbsUp
-            count={comment.likes || 0}
-            isLiked={comment.isLiked || false}
-          />
-        </button>
+        <Like
+          count={comment.likes || 0}
+          isLiked={comment.isLiked || false}
+          onClick={handleToggleLike}
+        />
         {canReply && (
           <button
             className="text-sm text-tertiary hover:underline"
             onClick={() => setShowReplyBox(!showReplyBox)}
           >
-            <CommentsIcon count={comment.replies?.length || 0} />
+            <Comments count={comment.replies?.length || 0} />
           </button>
         )}
       </div>

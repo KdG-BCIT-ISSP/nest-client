@@ -1,5 +1,5 @@
 import Container from "@/components/Container";
-import Carousel from "@/components/Carousel";
+import Carousel from "@/components/index/Carousel";
 import { cardsData } from "@/utils/cardData";
 
 export default function Home() {

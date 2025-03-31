@@ -3,8 +3,10 @@ export const dynamic = "force-dynamic";
 
 import { useState, useEffect } from "react";
 import { PostType } from "@/types/PostType";
-import PostCard from "@/components/PostCard";
+import PostCard from "../post/PostCard";
 import { get } from "@/app/lib/fetchInterceptor";
+import { useTranslation } from "next-i18next";
+import { formatDate } from "@/utils/formatDate";
 
 export default function TopPosts({
   limit = 3,
@@ -15,6 +17,7 @@ export default function TopPosts({
   sortBy?: keyof PostType;
   title: string;
 }) {
+  const { t } = useTranslation("post");
   const [allPosts, setAllPosts] = useState<PostType[]>([]);
   const [topPosts, setTopPosts] = useState<PostType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -53,6 +56,10 @@ export default function TopPosts({
           <PostCard
             key={post.id}
             {...post}
+            author={post.memberUsername || t("post.anonymous")}
+            createdAt={
+              formatDate(post.createdAt ?? "") || t("post.unknownDate")
+            }
             onDelete={(id) =>
               setTopPosts((prev) => prev.filter((p) => p.id !== id))
             }

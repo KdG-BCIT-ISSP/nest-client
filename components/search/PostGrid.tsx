@@ -1,11 +1,8 @@
 import { PostGridType } from "@/types/PostType";
-import ThumbsUp from "@/public/svg/Article/ThumbsUp";
-import Bookmark from "@/public/svg/Article/Bookmark";
-import Share from "@/public/svg/Article/Share";
-import Comments from "@/public/svg/Article/Comment";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { formatDate } from "@/utils/formatDate";
+import { Like, Comments, Bookmark, Share } from "../Icons";
 
 type PostGridProps = {
   post: PostGridType;
@@ -38,18 +35,10 @@ export default function PostGrid({ post }: PostGridProps) {
       </div>
 
       <div className="flex items-center p-3 space-x-4">
-        <button>
-          <ThumbsUp count={post.likesCount} isLiked={post.liked} />
-        </button>
-        <button>
-          <Comments count={post.comments ? parseInt(post.comments) : 0} />
-        </button>
-        <button>
-          <Bookmark count={4} />
-        </button>
-        <button>
-          <Share count={8} />
-        </button>
+        <Like count={post.likesCount || 0} isLiked={post.liked || false} />
+        <Comments count={post.comments ? parseInt(post.comments) : 0} />
+        <Bookmark count={12} />
+        <Share />
       </div>
 
       <div className="px-3 py-2 text-sm break-words">

@@ -1,5 +1,5 @@
-import XIcon from "@/public/svg/XIcon";
 import { PopupWindowProps } from "@/types/PopupWindowProp";
+import { CircleXIcon } from "lucide-react";
 import React from "react";
 
 export default function PopupWindow({
@@ -29,7 +29,7 @@ export default function PopupWindow({
             data-modal-hide="popup-modal"
             onClick={onClose}
           >
-            <XIcon />
+            <CircleXIcon />
           </button>
           <div className="p-4 md:p-5">
             <h3 className="mb-5 text-lg font-normal text-gray-500">{title}</h3>

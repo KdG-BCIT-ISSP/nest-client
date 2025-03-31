@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import MagnifyingIcon from "@/public/svg/MagnifyingIcon";
+import { SearchIcon } from "lucide-react";
 import { useTranslation } from "next-i18next";
 
 export default function SearchBar() {
@@ -21,7 +21,7 @@ export default function SearchBar() {
       className="flex px-4 py-0 rounded-full border-2 overflow-hidden font-[sans-serif] bg-white"
     >
       <button type="submit" className="p-2">
-        <MagnifyingIcon />
+        <SearchIcon size={18} />
       </button>
       <input
         type="text"
