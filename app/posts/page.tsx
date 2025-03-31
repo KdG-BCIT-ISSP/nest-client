@@ -3,13 +3,13 @@ export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 import { PostType } from "@/types/PostType";
-import PostCard from "@/components/PostCard";
-import HeroSection from "@/components/HeroSection";
+import PostCard from "@/components/post/PostCard";
+import HeroSection from "@/components/index/HeroSection";
 import { get } from "../lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
 import { useTranslation } from "next-i18next";
 import Button from "@/components/Button";
-import CreatePost from "@/components/CreatePost";
+import CreatePost from "@/components/post/CreatePost";
 import Modal from "@/components/Modal";
 
 export default function PostsPage() {

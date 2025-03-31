@@ -2,19 +2,15 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import Back from "@/public/svg/Article/Back";
-import Dots from "@/public/svg/Article/Dots";
+import { ArrowLeft, CircleXIcon } from "lucide-react";
+import { EllipsisIcon } from "lucide-react";
 import parse from "html-react-parser";
-import Report from "@/public/svg/Article/Report";
-import ArticleThumpsUp from "@/public/svg/Article/ThumbsUp";
-import ArticleComment from "@/public/svg/Article/Comment";
-import ArticleBookmark from "@/public/svg/Article/Bookmark";
-import ArticleShare from "@/public/svg/Article/Share";
+import Report from "@/public/svg/Report";
+import { Like, Comments, Bookmark, Share } from "@/components/Icons";
 import CommentsSection from "@/components/Comments";
 import { ArticleType } from "@/types/ContentType";
-import XIcon from "@/public/svg/XIcon";
-import Tags from "@/components/Tags";
-import { get, post } from "@/app/lib/fetchInterceptor";
+import Tags from "@/components/admin/Tags";
+import { get, post, put } from "@/app/lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
 import { useTranslation } from "next-i18next";
 
@@ -109,6 +105,18 @@ export default function ArticleDetailsPage() {
     }
   };
 
+  const handleBookmarkToggle = async () => {
+    try {
+      if (typeof articleId === "number") {
+        await put(`/api/content/${articleId}/toggleBookmark`, {});
+      } else {
+        console.error("Invalid articleId:", articleId);
+      }
+    } catch (error) {
+      console.error("Bookmark toggle failed:", error);
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
   if (!article) return <div>Article not found</div>;
 
@@ -140,11 +148,11 @@ export default function ArticleDetailsPage() {
     <div className="w-max mx-auto pt-10">
       <div className="flex justify-between items-center p-4">
         <button onClick={() => window.history.back()}>
-          <Back />
+          <ArrowLeft />
         </button>
         <div className="relative">
           <button onClick={() => setShowReportButton((prev) => !prev)}>
-            <Dots />
+            <EllipsisIcon />
           </button>
           {showReportButton && (
             <div
@@ -166,7 +174,7 @@ export default function ArticleDetailsPage() {
                 onClick={() => setShowReport(false)}
                 className="text-gray-600 hover:text-gray-800 cursor-pointer"
               >
-                <XIcon />
+                <CircleXIcon />
               </button>
             </div>
             <textarea
@@ -212,17 +220,20 @@ export default function ArticleDetailsPage() {
         <hr className="border-gray-600 p-4" />
         <div className="prose prose-green mb-8">{html}</div>
         <div className="flex justify-end gap-4">
-          <button onClick={handleToggleLike} disabled={!isAuthenticated}>
-            <ArticleThumpsUp
-              count={article.likes || 0}
-              isLiked={article.isLiked || false}
-            />
-          </button>
-          <ArticleComment count={32} />
-          <ArticleBookmark count={212} />
-          <button onClick={handleShareClick}>
-            <ArticleShare count={12} />
-          </button>
+          <Like
+            count={article.likes || 0}
+            isLiked={article.isLiked || false}
+            onClick={handleToggleLike}
+            disabled={!isAuthenticated}
+          />
+          <Comments count={article.comment?.length ?? 0} />
+          <Bookmark
+            count={12}
+            isSaved={article.bookmarked || false}
+            disabled={!isAuthenticated}
+            onClick={handleBookmarkToggle}
+          />
+          <Share onClick={handleShareClick} />
         </div>
         <CommentsSection
           contentData={article}

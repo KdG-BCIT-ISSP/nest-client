@@ -1,16 +1,18 @@
 export interface Comment {
   id: number;
-  author: string;
+  userName: string;
   memberId: number;
+  memberAvatar: {
+    image: string;
+  };
   content: string;
-  time: string;
+  createAt: string;
   parentId: number | null;
   postId: number;
   replies: Comment[];
   likes?: number;
   isLiked?: boolean;
 }
-
 export interface BaseContent {
   id: number;
   title: string;

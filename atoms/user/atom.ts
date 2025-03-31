@@ -1,6 +1,7 @@
 import { atom } from "jotai";
 
 export const userAtom = atom({
+  userId: "",
   username: "",
   email: "",
   region: "",

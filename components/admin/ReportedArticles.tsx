@@ -1,7 +1,7 @@
 "use client";
 export const dynamic = "force-dynamic";
 
-import ReportCard from "@/components/ReportCard";
+import ReportCard from "@/components/admin/ReportCard";
 import { useEffect, useState } from "react";
 import { ReportPostType, Report } from "@/types/PostType";
 import { get } from "@/app/lib/fetchInterceptor";

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import DoughnutChart from "@/components/DoughnutChart";
-import BarGraph from "@/components/BarGraph";
+import DoughnutChart from "@/components/stats/DoughnutChart";
+import BarGraph from "@/components/stats/BarGraph";
 import { get } from "@/app/lib/fetchInterceptor";
 
 export default function StatisticsComponent() {

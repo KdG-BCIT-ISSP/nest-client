@@ -7,12 +7,12 @@ import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 import { ArticleType } from "@/types/ContentType";
-import TagsSelector from "./TagsSelector";
+import TagsSelector from "../TagsSelector";
 import imageCompression from "browser-image-compression";
 import { useTranslation } from "next-i18next";
 import { post } from "@/app/lib/fetchInterceptor";
 import { Topic } from "@/types/Topic";
-import TopicSelector from "./TopicSelector";
+import TopicSelector from "../TopicSelector";
 
 export default function CreateArticle() {
   const { t, i18n } = useTranslation("article");

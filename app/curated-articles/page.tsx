@@ -1,16 +1,16 @@
 "use client";
 export const dynamic = "force-dynamic";
 
-import ArticleCard from "@/components/ArticleCard";
+import ArticleCard from "@/components/search/ArticleCard";
 import { useEffect, useState } from "react";
 import { ArticleCardType } from "@/types/ArticleCardType";
-import HeroSection from "@/components/HeroSection";
+import HeroSection from "@/components/index/HeroSection";
 import { articlesAtom } from "@/atoms/articles/atom";
 import { useAtom } from "jotai";
 import { get } from "../lib/fetchInterceptor";
 import { useTranslation } from "next-i18next";
 import Button from "@/components/Button";
-import CreateArticle from "@/components/CreateArticle";
+import CreateArticle from "@/components/article/CreateArticle";
 import { userAtom } from "@/atoms/user/atom";
 import Modal from "@/components/Modal";
 

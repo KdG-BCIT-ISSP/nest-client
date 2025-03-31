@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 
 import { useState, useEffect } from "react";
 import { PostType } from "@/types/PostType";
-import PostCard from "@/components/PostCard";
+import PostCard from "../post/PostCard";
 import { get } from "@/app/lib/fetchInterceptor";
 
 export default function TopPosts({

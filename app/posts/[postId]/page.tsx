@@ -4,19 +4,15 @@ export const dynamic = "force-dynamic";
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import Back from "@/public/svg/Article/Back";
-import Dots from "@/public/svg/Article/Dots";
-import Report from "@/public/svg/Article/Report";
-import ArticleThumpsUp from "@/public/svg/Article/ThumbsUp";
-import ArticleComment from "@/public/svg/Article/Comment";
-import ArticleBookmark from "@/public/svg/Article/Bookmark";
-import ArticleShare from "@/public/svg/Article/Share";
-import Tags from "@/components/Tags";
+import { ArrowLeft, CircleXIcon } from "lucide-react";
+import { EllipsisIcon } from "lucide-react";
+import Report from "@/public/svg/Report";
+import Tags from "@/components/admin/Tags";
 // import CommentsSection from "@/components/Comments";
 import { PostType } from "@/types/PostType";
-import XIcon from "@/public/svg/XIcon";
-import { get, post } from "@/app/lib/fetchInterceptor";
+import { get, post, put } from "@/app/lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
+import { Like, Comments, Bookmark, Share } from "@/components/Icons";
 
 export default function PostDetailPage() {
   const params = useParams();
@@ -28,6 +24,9 @@ export default function PostDetailPage() {
   const [reportReason, setReportReason] = useState("");
   const [showCopied, setShowCopied] = useState(false);
   const [views, setViews] = useState(0);
+
+  const isAuthenticated =
+    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
   useEffect(() => {
     async function fetchData() {
@@ -78,15 +77,27 @@ export default function PostDetailPage() {
     }
   };
 
+  const handleBookmarkToggle = async () => {
+    try {
+      if (typeof postId === "number") {
+        await put(`/api/content/${postId}/toggleBookmark`, {});
+      } else {
+        console.error("Invalid postId:", postId);
+      }
+    } catch (error) {
+      console.error("Bookmark toggle failed:", error);
+    }
+  };
+
   return (
     <div className="w-max mx-auto pt-10">
       <div className="flex justify-between items-center p-4">
         <button onClick={() => window.history.back()}>
-          <Back />
+          <ArrowLeft />
         </button>
         <div className="relative">
           <button onClick={() => setShowReportButton((prev) => !prev)}>
-            <Dots />
+            <EllipsisIcon />
           </button>
           {showReportButton && (
             <div
@@ -108,7 +119,7 @@ export default function PostDetailPage() {
                 onClick={() => setShowReport(false)}
                 className="text-gray-600 hover:text-gray-800 cursor-pointer"
               >
-                <XIcon />
+                <CircleXIcon />
               </button>
             </div>
 
@@ -171,13 +182,22 @@ export default function PostDetailPage() {
 
         <div className="prose prose-green mb-8">{userPost.content}</div>
         <div className="flex justify-end gap-4">
-          <ArticleThumpsUp count={224} isLiked={userPost.liked ?? false} />
-          <ArticleComment count={32} />
-          <ArticleBookmark count={212} />
-          <button onClick={handleShareClick}>
-            <ArticleShare count={12} />
-          </button>
+          <Like
+            count={userPost.likesCount || 0}
+            isLiked={userPost.liked || false}
+            onClick={() => {}}
+            disabled={!isAuthenticated}
+          />
+          <Comments count={userPost.comment?.length ?? 0} />
+          <Bookmark
+            count={12}
+            isSaved={userPost.bookmarked || false}
+            disabled={!isAuthenticated}
+            onClick={handleBookmarkToggle}
+          />
+          <Share onClick={handleShareClick} />
         </div>
+
         {/* <CommentsSection /> */}
       </div>
 

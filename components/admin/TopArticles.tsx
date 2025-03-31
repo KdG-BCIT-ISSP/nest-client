@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 
 import { useState, useEffect } from "react";
 import { ArticleCardType } from "@/types/ArticleCardType";
-import ArticleCard from "@/components/ArticleCard";
+import ArticleCard from "@/components/search/ArticleCard";
 import { get } from "@/app/lib/fetchInterceptor";
 
 export default function TopArticles({

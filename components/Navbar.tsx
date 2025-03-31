@@ -1,8 +1,8 @@
 "use client";
 export const dynamic = "force-dynamic";
 
-import MenuIcon from "@/public/svg/Menu";
-import SearchBar from "./SearchBar";
+import { Menu } from "lucide-react";
+import SearchBar from "./search/SearchBar";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -204,7 +204,7 @@ export default function Navbar() {
             aria-expanded="false"
           >
             <span className="sr-only">Open main menu</span>
-            <MenuIcon />
+            <Menu />
           </button>
         </div>
       </div>

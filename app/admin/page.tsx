@@ -8,8 +8,8 @@ import StatisticsComponent from "@/components/admin/Statistics";
 import TagManagementComponent from "@/components/admin/TagManagement";
 import UserAccessComponent from "@/components/admin/UserAccess";
 import SideMenu from "@/components/SideMenu";
-import TopArticles from "@/components/TopArticles";
-import TopPosts from "@/components/TopPosts";
+import TopArticles from "@/components/admin/TopArticles";
+import TopPosts from "@/components/admin/TopPosts";
 import { useState } from "react";
 import { useTranslation } from "next-i18next";
 

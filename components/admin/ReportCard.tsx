@@ -1,11 +1,9 @@
 import React from "react";
 import Image from "next/image";
-import ArticleThumpsUp from "@/public/svg/Article/ThumbsUp";
-import ArticleComment from "@/public/svg/Article/Comment";
-import ArticleBookmark from "@/public/svg/Article/Bookmark";
-import Trash from "@/public/svg/Article/Trash";
+import Trash from "@/public/svg/Trash";
 import Link from "next/link";
 import { ReportCardProps } from "@/types/ReportCard";
+import { Like, Comments, Bookmark } from "../Icons";
 
 export default function ReportCard({ post, reports }: ReportCardProps) {
   return (
@@ -27,9 +25,9 @@ export default function ReportCard({ post, reports }: ReportCardProps) {
           )}
           <p className="text-gray-700 mb-3 truncate">{post.content}</p>
           <div className="flex items-center text-sm text-gray-500 space-x-4 mb-4">
-            <ArticleThumpsUp count={post.likeCount} reported />
-            <ArticleComment count={post.commentCount} reported />
-            <ArticleBookmark count={post.shareCount} reported />
+            <Like count={post.likeCount || 0} />
+            <Comments count={post.commentCount} />
+            <Bookmark count={post.shareCount} />
           </div>
         </div>
       </Link>
@@ -57,9 +55,9 @@ export default function ReportCard({ post, reports }: ReportCardProps) {
             )}
           </div>
           <div className="flex items-center text-sm text-gray-500 space-x-4 mb-4">
-            <ArticleThumpsUp count={post.likeCount} reported />
-            <ArticleComment count={post.commentCount} reported />
-            <ArticleBookmark count={post.shareCount} reported />
+            <Like count={post.likeCount || 0} />
+            <Comments count={post.commentCount} />
+            <Bookmark count={post.shareCount} />
           </div>
         </div>
       </Link>

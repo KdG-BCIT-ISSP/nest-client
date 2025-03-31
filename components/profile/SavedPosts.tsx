@@ -1,7 +1,7 @@
 "use client";
 export const dynamic = "force-dynamic";
 
-import PostCard from "@/components/PostCard";
+import PostCard from "@/components/post/PostCard";
 import { useEffect, useState } from "react";
 import { PostType } from "@/types/PostType";
 import { get } from "@/app/lib/fetchInterceptor";

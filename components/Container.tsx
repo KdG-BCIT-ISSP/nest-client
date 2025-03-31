@@ -1,9 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { HomePageContainer } from "@/types/HomePageContainer";
-import MoreButton from "@/public/svg/MoreButton";
-import ThumbsUp from "@/public/svg/Post/ThumbsUp";
-import Comments from "@/public/svg/Post/Comment";
+import { Like, Comments } from "./Icons";
+import { ArrowRight } from "lucide-react";
 
 export default function Container({
   section_title,
@@ -19,8 +18,12 @@ export default function Container({
       <div className="section1">
         <h2 className="section_title mb-2 text-3xl font-bold tracking-tight text-black pb-4 flex justify-between items-center">
           {section_title}
-          <Link href={href} className="inline-block">
-            <MoreButton />
+          <Link
+            href={href}
+            className="inline-block text-sm flex flow-row gap-2"
+          >
+            MORE
+            <ArrowRight size={20} />
           </Link>
         </h2>
 
@@ -41,12 +44,8 @@ export default function Container({
             </h3>
             <p className="font-normal text-lg text-white/90">{top_post_text}</p>
             <div className="flex justify-end gap-2 pt-10">
-              <span className="text-gray-600">
-                <ThumbsUp count={likes} container />
-              </span>
-              <span className="text-gray-600">
-                <Comments count={comments} container />
-              </span>
+              <Like count={likes || 0} />
+              <Comments count={comments ?? 0} />
             </div>
           </div>
         </div>
