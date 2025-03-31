@@ -159,8 +159,8 @@ export default function PostCard({
       {/* Desktop View */}
       <div className="hidden sm:flex gap-4">
         <div
-          className="flex flex-col items-center text-gray-500                   onClick={handleClick}
-"
+          className="flex flex-col items-center text-gray-500"
+          onClick={handleClick}
         >
           <button
             className={`p-1 ${userLiked ? "text-cyan-500" : "text-gray-400"} hover:text-cyan-500`}
