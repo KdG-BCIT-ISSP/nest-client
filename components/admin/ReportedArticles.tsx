@@ -5,6 +5,7 @@ import ReportCard from "@/components/admin/ReportCard";
 import { useEffect, useState } from "react";
 import { ReportPostType, Report } from "@/types/PostType";
 import { get } from "@/app/lib/fetchInterceptor";
+import { decodeAndTruncateHtml } from "@/utils/cleanHtml";
 
 export default function ReportedArticlesComponent() {
   const [loading, setLoading] = useState(true);
@@ -19,8 +20,12 @@ export default function ReportedArticlesComponent() {
           get("/api/report/article"),
           get("/api/article"),
         ]);
+        const cleanedArticles = postsData.map((post: ReportPostType) => ({
+          ...post,
+          content: decodeAndTruncateHtml(post.content),
+        }));
         setReportedPosts(reportedPostsData);
-        setPosts(postsData);
+        setPosts(cleanedArticles);
       } catch (err) {
         console.error("Failed to fetch data:", err);
       } finally {
