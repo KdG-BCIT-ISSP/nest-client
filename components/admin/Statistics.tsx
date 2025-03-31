@@ -71,7 +71,7 @@ export default function StatisticsComponent() {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div className="p-4 text-black dark:text-white">
+    <div className="p-4">
       <h1 className="text-2xl font-bold mb-6">Statistics Overview</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 mb-10">
         <div className="space-y-2">
