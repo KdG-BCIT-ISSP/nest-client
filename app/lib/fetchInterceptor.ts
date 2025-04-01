@@ -1,5 +1,9 @@
-const BASE_URL = "http://localhost:3000";
-export const API_BASE_URL = "http://localhost:8080/api/v1/";
+const isDev = false;
+
+export const API_BASE_URL = isDev
+  ? "http://localhost:8080/api/v1/"
+  : "https://nest-core-bc7a3ae.onrender.com/";
+
 import { getCookie, deleteCookie, setCookie } from "cookies-next";
 
 const INVALID_TOKEN_ERROR = "Invalid token";
@@ -49,7 +53,7 @@ export async function fetchInterceptor(
   };
 
   try {
-    const response = await fetch(`${BASE_URL}${endpoint}`, config);
+    const response = await fetch(`${endpoint}`, config);
 
     if (response.status === 401 && !config._retry) {
       config._retry = true;
