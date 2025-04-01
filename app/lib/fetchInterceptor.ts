@@ -1,12 +1,12 @@
-const BASE_URL = "http://localhost:3000";
-export const API_BASE_URL = "http://localhost:8080/api/v1/";
 import { getCookie, deleteCookie, setCookie } from "cookies-next";
+
+const API_BASE_URL = "/api/proxy";
 
 const INVALID_TOKEN_ERROR = "Invalid token";
 const EXPIRED_TOKEN_ERROR = ["Expired token", "Token expired"];
 
 async function refreshAccessToken(refreshToken: string) {
-  const response = await fetch(`${API_BASE_URL}auth/getNewAccessToken`, {
+  const response = await fetch(`${API_BASE_URL}/auth/getNewAccessToken`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -42,6 +42,10 @@ export async function fetchInterceptor(
     ...(options.headers || {}),
   };
 
+  const finalEndpoint = endpoint.startsWith("/api")
+    ? endpoint.replace(/^\/api/, "")
+    : endpoint;
+
   const config: RequestInit & { _retry?: boolean } = {
     ...options,
     headers,
@@ -49,11 +53,10 @@ export async function fetchInterceptor(
   };
 
   try {
-    const response = await fetch(`${BASE_URL}${endpoint}`, config);
+    const response = await fetch(`${API_BASE_URL}${finalEndpoint}`, config);
 
     if (response.status === 401 && !config._retry) {
       config._retry = true;
-
       const errorData = await response.json().catch(() => ({}));
       const responseType = errorData.error || "";
 
@@ -69,7 +72,7 @@ export async function fetchInterceptor(
             ...headers,
             Authorization: `Bearer ${newAccessToken}`,
           };
-          return await fetch(`${API_BASE_URL}${endpoint}`, config);
+          return await fetch(`${API_BASE_URL}${finalEndpoint}`, config);
         } catch (refreshError) {
           handleLogout();
           throw refreshError;
