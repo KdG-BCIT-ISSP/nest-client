@@ -6,14 +6,21 @@ import { PostType } from "@/types/PostType";
 import Button from "@/components/Button";
 import TagsSelector from "../TagsSelector";
 import ImageUpload from "../ImageUpload";
-import { get, post } from "@/app/lib/fetchInterceptor";
+import { post, get, put } from "@/app/lib/fetchInterceptor";
 import { useTranslation } from "next-i18next";
 import TopicSelector from "../TopicSelector";
 import { Topic } from "@/types/Topic";
+import { useAtom } from "jotai";
+import { userAtom } from "@/atoms/user/atom";
 import { decompressFromEncodedURIComponent } from "lz-string";
 
-export default function CreatePost() {
+interface CreatePostProps {
+  existingPost?: PostType;
+}
+
+export default function CreatePost({ existingPost }: CreatePostProps) {
   const { t } = useTranslation("post");
+  const [userData] = useAtom(userAtom);
 
   const [userPost, setUserPost] = useState<PostType>({
     id: 0,
@@ -34,6 +41,19 @@ export default function CreatePost() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<Topic>();
   const [topics, setTopics] = useState<Topic[]>([]);
+
+  useEffect(() => {
+    if (existingPost) {
+      setUserPost(existingPost);
+      setSelectedTags(existingPost.tagNames || []);
+      setImagePreviews(existingPost.imageBase64 || []);
+      const selectedTopic = topics.find(topic => topic.id === existingPost.topicId);
+      if (selectedTopic) {
+        setSelectedTopic(selectedTopic);
+      }
+      console.log("Existing post:", existingPost);
+    }
+  }, [existingPost, topics]);
 
   // Cleans up temporary object URLs created for image previews.
   useEffect(() => {
@@ -142,24 +162,61 @@ export default function CreatePost() {
 
     if (!validateForm()) return;
 
-    const decompressedImages = (userPost.imageBase64 ?? []).map((compressed) =>
-      decompressFromEncodedURIComponent(compressed)
-    );
-
-    const updatedPost = {
-      ...userPost,
-      tagNames: selectedTags,
-      imageBase64: decompressedImages,
-    };
-
+    
     try {
-      const response = await post("/api/posts", updatedPost);
-      if (response) {
-        window.alert(t("post.createSuccess"));
-        window.location.href = "/posts/";
+      const decompressedImages = (userPost.imageBase64 ?? []).map((compressed) =>
+        decompressFromEncodedURIComponent(compressed)
+      );
+
+      const updatedPost = {
+        ...userPost,
+        tagNames: selectedTags,
+        imageBase64: decompressedImages,
+      };
+
+      console.log("existingPost:", existingPost);
+
+      console.log("Updated post:", updatedPost);
+      if (existingPost) {
+        // Update existing post
+        const response = await put(`/api/posts`, {
+          ...updatedPost,
+          id: existingPost.id,
+          memberId: userData.userId,
+          topicId: 1,
+          type: "USERPOST",
+        });
+
+        if (response) {
+          window.alert(t("post.updateSuccess"));
+          window.location.href = `/posts/${existingPost.id}`;
+        } else {
+          console.error("userPost update failed: No response from server.");
+        }
+
+
+      } else {
+
+
+        const response = await post("/api/posts", {
+          title: updatedPost.title ?? "",
+          content: updatedPost.content ?? "",
+          topicId: updatedPost.topicId,
+          type: updatedPost.type || "USERPOST",
+          tagNames: updatedPost.tagNames || [],
+          imageBase64: userPost.imageBase64 || [],
+        });
+
+        if (response) {
+          window.alert(t("post.createSuccess"));
+          window.location.href = "/posts/";
+        } else {
+          console.error("userPost creation failed: No response from server.");
+        }
       }
     } catch (error) {
-      console.error("Failed to create userPost", error);
+      console.error("Failed to connect to server", error);
+    } finally {
     }
   };
 
