@@ -1,6 +1,7 @@
 {
   "dashboard": {
     "profile": "Profil",
+    "myPosts": "Mes posts",
     "savedPosts": "Posts enregistrés",
     "notifications": "Notifications",
     "resetPassword": "Réinitialiser le mot de passe",
