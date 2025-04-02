@@ -9,6 +9,7 @@ import { useState, useEffect, Suspense } from "react";
 import { ProfileDataType } from "@/types/ProfileDataType";
 import SavedPosts from "@/components/profile/SavedPosts";
 import ResetPasswordField from "@/components/profile/ResetPasswordField";
+import MyPosts from "@/components/profile/MyPosts";
 import { useSearchParams } from "next/navigation";
 import { useTranslation } from "next-i18next";
 
@@ -39,6 +40,11 @@ const ProfileContent = () => {
       onClick: () => setSelectedComponent(<SavedPosts />),
     },
     {
+      label: t("navigation.myPosts"),
+      component: <MyPosts />,
+      onClick: () => setSelectedComponent(<MyPosts />),
+    },
+    {
       label: t("navigation.notifications"),
       component: <Notifications />,
       onClick: () => setSelectedComponent(<Notifications />),
@@ -55,6 +61,9 @@ const ProfileContent = () => {
     switch (section) {
       case "saved-posts":
         setSelectedComponent(<SavedPosts />);
+        break;
+      case "my-posts":
+        setSelectedComponent(<MyPosts />);
         break;
       case "notifications":
         setSelectedComponent(<Notifications />);

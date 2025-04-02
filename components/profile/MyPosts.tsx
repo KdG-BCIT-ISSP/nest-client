@@ -19,7 +19,6 @@ export default function MyPosts() {
   const [userData] = useAtom(userAtom);
 
   useEffect(() => {
-    console.log("User Data:", userData);
     async function fetchMyPosts() {
       try {
         const data = await get(`/api/posts/${userData.userId}`);
