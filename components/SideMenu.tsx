@@ -35,6 +35,7 @@ export default function SideMenu({
       ]
     : [
         { label: t("dashboard.profile") },
+        { label: t("dashboard.myPosts") },
         { label: t("dashboard.savedPosts") },
         { label: t("dashboard.notifications") },
         { label: t("dashboard.resetPassword") },
