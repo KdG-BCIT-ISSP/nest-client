@@ -62,11 +62,7 @@ export default function CreatePost() {
   useEffect(() => {
     const fetchTopics = async () => {
       try {
-        const response = await get("/api/topic");
-        if (!response.ok) {
-          throw new Error("Failed to fetch topics");
-        }
-        const data: Topic[] = await response.json();
+        const data = await get("/api/topic");
         setTopics(data);
         if (data.length > 0) {
           setSelectedTopic(data[0]);
