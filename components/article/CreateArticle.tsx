@@ -10,7 +10,7 @@ import { ArticleType } from "@/types/ContentType";
 import TagsSelector from "../TagsSelector";
 import imageCompression from "browser-image-compression";
 import { useTranslation } from "next-i18next";
-import { post } from "@/app/lib/fetchInterceptor";
+import { get, post } from "@/app/lib/fetchInterceptor";
 import { Topic } from "@/types/Topic";
 import TopicSelector from "../TopicSelector";
 
@@ -40,17 +40,13 @@ export default function CreateArticle() {
   useEffect(() => {
     const fetchTopics = async () => {
       try {
-        const response = await fetch("/api/topic");
-        if (!response.ok) {
-          throw new Error("Failed to fetch topics");
-        }
-        const data: Topic[] = await response.json();
-        setTopics(data);
-        if (data.length > 0) {
-          setSelectedTopic(data[0]);
+        const response = await get("/api/topic");
+        setTopics(response);
+        if (response.length > 0) {
+          setSelectedTopic(response);
           setArticle((prev) => ({
             ...prev,
-            topicId: data[0].id,
+            topicId: response[0].id,
           }));
         }
       } catch (err) {

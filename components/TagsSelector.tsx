@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Button from "@/components/Button";
 import { Tag } from "@/types/Tag";
+import { get } from "@/app/lib/fetchInterceptor";
 
 interface TagSelectorProps {
   selectedTags: string[];
@@ -19,11 +20,8 @@ export default function TagsSelector({
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const response = await fetch("/api/tag");
-        if (!response.ok) {
-          throw new Error("Failed to fetch tags");
-        }
-        const data: Tag[] = await response.json();
+        const data = await get("/api/tag");
+
         setAvailableTags(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
