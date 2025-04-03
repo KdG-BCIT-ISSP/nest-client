@@ -109,7 +109,6 @@ export default function PostDetailPage() {
           )}
         </div>
       </div>
-
       {showReport && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 text-black">
           <div className="bg-white p-6 rounded-md w-1/4 flex flex-col space-y-4">
@@ -142,7 +141,6 @@ export default function PostDetailPage() {
           </div>
         </div>
       )}
-
       <div className="max-w-2xl mx-auto p-4 pt-4 text-black">
         <div className="mb-6">
           <p className="text-sm text-gray-700">
@@ -155,57 +153,66 @@ export default function PostDetailPage() {
             {userPost.title}
           </h1>
 
-          <div style={{ display: "flex", overflowX: "auto", gap: "10px" }}>
-            {userPost.imageBase64?.map((x, index) => (
-              <div
-                key={index}
-                style={{
-                  position: "relative",
-                  width: "300px",
-                  height: "200px",
-                  flexShrink: 0,
-                }}
-              >
-                <Image
-                  src={x}
-                  alt="Article cover image"
-                  fill
-                  style={{ objectFit: "cover", objectPosition: "top" }}
-                  priority
-                />
-              </div>
-            ))}
+          {userPost.imageBase64?.length === 1 ? (
+            <div className="w-full max-w-screen-md mx-auto px-4 py-6">
+              <Image
+                src={userPost.imageBase64[0]}
+                alt="Post image"
+                width={1000}
+                height={0}
+                className="w-full h-auto object-contain rounded-md"
+                priority
+              />
+            </div>
+          ) : (
+            <div className="flex overflow-x-auto gap-4 py-6 px-4">
+              {userPost.imageBase64?.map((img, index) => (
+                <div
+                  key={index}
+                  className="relative min-w-[300px] max-w-[800px] w-full aspect-[16/9] flex-shrink-0 rounded-md overflow-hidden border"
+                >
+                  <Image
+                    src={img}
+                    alt={`Post image ${index + 1}`}
+                    fill
+                    className="object-contain"
+                    unoptimized
+                    priority={index === 0}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          <Tags tagsList={userPost.tagNames ?? []} />
+
+          <div className="prose prose-green mb-8">{userPost.content}</div>
+          <div className="flex justify-end gap-4">
+            <Like
+              count={userPost.likesCount || 0}
+              isLiked={userPost.liked || false}
+              onClick={() => {}}
+              disabled={!isAuthenticated}
+            />
+            <Comments count={userPost.comment?.length ?? 0} />
+            <Bookmark
+              count={12}
+              isSaved={userPost.bookmarked || false}
+              disabled={!isAuthenticated}
+              onClick={handleBookmarkToggle}
+            />
+            <Share onClick={handleShareClick} />
           </div>
+
+          {/* <CommentsSection /> */}
         </div>
 
-        <Tags tagsList={userPost.tagNames ?? []} />
-
-        <div className="prose prose-green mb-8">{userPost.content}</div>
-        <div className="flex justify-end gap-4">
-          <Like
-            count={userPost.likesCount || 0}
-            isLiked={userPost.liked || false}
-            onClick={() => {}}
-            disabled={!isAuthenticated}
-          />
-          <Comments count={userPost.comment?.length ?? 0} />
-          <Bookmark
-            count={12}
-            isSaved={userPost.bookmarked || false}
-            disabled={!isAuthenticated}
-            onClick={handleBookmarkToggle}
-          />
-          <Share onClick={handleShareClick} />
-        </div>
-
-        {/* <CommentsSection /> */}
+        {showCopied && (
+          <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-400 text-white px-4 py-2 rounded transition-opacity duration-500">
+            URL copied to clipboard!
+          </div>
+        )}
       </div>
-
-      {showCopied && (
-        <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-400 text-white px-4 py-2 rounded transition-opacity duration-500">
-          URL copied to clipboard!
-        </div>
-      )}
     </div>
   );
 }
