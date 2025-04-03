@@ -13,6 +13,8 @@ interface ImageUploadProps {
   onRemoveImage: (index: number) => void;
   imagePreviews: string[];
   multiple: boolean;
+  triggerId?: string;
+  button?: React.ReactNode;
 }
 
 export default function ImageUpload({
@@ -20,6 +22,8 @@ export default function ImageUpload({
   onRemoveImage,
   imagePreviews,
   multiple = false,
+  triggerId,
+  button,
 }: ImageUploadProps) {
   const { t } = useTranslation("post");
 
@@ -78,15 +82,20 @@ export default function ImageUpload({
             accept="image/*"
             onChange={handleImageUpload}
             className="hidden"
-            id="fileUpload"
+            id={triggerId || "fileUpload"}
             multiple={multiple}
           />
-          <Button
-            label={t("post.addImage")}
-            onClick={() => document.getElementById("fileUpload")?.click()}
-            type="button"
-            className="bg-gray-200 hover:bg-gray-300 text-black px-4 py-2 rounded-md border border-gray-400"
-          />
+          {button ? (
+            button
+          ) : (
+            <Button
+              label={t("post.addImage")}
+              onClick={() =>
+                document.getElementById(triggerId || "fileUpload")?.click()
+              }
+              className="bg-gray-200 hover:bg-gray-300 text-black px-4 py-2 rounded-md border border-gray-400"
+            />
+          )}
         </div>
 
         {/* Display Image Preview */}
