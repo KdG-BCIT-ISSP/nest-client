@@ -82,10 +82,10 @@ export default function CreateArticle() {
     }));
   };
 
-  const handleCoverImageChange = (base64Image: string) => {
+  const handleCoverImageChange = (coverImage: string) => {
     setArticle((prev) => ({
       ...prev,
-      coverImage: base64Image,
+      coverImage,
     }));
     setErrors((prevErrors) => ({ ...prevErrors, image: "" }));
   };
@@ -151,12 +151,6 @@ export default function CreateArticle() {
     const decompressedImage = decompressFromEncodedURIComponent(
       article.coverImage ?? ""
     );
-
-    if (!decompressedImage) {
-      console.error("Decompressed image is null. Skipping submit.");
-      setErrors((prev) => ({ ...prev, image: t("article.imageRequired") }));
-      return;
-    }
 
     const updatedArticle = {
       ...article,

@@ -133,11 +133,11 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
     }));
   };
 
-  const handleImageChange = (compressedImage: string) => {
-    setImagePreviews((prev) => [...prev, compressedImage]);
+  const handleImageChange = (base64Image: string) => {
+    setImagePreviews((prev) => [...prev, base64Image]);
     setUserPost((prevPost) => ({
       ...prevPost,
-      imageBase64: [...(prevPost.imageBase64 ?? []), compressedImage],
+      imageBase64: [...(prevPost.imageBase64 ?? []), base64Image],
     }));
   };
 
@@ -164,10 +164,9 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
 
     if (!validateForm()) return;
 
-    
     try {
-      const decompressedImages = (userPost.imageBase64 ?? []).map((compressed) =>
-        decompressFromEncodedURIComponent(compressed)
+      const decompressedImages = (userPost.imageBase64 ?? []).map(
+        (compressed) => decompressFromEncodedURIComponent(compressed)
       );
 
       const updatedPost = {
@@ -176,45 +175,28 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
         imageBase64: decompressedImages,
       };
 
-      console.log("existingPost:", existingPost);
-
-      console.log("Updated post:", updatedPost);
       if (existingPost) {
-        // Update existing post
-        const response = await put(`/api/posts`, {
+        const response = await put("/api/posts", {
           ...updatedPost,
           id: existingPost.id,
           memberId: userData.userId,
-          topicId: 1,
-          type: "USERPOST",
+          topicId: updatedPost.topicId,
+          type: updatedPost.type,
         });
 
         if (response) {
           window.alert(t("post.updateSuccess"));
           window.location.href = `/posts/${existingPost.id}`;
-        } else {
-          console.error("userPost update failed: No response from server.");
         }
       } else {
-        const response = await post("/api/posts", {
-          title: updatedPost.title ?? "",
-          content: updatedPost.content ?? "",
-          topicId: updatedPost.topicId,
-          type: updatedPost.type || "USERPOST",
-          tagNames: updatedPost.tagNames || [],
-          imageBase64: userPost.imageBase64 || [],
-        });
-
+        const response = await post("/api/posts", updatedPost);
         if (response) {
           window.alert(t("post.createSuccess"));
           window.location.href = "/posts/";
-        } else {
-          console.error("userPost creation failed: No response from server.");
         }
       }
     } catch (error) {
-      console.error("Failed to connect to server", error);
-    } finally {
+      console.error("Failed to submit post", error);
     }
   };
 
