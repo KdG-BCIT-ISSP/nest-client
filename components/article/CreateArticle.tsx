@@ -152,7 +152,6 @@ export default function CreateArticle() {
 
     if (!validateForm()) return;
 
-    const encodedContent = encodeURIComponent(article.content);
     const decompressedImage = decompressFromEncodedURIComponent(
       article.coverImage ?? ""
     );
@@ -163,20 +162,19 @@ export default function CreateArticle() {
       return;
     }
 
+    const updatedArticle = {
+      ...article,
+      content: encodeURIComponent(article.content),
+      tagNames: selectedTags,
+      coverImage: decompressedImage,
+    };
+
     try {
-      const articleData = {
-        title: article.title,
-        content: encodedContent,
-        topicId: article.topicId,
-        type: article.type,
-        tagNames: article.tagNames,
-        coverImage: decompressedImage,
-      };
-
-      await post("/api/article", articleData);
-
-      window.alert(t("article.createSuccess"));
-      window.location.href = "/curated-articles/";
+      const response = await post("/api/article", updatedArticle);
+      if (response) {
+        window.alert(t("article.createSuccess"));
+        window.location.href = "/curated-articles/";
+      }
     } catch (error: unknown) {
       console.error("Failed to create article:", error);
       const errorMessage =
