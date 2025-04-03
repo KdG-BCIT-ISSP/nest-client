@@ -1,18 +1,18 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import Button from "@/components/Button";
 import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 import { ArticleType } from "@/types/ContentType";
 import TagsSelector from "../TagsSelector";
-import imageCompression from "browser-image-compression";
 import { useTranslation } from "next-i18next";
 import { get, post } from "@/app/lib/fetchInterceptor";
 import { Topic } from "@/types/Topic";
 import TopicSelector from "../TopicSelector";
+import ImageUpload from "../ImageUpload";
+import { decompressFromEncodedURIComponent } from "lz-string";
 
 export default function CreateArticle() {
   const { t, i18n } = useTranslation("article");
@@ -81,38 +81,20 @@ export default function CreateArticle() {
         : t("article.requiredField", { field: t(`article.${field}`) }),
     }));
   };
-  // Handle Image Upload
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
 
-      const options = {
-        maxSizeMB: 1,
-        maxWidthOrHeight: 500,
-        useWebWorker: true,
-      };
+  const handleCoverImageChange = (base64Image: string) => {
+    setArticle((prev) => ({
+      ...prev,
+      coverImage: base64Image,
+    }));
+    setErrors((prevErrors) => ({ ...prevErrors, image: "" }));
+  };
 
-      imageCompression(file, options)
-        .then((compressedFile) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(compressedFile);
-          reader.onload = () => {
-            setArticle({
-              ...article,
-              coverImage: reader.result as string,
-              imagePreview: URL.createObjectURL(file),
-            });
-
-            setErrors((prevErrors) => ({
-              ...prevErrors,
-              image: "", // Clear the error message
-            }));
-          };
-        })
-        .catch((error) => {
-          console.error("Image compression failed:", error);
-        });
-    }
+  const handleCoverImageRemove = () => {
+    setArticle((prev) => ({
+      ...prev,
+      coverImage: "",
+    }));
   };
 
   // Handle Content Change in React-Quill
@@ -166,23 +148,29 @@ export default function CreateArticle() {
 
     if (!validateForm()) return;
 
-    const encodedContent = encodeURIComponent(article.content);
+    const decompressedImage = decompressFromEncodedURIComponent(
+      article.coverImage ?? ""
+    );
+
+    if (!decompressedImage) {
+      console.error("Decompressed image is null. Skipping submit.");
+      setErrors((prev) => ({ ...prev, image: t("article.imageRequired") }));
+      return;
+    }
+
+    const updatedArticle = {
+      ...article,
+      content: encodeURIComponent(article.content),
+      tagNames: selectedTags,
+      coverImage: decompressedImage,
+    };
 
     try {
-      const articleData = {
-        title: article.title,
-        content: encodedContent,
-        topicId: article.topicId,
-        type: article.type,
-        tagNames: article.tagNames,
-        coverImage: article.coverImage,
-      };
-
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const response = await post("/api/article", articleData);
-
-      window.alert(t("article.createSuccess"));
-      window.location.href = "/curated-articles/";
+      const response = await post("/api/article", updatedArticle);
+      if (response) {
+        window.alert(t("article.createSuccess"));
+        window.location.href = "/curated-articles/";
+      }
     } catch (error: unknown) {
       console.error("Failed to create article:", error);
       const errorMessage =
@@ -214,6 +202,8 @@ export default function CreateArticle() {
             onTopicClick={handleTopicClick}
             topics={topics}
           />
+
+          {/* Title */}
           <label className="text-sm font-medium text-gray-900 block mb-2">
             {t("article.title")}
           </label>
@@ -228,43 +218,17 @@ export default function CreateArticle() {
             <p className="text-red-500 text-sm">{errors.title}</p>
           )}
 
-          <div className="w-2/5 flex flex-col items-center gap-10">
-            {/* Upload Button */}
-            <div className="relative inline-block">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="hidden"
-                id="fileUpload"
-              />
-              {errors.image && ( // Display image error message
-                <p className="text-red-500 text-sm">{errors.image}</p>
-              )}
-              <Button
-                label={t("article.addCoverImage")}
-                onClick={() => document.getElementById("fileUpload")?.click()}
-                type="button"
-                className="bg-gray-200 hover:bg-gray-300 px-4 py-2 h-12 flex items-center rounded-md border border-gray-400"
-              />
-            </div>
-
-            {/* Image Preview */}
-            {article.imagePreview && (
-              <div className="w-40 h-40 flex items-center justify-center">
-                <Image
-                  src={article.imagePreview}
-                  alt="Image Preview"
-                  width={160}
-                  height={160}
-                  className="rounded-md border border-gray-300 object-cover"
-                  unoptimized
-                />
-              </div>
-            )}
-          </div>
+          {/* Image Upload */}
+          <ImageUpload
+            onImageChange={handleCoverImageChange}
+            onRemoveImage={handleCoverImageRemove}
+            imagePreviews={article.coverImage ? [article.coverImage] : []}
+            multiple={false}
+          />
+          {errors.image && (
+            <p className="text-red-500 text-sm">{errors.image}</p>
+          )}
         </div>
-
         {/* React-Quill Text Editor */}
         <div className="mb-6">
           <label className="block text-lg font-medium ">
@@ -274,7 +238,7 @@ export default function CreateArticle() {
             key={i18n.language}
             value={article.content}
             onChange={handleContentChange}
-            className="mt-2 bg-white "
+            className="mt-2 bg-white"
             theme="snow"
             placeholder={t("article.contentPlaceholder")}
             style={{ height: "400px" }}
@@ -297,7 +261,6 @@ export default function CreateArticle() {
             <p className="text-red-500 text-sm">{errors.content}</p>
           )}
         </div>
-
         {/* Submit Button */}
         <div className="mt-8 border-t border-gray-200 flex justify-between pt-6">
           <TagsSelector
