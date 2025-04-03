@@ -11,11 +11,7 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const router = useRouter();
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> a839e1e ([NEST-FE-52]finish feature that user can reset password by email link)
   const pathname = usePathname();
   const uuid = pathname.split("/").pop() || ""; // Extract the UUID from the URL
 
@@ -75,15 +71,7 @@ export default function ResetPasswordPage() {
             {success && (
               <p className="text-green-500 text-sm text-center">{success}</p>
             )}
-
-<<<<<<< HEAD
-            <form
-              className="space-y-4 md:space-y-6"
-              onSubmit={handleResetNewPassword}
-            >
-=======
             <form className="space-y-4 md:space-y-6" onSubmit={handleResetNewPassword}>
->>>>>>> a839e1e ([NEST-FE-52]finish feature that user can reset password by email link)
               <div>
                 <label
                   htmlFor="newPassword"
@@ -118,11 +106,6 @@ export default function ResetPasswordPage() {
                   required
                 />
               </div>
-
-<<<<<<< HEAD
-=======
-
->>>>>>> a839e1e ([NEST-FE-52]finish feature that user can reset password by email link)
               <button
                 type="submit"
                 className="w-full text-white bg-secondary hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50"
@@ -130,19 +113,10 @@ export default function ResetPasswordPage() {
               >
                 {isLoading ? "Resetting..." : "Submit"}
               </button>
-<<<<<<< HEAD
-=======
-
-
->>>>>>> a839e1e ([NEST-FE-52]finish feature that user can reset password by email link)
             </form>
           </div>
         </div>
       </div>
-<<<<<<< HEAD
-=======
-
->>>>>>> a839e1e ([NEST-FE-52]finish feature that user can reset password by email link)
     </section>
   );
 }

@@ -47,7 +47,9 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
       setUserPost(existingPost);
       setSelectedTags(existingPost.tagNames || []);
       setImagePreviews(existingPost.imageBase64 || []);
-      const selectedTopic = topics.find(topic => topic.id === existingPost.topicId);
+      const selectedTopic = topics.find(
+        (topic) => topic.id === existingPost.topicId
+      );
       if (selectedTopic) {
         setSelectedTopic(selectedTopic);
       }
@@ -193,11 +195,7 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
         } else {
           console.error("userPost update failed: No response from server.");
         }
-
-
       } else {
-
-
         const response = await post("/api/posts", {
           title: updatedPost.title ?? "",
           content: updatedPost.content ?? "",

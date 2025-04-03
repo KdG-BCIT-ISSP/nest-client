@@ -102,7 +102,7 @@ export default function PostDetailPage() {
     } catch (error) {
       console.error("Error deleting post:", error);
     }
-  }
+  };
 
   return (
     <div className="w-max mx-auto pt-10">
@@ -115,9 +115,7 @@ export default function PostDetailPage() {
             <EllipsisIcon />
           </button>
           {showEditMenu && (
-            <div
-              className="absolute right-0 mt-1 z-10 cursor-pointer bg-white rounded-md shadow-lg border border-gray-200"
-            >
+            <div className="absolute right-0 mt-1 z-10 cursor-pointer bg-white rounded-md shadow-lg border border-gray-200">
               <div
                 onClick={() => setShowEditPost((prev) => !prev)}
                 className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
@@ -180,9 +178,10 @@ export default function PostDetailPage() {
       )}
 
       {showDeleteWindow && (
-
-
-        <Modal isOpen={showDeleteWindow} onClose={() => setShowDeleteWindow(false)}>
+        <Modal
+          isOpen={showDeleteWindow}
+          onClose={() => setShowDeleteWindow(false)}
+        >
           <div className="bg-white p-6 rounded-md flex flex-col space-y-4 justify-center items-center">
             <h1 className="text-xl font-bold">Are you sure?</h1>
             <p>Do you really want to delete this article?</p>
@@ -203,8 +202,6 @@ export default function PostDetailPage() {
           </div>
         </Modal>
       )}
-
-
 
       <div className="max-w-2xl mx-auto p-4 pt-4 text-black">
         <div className="mb-6">
