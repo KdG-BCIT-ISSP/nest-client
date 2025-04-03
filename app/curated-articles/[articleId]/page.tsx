@@ -165,6 +165,7 @@ export default function ArticleDetailsPage() {
         </div>
       </div>
 
+      {/* Report Modal */}
       {showReport && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 text-black">
           <div className="bg-white p-6 rounded-md w-1/4 flex flex-col space-y-4">
@@ -196,6 +197,7 @@ export default function ArticleDetailsPage() {
         </div>
       )}
 
+      {/* Article Content */}
       <div className="max-w-3xl mx-auto p-4 pt-4 text-black">
         <div className="mb-6">
           <p className="text-sm text-gray-700">
