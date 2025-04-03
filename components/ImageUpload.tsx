@@ -46,11 +46,7 @@ export default function ImageUpload({
         reader.onloadend = () => {
           const base64Image = reader.result as string;
           const compressedBase64 = compressToEncodedURIComponent(base64Image);
-          const useCompressed =
-            compressedBase64.length < base64Image.length
-              ? compressedBase64
-              : base64Image;
-          onImageChange(useCompressed);
+          onImageChange(compressedBase64);
         };
       } catch (error) {
         console.error("Failed to upload image", error);
