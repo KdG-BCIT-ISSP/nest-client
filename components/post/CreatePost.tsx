@@ -6,7 +6,7 @@ import { PostType } from "@/types/PostType";
 import Button from "@/components/Button";
 import TagsSelector from "../TagsSelector";
 import ImageUpload from "../ImageUpload";
-import { post } from "@/app/lib/fetchInterceptor";
+import { get, post } from "@/app/lib/fetchInterceptor";
 import { useTranslation } from "next-i18next";
 import TopicSelector from "../TopicSelector";
 import { Topic } from "@/types/Topic";
@@ -62,11 +62,7 @@ export default function CreatePost() {
   useEffect(() => {
     const fetchTopics = async () => {
       try {
-        const response = await fetch("/api/topic");
-        if (!response.ok) {
-          throw new Error("Failed to fetch topics");
-        }
-        const data: Topic[] = await response.json();
+        const data = await get("/api/topic");
         setTopics(data);
         if (data.length > 0) {
           setSelectedTopic(data[0]);
