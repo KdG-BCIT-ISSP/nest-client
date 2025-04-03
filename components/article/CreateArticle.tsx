@@ -43,7 +43,7 @@ export default function CreateArticle() {
         const response = await get("/api/topic");
         setTopics(response);
         if (response.length > 0) {
-          setSelectedTopic(response);
+          setSelectedTopic(response[0]);
           setArticle((prev) => ({
             ...prev,
             topicId: response[0].id,
