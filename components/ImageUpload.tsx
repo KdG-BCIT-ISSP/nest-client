@@ -3,8 +3,10 @@ import Button from "@/components/Button";
 import Image from "next/image";
 import imageCompression from "browser-image-compression";
 import { useTranslation } from "next-i18next";
-import { compressToEncodedURIComponent } from "lz-string";
-import { decompressFromEncodedURIComponent } from "lz-string";
+import {
+  compressToEncodedURIComponent,
+  decompressFromEncodedURIComponent,
+} from "lz-string";
 
 interface ImageUploadProps {
   onImageChange: (compressedImage: string) => void;
