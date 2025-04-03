@@ -101,8 +101,9 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 bg-primary border-gray-200 z-50">
       <div className="max-w-screen-xl flex items-center justify-between mx-auto p-5">
         <Link href="/" className="flex items-center space-x-3">
-          <span className="text-2xl font-semibold whitespace-nowrap text-secondary">
-            LOGO
+          <Image src="/logo.svg" alt="Logo" width={25} height={25} />
+          <span className="text-xl font-semibold whitespace-nowrap text-secondary">
+            NEST
           </span>
         </Link>
         {!isSearchPage && (
