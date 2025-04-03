@@ -12,7 +12,6 @@ import { get, post } from "@/app/lib/fetchInterceptor";
 import { Topic } from "@/types/Topic";
 import TopicSelector from "../TopicSelector";
 import ImageUpload from "../ImageUpload";
-import { decompressFromEncodedURIComponent } from "lz-string";
 
 export default function CreateArticle() {
   const { t, i18n } = useTranslation("article");
@@ -148,15 +147,11 @@ export default function CreateArticle() {
 
     if (!validateForm()) return;
 
-    const decompressedImage = decompressFromEncodedURIComponent(
-      article.coverImage ?? ""
-    );
-
     const updatedArticle = {
       ...article,
       content: encodeURIComponent(article.content),
       tagNames: selectedTags,
-      coverImage: decompressedImage,
+      coverImage: article.coverImage,
     };
 
     try {

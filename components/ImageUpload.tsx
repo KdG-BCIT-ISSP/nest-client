@@ -5,10 +5,6 @@ import Button from "@/components/Button";
 import Image from "next/image";
 import imageCompression from "browser-image-compression";
 import { useTranslation } from "next-i18next";
-import {
-  compressToEncodedURIComponent,
-  decompressFromEncodedURIComponent,
-} from "lz-string";
 
 interface ImageUploadProps {
   onImageChange: (compressedImage: string) => void;
@@ -39,16 +35,12 @@ export default function ImageUpload({
           maxSizeMB: 1,
           useWebWorker: true,
         };
-
         const compressedFile = await imageCompression(file, options);
-
         const reader = new FileReader();
         reader.readAsDataURL(compressedFile);
-
         reader.onloadend = () => {
           const base64Image = reader.result as string;
-          const compressedBase64 = compressToEncodedURIComponent(base64Image);
-          onImageChange(compressedBase64);
+          onImageChange(base64Image);
         };
       } catch (error) {
         console.error("Failed to upload image", error);
@@ -91,10 +83,7 @@ export default function ImageUpload({
         {/* Display Image Preview */}
         {imagePreviews.length > 0 && (
           <div className="mt-4 flex gap-3 flex-wrap">
-            {imagePreviews.map((compressed, index) => {
-              const base64 = decompressFromEncodedURIComponent(compressed);
-              if (!base64) return null;
-
+            {imagePreviews.map((base64, index) => {
               return (
                 <div key={index} className="relative">
                   <Image

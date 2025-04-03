@@ -12,7 +12,6 @@ import TopicSelector from "../TopicSelector";
 import { Topic } from "@/types/Topic";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
-import { decompressFromEncodedURIComponent } from "lz-string";
 
 interface CreatePostProps {
   existingPost?: PostType;
@@ -165,14 +164,10 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
     if (!validateForm()) return;
 
     try {
-      const decompressedImages = (userPost.imageBase64 ?? []).map(
-        (compressed) => decompressFromEncodedURIComponent(compressed)
-      );
-
       const updatedPost = {
         ...userPost,
         tagNames: selectedTags,
-        imageBase64: decompressedImages,
+        imageBase64: userPost.imageBase64,
       };
 
       if (existingPost) {
