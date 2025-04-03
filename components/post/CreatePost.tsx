@@ -12,7 +12,7 @@ import TopicSelector from "../TopicSelector";
 import { Topic } from "@/types/Topic";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
-import { decompressFromEncodedURIComponent } from "lz-string";
+import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string";
 
 interface CreatePostProps {
   existingPost?: PostType;
@@ -159,30 +159,32 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
     }));
   };
 
+
+  useEffect(() => {
+    console.log("Updated imagePreviews:", imagePreviews);
+  }, [imagePreviews]);
+
+  useEffect(() => {
+    console.log("Updated userPost:", userPost);
+  }, [userPost]);
+
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!validateForm()) return;
 
-    
+    const compressedImages = (userPost.imageBase64 ?? []).map((image) =>
+      compressToEncodedURIComponent(image)
+    );
+
+
     try {
-      const decompressedImages = (userPost.imageBase64 ?? []).map((compressed) =>
-        decompressFromEncodedURIComponent(compressed)
-      );
 
-      const updatedPost = {
-        ...userPost,
-        tagNames: selectedTags,
-        imageBase64: decompressedImages,
-      };
-
-      console.log("existingPost:", existingPost);
-
-      console.log("Updated post:", updatedPost);
       if (existingPost) {
         // Update existing post
         const response = await put(`/api/posts`, {
-          ...updatedPost,
+          ...userPost,
           id: existingPost.id,
           memberId: userData.userId,
           topicId: 1,
@@ -197,11 +199,11 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
         }
       } else {
         const response = await post("/api/posts", {
-          title: updatedPost.title ?? "",
-          content: updatedPost.content ?? "",
-          topicId: updatedPost.topicId,
-          type: updatedPost.type || "USERPOST",
-          tagNames: updatedPost.tagNames || [],
+          title: userPost.title ?? "",
+          content: userPost.content ?? "",
+          topicId: userPost.topicId,
+          type: userPost.type || "USERPOST",
+          tagNames: userPost.tagNames || [],
           imageBase64: userPost.imageBase64 || [],
         });
 
@@ -213,8 +215,7 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
         }
       }
     } catch (error) {
-      console.error("Failed to connect to server", error);
-    } finally {
+      console.error("Failed to create userPost", error);
     }
   };
 
@@ -276,7 +277,7 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
             <ImageUpload
               onImageChange={handleImageChange}
               onRemoveImage={handleRemoveImage}
-              imagePreviews={imagePreviews}
+              imagePreviews={userPost.imageBase64}
               multiple={true}
             />
           </div>

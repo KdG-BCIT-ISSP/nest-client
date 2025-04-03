@@ -45,12 +45,12 @@ export default function ImageUpload({
 
         reader.onloadend = () => {
           const base64Image = reader.result as string;
-          const compressedBase64 = compressToEncodedURIComponent(base64Image);
-          const useCompressed =
-            compressedBase64.length < base64Image.length
-              ? compressedBase64
-              : base64Image;
-          onImageChange(useCompressed);
+          // const compressedBase64 = compressToEncodedURIComponent(base64Image);
+          // const useCompressed =
+          //   compressedBase64.length < base64Image.length
+          //     ? compressedBase64
+          //     : base64Image;
+          onImageChange(base64Image);
         };
       } catch (error) {
         console.error("Failed to upload image", error);
@@ -93,10 +93,8 @@ export default function ImageUpload({
         {/* Display Image Preview */}
         {imagePreviews.length > 0 && (
           <div className="mt-4 flex gap-3 flex-wrap">
-            {imagePreviews.map((compressed, index) => {
-              const base64 = decompressFromEncodedURIComponent(compressed);
+            {imagePreviews.map((base64, index) => {
               if (!base64) return null;
-
               return (
                 <div key={index} className="relative">
                   <Image
