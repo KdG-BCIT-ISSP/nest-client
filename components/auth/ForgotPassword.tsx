@@ -28,6 +28,7 @@ export default function ForgotPassword({ onClose }: ForgotPasswordProps) {
     try {
       const response = await post("/api/password/forgot", {
         email: email,
+        resetUrl: `${window.location.origin}/auth/reset-password`,
       });
 
       let data;
