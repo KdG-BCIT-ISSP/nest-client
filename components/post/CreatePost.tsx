@@ -10,6 +10,7 @@ import { post } from "@/app/lib/fetchInterceptor";
 import { useTranslation } from "next-i18next";
 import TopicSelector from "../TopicSelector";
 import { Topic } from "@/types/Topic";
+import { decompressFromEncodedURIComponent } from "lz-string";
 
 export default function CreatePost() {
   const { t } = useTranslation("post");
@@ -107,9 +108,7 @@ export default function CreatePost() {
   };
 
   const handleRemoveImage = (index: number) => {
-    const newPreviews = [...imagePreviews];
-    newPreviews.splice(index, 1);
-    setImagePreviews(newPreviews);
+    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
     setUserPost((prevPost) => ({
       ...prevPost,
       imageBase64: prevPost.imageBase64?.filter((_, i) => i !== index),
@@ -117,16 +116,10 @@ export default function CreatePost() {
   };
 
   const handleImageChange = (compressedImage: string) => {
-    const fileInput = document.getElementById("fileUpload") as HTMLInputElement;
-    if (fileInput) {
-      fileInput.value = "";
-    }
-
-    setImagePreviews((prevPreviews) => [...prevPreviews, compressedImage]);
-
+    setImagePreviews((prev) => [...prev, compressedImage]);
     setUserPost((prevPost) => ({
       ...prevPost,
-      imageBase64: [...(prevPost.imageBase64 ?? []), compressedImage], // Ensure this is valid type
+      imageBase64: [...(prevPost.imageBase64 ?? []), compressedImage],
     }));
   };
 
@@ -148,32 +141,29 @@ export default function CreatePost() {
     }));
   };
 
-  // handle userPost submission (WIP)
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!validateForm()) return;
-    const updatedPost = { ...userPost, tags: selectedTags }; // Create updatedPost
+
+    const decompressedImages = (userPost.imageBase64 ?? []).map((compressed) =>
+      decompressFromEncodedURIComponent(compressed)
+    );
+
+    const updatedPost = {
+      ...userPost,
+      tagNames: selectedTags,
+      imageBase64: decompressedImages,
+    };
 
     try {
-      const response = await post("/api/posts", {
-        title: updatedPost.title ?? "",
-        content: updatedPost.content ?? "",
-        topicId: updatedPost.topicId,
-        type: updatedPost.type || "USERPOST",
-        tagNames: updatedPost.tagNames || [],
-        imageBase64: userPost.imageBase64 || [],
-      });
-
+      const response = await post("/api/posts", updatedPost);
       if (response) {
         window.alert(t("post.createSuccess"));
         window.location.href = "/posts/";
-      } else {
-        console.error("userPost creation failed: No response from server.");
       }
     } catch (error) {
       console.error("Failed to create userPost", error);
-    } finally {
     }
   };
 
