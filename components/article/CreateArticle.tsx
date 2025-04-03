@@ -12,6 +12,7 @@ import { post } from "@/app/lib/fetchInterceptor";
 import { Topic } from "@/types/Topic";
 import TopicSelector from "../TopicSelector";
 import ImageUpload from "../ImageUpload";
+import { decompressFromEncodedURIComponent } from "lz-string";
 
 export default function CreateArticle() {
   const { t, i18n } = useTranslation("article");
@@ -152,6 +153,15 @@ export default function CreateArticle() {
     if (!validateForm()) return;
 
     const encodedContent = encodeURIComponent(article.content);
+    const decompressedImage = decompressFromEncodedURIComponent(
+      article.coverImage ?? ""
+    );
+
+    if (!decompressedImage) {
+      console.error("Decompressed image is null. Skipping submit.");
+      setErrors((prev) => ({ ...prev, image: t("article.imageRequired") }));
+      return;
+    }
 
     try {
       const articleData = {
@@ -160,11 +170,10 @@ export default function CreateArticle() {
         topicId: article.topicId,
         type: article.type,
         tagNames: article.tagNames,
-        coverImage: article.coverImage,
+        coverImage: decompressedImage,
       };
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const response = await post("/api/article", articleData);
+      await post("/api/article", articleData);
 
       window.alert(t("article.createSuccess"));
       window.location.href = "/curated-articles/";

@@ -207,12 +207,13 @@ export default function ArticleDetailsPage() {
             {article.title}
           </h1>
           <Tags tagsList={article.tagNames ?? []} />
-          <div className="relative w-full h-[400px] rounded-t-lg md:rounded-none overflow-hidden">
+          <div className="w-full max-w-screen-md mx-auto px-4">
             <Image
               src={article.coverImage}
               alt="Article cover image"
-              fill
-              style={{ objectFit: "cover", objectPosition: "top" }}
+              width={1000}
+              height={0}
+              className="w-full h-auto object-contain rounded-md"
               priority
             />
           </div>
