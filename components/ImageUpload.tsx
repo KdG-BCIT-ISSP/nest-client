@@ -50,14 +50,6 @@ export default function ImageUpload({
             compressedBase64.length < base64Image.length
               ? compressedBase64
               : base64Image;
-          console.log("Raw length:", base64Image.length);
-          console.log("Compressed length:", compressedBase64.length);
-          console.log(
-            "Used:",
-            useCompressed === compressedBase64
-              ? "Compressed Base 64"
-              : "Raw Base64"
-          );
           onImageChange(useCompressed);
         };
       } catch (error) {
