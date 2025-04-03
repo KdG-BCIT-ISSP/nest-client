@@ -25,7 +25,6 @@ export default function Modal({
         className={`bg-white rounded-lg p-6 w-full max-w-6xl max-h-[90vh] overflow-y-auto ${className || ""}`}
       >
         <div className="flex justify-end mb-4">
-
           <button
             onClick={onClose}
             className="text-secondary hover:text-secondaryPressed cursor-pointer"
