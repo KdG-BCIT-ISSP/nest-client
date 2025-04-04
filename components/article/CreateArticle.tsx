@@ -8,14 +8,21 @@ const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 import { ArticleType } from "@/types/ContentType";
 import TagsSelector from "../TagsSelector";
 import { useTranslation } from "next-i18next";
-import { get, post } from "@/app/lib/fetchInterceptor";
+import { get, post, put } from "@/app/lib/fetchInterceptor";
 import { Topic } from "@/types/Topic";
 import TopicSelector from "../TopicSelector";
 import ImageUpload from "../ImageUpload";
-import { decompressFromEncodedURIComponent } from "lz-string";
+import { useAtom } from "jotai";
+import { userAtom } from "@/atoms/user/atom";
 
-export default function CreateArticle() {
+interface CreateArticleProps {
+  existingArticle?: ArticleType;
+}
+
+export default function CreateArticle({ existingArticle }: CreateArticleProps) {
   const { t, i18n } = useTranslation("article");
+  const [userData] = useAtom(userAtom);
+
   const [article, setArticle] = useState<ArticleType>({
     id: 0,
     title: "",
@@ -57,6 +64,19 @@ export default function CreateArticle() {
     fetchTopics();
   }, []);
 
+  useEffect(() => {
+    if (existingArticle) {
+      setArticle(existingArticle);
+      setSelectedTags(existingArticle.tagNames || []);
+      const selectedTopic = topics.find(
+        (topic) => topic.id === existingArticle.topicId
+      );
+      if (selectedTopic) {
+        setSelectedTopic(selectedTopic);
+      }
+    }
+  }, [existingArticle, topics]);
+
   const handleTopicClick = (topic: Topic) => {
     setSelectedTopic(topic);
     setArticle((prevArticle) => ({
@@ -82,10 +102,10 @@ export default function CreateArticle() {
     }));
   };
 
-  const handleCoverImageChange = (base64Image: string) => {
+  const handleCoverImageChange = (coverImage: string) => {
     setArticle((prev) => ({
       ...prev,
-      coverImage: base64Image,
+      coverImage,
     }));
     setErrors((prevErrors) => ({ ...prevErrors, image: "" }));
   };
@@ -148,28 +168,37 @@ export default function CreateArticle() {
 
     if (!validateForm()) return;
 
-    const decompressedImage = decompressFromEncodedURIComponent(
-      article.coverImage ?? ""
-    );
-
-    if (!decompressedImage) {
-      console.error("Decompressed image is null. Skipping submit.");
-      setErrors((prev) => ({ ...prev, image: t("article.imageRequired") }));
-      return;
-    }
-
     const updatedArticle = {
       ...article,
       content: encodeURIComponent(article.content),
       tagNames: selectedTags,
-      coverImage: decompressedImage,
+      coverImage: article.coverImage,
     };
 
     try {
-      const response = await post("/api/article", updatedArticle);
-      if (response) {
-        window.alert(t("article.createSuccess"));
-        window.location.href = "/curated-articles/";
+      if (existingArticle) {
+        const response = await put(`/api/article`, {
+          ...updatedArticle,
+          id: existingArticle.id,
+          memberId: userData.userId,
+          topicId: selectedTopic?.id || topics[0]?.id,
+          type: "ARTICLE",
+        });
+
+        if (response) {
+          window.alert(t("article.updateSuccess"));
+          window.location.href = `/curated-articles/${existingArticle.id}`;
+        } else {
+          console.error("Article update failed: No response from server.");
+        }
+      } else {
+        const response = await post("/api/article", updatedArticle);
+        if (response) {
+          window.alert(t("article.createSuccess"));
+          window.location.href = "/curated-articles/";
+        } else {
+          console.error("Article creation failed: No response from server.");
+        }
       }
     } catch (error: unknown) {
       console.error("Failed to create article:", error);
@@ -198,7 +227,7 @@ export default function CreateArticle() {
             {t("article.topic")}
           </label>
           <TopicSelector
-            selectedTopic={selectedTopic || undefined}
+            selectedTopic={selectedTopic}
             onTopicClick={handleTopicClick}
             topics={topics}
           />
@@ -270,7 +299,7 @@ export default function CreateArticle() {
           <Button
             label={t("article.publish")}
             onClick={handleSubmit}
-            className="text-white bg-red-500 h-12 hover:bg-red-600 font-medium rounded-md text-lg px-6 py-3"
+            className="text-white bg-secondary h-12 hover:bg-secondaryPressed font-medium rounded-md text-lg px-6 py-3"
           />
         </div>
       </form>

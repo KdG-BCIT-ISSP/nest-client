@@ -6,25 +6,36 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ArrowLeft, CircleXIcon } from "lucide-react";
 import { EllipsisIcon } from "lucide-react";
-import Report from "@/public/svg/Report";
 import Tags from "@/components/admin/Tags";
 // import CommentsSection from "@/components/Comments";
 import { PostType } from "@/types/PostType";
-import { get, post, put } from "@/app/lib/fetchInterceptor";
+import { get, post, put, del } from "@/app/lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
 import { Like, Comments, Bookmark, Share } from "@/components/Icons";
+import CreatePost from "@/components/post/CreatePost";
+import Modal from "@/components/Modal";
+import { useAtom } from "jotai";
+import { userAtom } from "@/atoms/user/atom";
 import Loader from "@/components/Loader";
 
 export default function PostDetailPage() {
   const params = useParams();
   const postId = Number(params.postId);
+  const [userdata] = useAtom(userAtom);
   const [userPost, setPost] = useState<PostType>();
   const [loading, setLoading] = useState(true);
   const [showReport, setShowReport] = useState(false);
-  const [showReportButton, setShowReportButton] = useState(false);
+  const [showEditMenu, setShowEditMenu] = useState(false);
   const [reportReason, setReportReason] = useState("");
   const [showCopied, setShowCopied] = useState(false);
+  const [showDeleteWindow, setShowDeleteWindow] = useState(false);
+  const [showEditPost, setShowEditPost] = useState(false);
   const [views, setViews] = useState(0);
+  const isOwnerOrAdmin =
+    Number(userdata.userId) === userPost?.memberId ||
+    userdata.role === "ADMIN" ||
+    userdata.role === "SUPER_ADMIN" ||
+    userdata.role === "MODERATOR";
 
   const isAuthenticated =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
@@ -41,6 +52,7 @@ export default function PostDetailPage() {
           ...userPost,
           content: decodeURIComponent(userPost.content),
         });
+        console.log("userPost", userPost);
         setViews(views);
       } catch (error) {
         console.error("Error fetching article:", error);
@@ -92,6 +104,17 @@ export default function PostDetailPage() {
     }
   };
 
+  const handleDelete = async () => {
+    if (!userPost || !userPost.id) return;
+    try {
+      await del(`/api/posts/${userPost.id}`);
+      alert("Posts deleted successfully");
+      window.location.href = "/posts";
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
+
   return (
     <div className="w-max mx-auto pt-10">
       <div className="flex justify-between items-center p-4">
@@ -99,19 +122,39 @@ export default function PostDetailPage() {
           <ArrowLeft />
         </button>
         <div className="relative">
-          <button onClick={() => setShowReportButton((prev) => !prev)}>
+          <button onClick={() => setShowEditMenu((prev) => !prev)}>
             <EllipsisIcon />
           </button>
-          {showReportButton && (
-            <div
-              className="absolute right-0 mt-1 z-10 cursor-pointer"
-              onClick={() => setShowReport((prev) => !prev)}
-            >
-              <Report />
+          {showEditMenu && (
+            <div className="absolute right-0 mt-1 z-10 cursor-pointer bg-white rounded-md shadow-lg border border-gray-200">
+              {isOwnerOrAdmin && (
+                <>
+                  <div
+                    onClick={() => setShowEditPost((prev) => !prev)}
+                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    Edit
+                  </div>
+                  <div
+                    onClick={() => setShowDeleteWindow((prev) => !prev)}
+                    className="block w-full text-left px-4 py-2 text-red-500 hover:bg-red-100"
+                  >
+                    Delete
+                  </div>
+                </>
+              )}
+              <div
+                onClick={() => setShowReport((prev) => !prev)}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+              >
+                Report
+              </div>
             </div>
           )}
         </div>
       </div>
+
+      {/* Report Modal */}
       {showReport && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 text-black">
           <div className="bg-white p-6 rounded-md w-1/4 flex flex-col space-y-4">
@@ -119,7 +162,7 @@ export default function PostDetailPage() {
               <h1 className="text-xl font-bold">Submit a report</h1>
               <button
                 onClick={() => setShowReport(false)}
-                className="text-gray-600 hover:text-gray-800 cursor-pointer"
+                className="text-secondary hover:text-secondaryPressed cursor-pointer"
               >
                 <CircleXIcon />
               </button>
@@ -144,6 +187,41 @@ export default function PostDetailPage() {
           </div>
         </div>
       )}
+
+      {/* Edit Post Modal */}
+      {showEditPost && (
+        <Modal isOpen={showEditPost} onClose={() => setShowEditPost(false)}>
+          <CreatePost existingPost={userPost} />
+        </Modal>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteWindow && (
+        <Modal
+          isOpen={showDeleteWindow}
+          onClose={() => setShowDeleteWindow(false)}
+        >
+          <div className="bg-white p-6 rounded-md flex flex-col space-y-4 justify-center items-center">
+            <h1 className="text-xl font-bold">Are you sure?</h1>
+            <p>Do you really want to delete this article?</p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowDeleteWindow(false)}
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleDelete()}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
       <div className="max-w-2xl mx-auto p-4 pt-4 text-black">
         <div className="mb-6">
           <p className="text-sm text-gray-700">

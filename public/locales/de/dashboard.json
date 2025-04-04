@@ -1,6 +1,7 @@
 {
   "dashboard": {
     "profile": "Profil",
+    "myPosts": "Meine Beiträge",
     "savedPosts": "Gespeicherte Beiträge",
     "notifications": "Benachrichtigungen",
     "resetPassword": "Passwort zurücksetzen",

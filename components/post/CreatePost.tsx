@@ -6,14 +6,20 @@ import { PostType } from "@/types/PostType";
 import Button from "@/components/Button";
 import TagsSelector from "../TagsSelector";
 import ImageUpload from "../ImageUpload";
-import { get, post } from "@/app/lib/fetchInterceptor";
+import { post, get, put } from "@/app/lib/fetchInterceptor";
 import { useTranslation } from "next-i18next";
 import TopicSelector from "../TopicSelector";
 import { Topic } from "@/types/Topic";
-import { decompressFromEncodedURIComponent } from "lz-string";
+import { useAtom } from "jotai";
+import { userAtom } from "@/atoms/user/atom";
 
-export default function CreatePost() {
+interface CreatePostProps {
+  existingPost?: PostType;
+}
+
+export default function CreatePost({ existingPost }: CreatePostProps) {
   const { t } = useTranslation("post");
+  const [userData] = useAtom(userAtom);
 
   const [userPost, setUserPost] = useState<PostType>({
     id: 0,
@@ -34,6 +40,21 @@ export default function CreatePost() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<Topic>();
   const [topics, setTopics] = useState<Topic[]>([]);
+
+  useEffect(() => {
+    if (existingPost) {
+      setUserPost(existingPost);
+      setSelectedTags(existingPost.tagNames || []);
+      setImagePreviews(existingPost.imageBase64 || []);
+      const selectedTopic = topics.find(
+        (topic) => topic.id === existingPost.topicId
+      );
+      if (selectedTopic) {
+        setSelectedTopic(selectedTopic);
+      }
+      console.log("Existing post:", existingPost);
+    }
+  }, [existingPost, topics]);
 
   // Cleans up temporary object URLs created for image previews.
   useEffect(() => {
@@ -66,7 +87,6 @@ export default function CreatePost() {
         const data = await get("/api/topic");
         setTopics(data);
         if (data.length > 0) {
-          setSelectedTopic(data[0]);
           setUserPost((prev) => ({
             ...prev,
             topicId: data[0].id,
@@ -137,26 +157,51 @@ export default function CreatePost() {
     }));
   };
 
+  useEffect(() => {
+    console.log("Updated imagePreviews:", imagePreviews);
+  }, [imagePreviews]);
+
+  useEffect(() => {
+    console.log("Updated userPost:", userPost);
+  }, [userPost]);
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!validateForm()) return;
-
-    const decompressedImages = (userPost.imageBase64 ?? []).map((compressed) =>
-      decompressFromEncodedURIComponent(compressed)
-    );
-
-    const updatedPost = {
-      ...userPost,
-      tagNames: selectedTags,
-      imageBase64: decompressedImages,
-    };
-
     try {
-      const response = await post("/api/posts", updatedPost);
-      if (response) {
-        window.alert(t("post.createSuccess"));
-        window.location.href = "/posts/";
+      if (existingPost) {
+        // Update existing post
+        const response = await put(`/api/posts`, {
+          ...userPost,
+          id: existingPost.id,
+          memberId: userData.userId,
+          topicId: selectedTopic?.id || topics[0]?.id,
+          type: "USERPOST",
+        });
+
+        if (response) {
+          window.alert(t("post.updateSuccess"));
+          window.location.href = `/posts/${existingPost.id}`;
+        } else {
+          console.error("userPost update failed: No response from server.");
+        }
+      } else {
+        const response = await post("/api/posts", {
+          title: userPost.title ?? "",
+          content: userPost.content ?? "",
+          topicId: userPost.topicId,
+          type: userPost.type || "USERPOST",
+          tagNames: userPost.tagNames || [],
+          imageBase64: userPost.imageBase64 || [],
+        });
+
+        if (response) {
+          window.alert(t("post.createSuccess"));
+          window.location.href = "/posts/";
+        } else {
+          console.error("userPost creation failed: No response from server.");
+        }
       }
     } catch (error) {
       console.error("Failed to create userPost", error);
@@ -171,7 +216,7 @@ export default function CreatePost() {
             {t("post.topic")}
           </label>
           <TopicSelector
-            selectedTopic={selectedTopic || undefined}
+            selectedTopic={selectedTopic}
             onTopicClick={handleTopicClick}
             topics={topics}
           />
@@ -221,7 +266,7 @@ export default function CreatePost() {
             <ImageUpload
               onImageChange={handleImageChange}
               onRemoveImage={handleRemoveImage}
-              imagePreviews={imagePreviews}
+              imagePreviews={userPost.imageBase64}
               multiple={true}
             />
           </div>
@@ -232,7 +277,7 @@ export default function CreatePost() {
           <Button
             label={t("post.publish")}
             type="submit"
-            className="text-white bg-red-500 hover:bg-red-600 font-medium rounded-md text-sm px-5 py-2.5"
+            className="text-white bg-secondary hover:bg-secondaryPressed font-medium rounded-md text-sm px-5 py-2.5"
           />
         </div>
       </form>

@@ -14,6 +14,7 @@ export default function TopicSelector({
   topics,
 }: TopicSelectorProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  console.log("Selected topic:", selectedTopic);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -62,7 +63,7 @@ export default function TopicSelector({
               <li key={topic.id}>
                 <button
                   onClick={() => handleTopicClick(topic)}
-                  className={`block w-full text-left px-4 py-2 bg-secondary hover:bg-gray-100 dark:hover:bg-gray-600 ${
+                  className={`block w-full text-left px-4 py-2 bg-white hover:bg-gray-100 dark:hover:bg-gray-600 ${
                     selectedTopic?.id === topic.id ? "bg-gray-100" : ""
                   }`}
                 >

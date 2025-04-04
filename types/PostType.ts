@@ -12,7 +12,7 @@ export type PostType = {
   memberAvatar?: string[];
   comment?: Comment[];
   createdAt?: string;
-  imageBase64?: string[];
+  imageBase64: string[];
   bookmarked?: boolean;
   liked?: boolean;
   saved?: boolean;
