@@ -15,10 +15,14 @@ import { formatDate } from "@/utils/formatDate";
 import { Like, Comments, Bookmark, Share } from "@/components/Icons";
 import CreatePost from "@/components/post/CreatePost";
 import Modal from "@/components/Modal";
+import { useAtom } from "jotai";
+import { userAtom } from "@/atoms/user/atom";
+
 
 export default function PostDetailPage() {
   const params = useParams();
   const postId = Number(params.postId);
+  const [userdata] = useAtom(userAtom);
   const [userPost, setPost] = useState<PostType>();
   const [loading, setLoading] = useState(true);
   const [showReport, setShowReport] = useState(false);
@@ -28,6 +32,15 @@ export default function PostDetailPage() {
   const [showDeleteWindow, setShowDeleteWindow] = useState(false);
   const [showEditPost, setShowEditPost] = useState(false);
   const [views, setViews] = useState(0);
+  const isOwnerOrAdmin =
+    Number(userdata.userId) === userPost?.memberId || userdata.role === "ADMIN" || userdata.role === "SUPER_ADMIN";
+
+  console.log(isOwnerOrAdmin)
+
+
+
+
+  console.log("userdata", userdata);
 
   const isAuthenticated =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
@@ -44,6 +57,7 @@ export default function PostDetailPage() {
           ...userPost,
           content: decodeURIComponent(userPost.content),
         });
+        console.log("userPost", userPost);
         setViews(views);
       } catch (error) {
         console.error("Error fetching article:", error);
@@ -116,18 +130,22 @@ export default function PostDetailPage() {
           </button>
           {showEditMenu && (
             <div className="absolute right-0 mt-1 z-10 cursor-pointer bg-white rounded-md shadow-lg border border-gray-200">
-              <div
-                onClick={() => setShowEditPost((prev) => !prev)}
-                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
-              >
-                Edit
-              </div>
-              <div
-                onClick={() => setShowDeleteWindow((prev) => !prev)}
-                className="block w-full text-left px-4 py-2 text-red-500 hover:bg-red-100"
-              >
-                Delete
-              </div>
+              {isOwnerOrAdmin && (
+                <>
+                  <div
+                    onClick={() => setShowEditPost((prev) => !prev)}
+                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    Edit
+                  </div>
+                  <div
+                    onClick={() => setShowDeleteWindow((prev) => !prev)}
+                    className="block w-full text-left px-4 py-2 text-red-500 hover:bg-red-100"
+                  >
+                    Delete
+                  </div>
+                </>
+              )}
               <div
                 onClick={() => setShowReport((prev) => !prev)}
                 className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
@@ -136,6 +154,7 @@ export default function PostDetailPage() {
               </div>
             </div>
           )}
+
         </div>
       </div>
       {showReport && (
@@ -253,7 +272,7 @@ export default function PostDetailPage() {
             <Like
               count={userPost.likesCount || 0}
               isLiked={userPost.liked || false}
-              onClick={() => {}}
+              onClick={() => { }}
               disabled={!isAuthenticated}
             />
             <Comments count={userPost.comment?.length ?? 0} />
