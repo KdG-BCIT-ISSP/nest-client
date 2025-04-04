@@ -76,7 +76,6 @@ export default function ResetPasswordPage() {
               className="space-y-4 md:space-y-6"
               onSubmit={handleResetNewPassword}
             >
-
               <div>
                 <label
                   htmlFor="newPassword"

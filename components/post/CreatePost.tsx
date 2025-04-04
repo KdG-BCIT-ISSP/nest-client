@@ -158,7 +158,6 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
     }));
   };
 
-
   useEffect(() => {
     console.log("Updated imagePreviews:", imagePreviews);
   }, [imagePreviews]);
@@ -167,13 +166,11 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
     console.log("Updated userPost:", userPost);
   }, [userPost]);
 
-
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!validateForm()) return;
     try {
-
       if (existingPost) {
         // Update existing post
         const response = await put(`/api/posts`, {

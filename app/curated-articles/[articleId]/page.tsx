@@ -128,13 +128,13 @@ export default function ArticleDetailsPage() {
 
   const handleDelete = async () => {
     if (!article || !article.id) return;
-        try {
-          await del(`/api/article/${article.id}`);
-          alert("Posts deleted successfully");
-          window.location.href = "/curated-articles/";
-        } catch (error) {
-          console.error("Error deleting article:", error);
-        }
+    try {
+      await del(`/api/article/${article.id}`);
+      alert("Posts deleted successfully");
+      window.location.href = "/curated-articles/";
+    } catch (error) {
+      console.error("Error deleting article:", error);
+    }
   };
 
   if (loading) return <div>Loading...</div>;
@@ -203,7 +203,6 @@ export default function ArticleDetailsPage() {
         </div>
       </div>
 
-
       {/* Report Modal */}
       {showReport && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 text-black">
@@ -238,8 +237,11 @@ export default function ArticleDetailsPage() {
 
       {/* Edit Article Modal */}
       {showEditArticle && (
-        <Modal isOpen={showEditArticle} onClose={() => setShowEditArticle(false)}>
-          <CreateArticle existingArticle ={article} />
+        <Modal
+          isOpen={showEditArticle}
+          onClose={() => setShowEditArticle(false)}
+        >
+          <CreateArticle existingArticle={article} />
         </Modal>
       )}
 

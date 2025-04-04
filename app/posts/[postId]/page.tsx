@@ -18,7 +18,6 @@ import Modal from "@/components/Modal";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
 
-
 export default function PostDetailPage() {
   const params = useParams();
   const postId = Number(params.postId);
@@ -33,7 +32,9 @@ export default function PostDetailPage() {
   const [showEditPost, setShowEditPost] = useState(false);
   const [views, setViews] = useState(0);
   const isOwnerOrAdmin =
-    Number(userdata.userId) === userPost?.memberId || userdata.role === "ADMIN" || userdata.role === "SUPER_ADMIN";
+    Number(userdata.userId) === userPost?.memberId ||
+    userdata.role === "ADMIN" ||
+    userdata.role === "SUPER_ADMIN";
 
   const isAuthenticated =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
@@ -147,7 +148,6 @@ export default function PostDetailPage() {
               </div>
             </div>
           )}
-
         </div>
       </div>
 
@@ -269,7 +269,7 @@ export default function PostDetailPage() {
             <Like
               count={userPost.likesCount || 0}
               isLiked={userPost.liked || false}
-              onClick={() => { }}
+              onClick={() => {}}
               disabled={!isAuthenticated}
             />
             <Comments count={userPost.comment?.length ?? 0} />

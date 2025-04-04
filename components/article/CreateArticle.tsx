@@ -179,16 +179,14 @@ export default function CreateArticle({ existingArticle }: CreateArticleProps) {
     };
 
     try {
-
       if (existingArticle) {
-        const response = await put(
-          `/api/article`, {
+        const response = await put(`/api/article`, {
           ...updatedArticle,
           id: existingArticle.id,
           memberId: userData.userId,
-            topicId: selectedTopic?.id || topics[0]?.id,
+          topicId: selectedTopic?.id || topics[0]?.id,
           type: "ARTICLE",
-        })
+        });
 
         if (response) {
           window.alert(t("article.updateSuccess"));
@@ -197,7 +195,6 @@ export default function CreateArticle({ existingArticle }: CreateArticleProps) {
           console.error("Article update failed: No response from server.");
         }
       } else {
-
         const response = await post("/api/article", updatedArticle);
         if (response) {
           window.alert(t("article.createSuccess"));
