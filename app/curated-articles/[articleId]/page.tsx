@@ -13,6 +13,7 @@ import Tags from "@/components/admin/Tags";
 import { get, post, put } from "@/app/lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
 import { useTranslation } from "next-i18next";
+import Loader from "@/components/Loader";
 
 export default function ArticleDetailsPage() {
   useTranslation();
@@ -68,6 +69,7 @@ export default function ArticleDetailsPage() {
 
     const previousState = { isLiked: article.isLiked, likes: article.likes };
 
+    // Optimistic UI update
     setArticle((prev) => {
       if (!prev) return prev;
       return {
@@ -78,10 +80,11 @@ export default function ArticleDetailsPage() {
     });
 
     try {
-      const { isLiked: newIsLiked } = await post(
-        `/api/content/${articleId}/toggleLike`,
-        { articleId }
-      );
+      const response = await post(`/api/content/${articleId}/toggleLike`, {
+        articleId,
+      });
+      const newIsLiked =
+        response.isLiked !== undefined ? response.isLiked : !article.isLiked;
       const updatedLikes = await get(`/api/content/${articleId}/likes`);
       setArticle((prev) => {
         if (!prev) return prev;
@@ -117,7 +120,9 @@ export default function ArticleDetailsPage() {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return <Loader />;
+  }
   if (!article) return <div>Article not found</div>;
 
   const html = parse(article.content);

@@ -7,6 +7,7 @@ import PostCard from "../post/PostCard";
 import { get } from "@/app/lib/fetchInterceptor";
 import { useTranslation } from "next-i18next";
 import { formatDate } from "@/utils/formatDate";
+import Loader from "../Loader";
 
 export default function TopPosts({
   limit = 3,
@@ -46,7 +47,9 @@ export default function TopPosts({
     }
   }, [allPosts, limit, sortBy]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="mt-6">

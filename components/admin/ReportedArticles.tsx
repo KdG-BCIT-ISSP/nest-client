@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { ReportPostType, Report } from "@/types/PostType";
 import { get } from "@/app/lib/fetchInterceptor";
 import { decodeAndTruncateHtml } from "@/utils/cleanHtml";
+import Loader from "../Loader";
 
 export default function ReportedArticlesComponent() {
   const [loading, setLoading] = useState(true);
@@ -36,7 +37,7 @@ export default function ReportedArticlesComponent() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   const postsWithReports = posts.filter((post) =>

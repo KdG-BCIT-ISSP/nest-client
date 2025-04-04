@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Button from "@/components/Button";
 import { Tag } from "@/types/Tag";
 import { get } from "@/app/lib/fetchInterceptor";
+import Loader from "./Loader";
 
 interface TagSelectorProps {
   selectedTags: string[];
@@ -33,7 +34,9 @@ export default function TagsSelector({
     fetchTags();
   }, []);
 
-  if (loading) return <div>Loading tags...</div>;
+  if (loading) {
+    return <Loader />;
+  }
   if (error) return <div>Error: {error}</div>;
 
   return (
