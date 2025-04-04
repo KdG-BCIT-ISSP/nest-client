@@ -13,6 +13,7 @@ import { PostType } from "@/types/PostType";
 import { get, post, put } from "@/app/lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
 import { Like, Comments, Bookmark, Share } from "@/components/Icons";
+import Loader from "@/components/Loader";
 
 export default function PostDetailPage() {
   const params = useParams();
@@ -50,7 +51,9 @@ export default function PostDetailPage() {
     fetchData();
   }, [postId]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return <Loader />;
+  }
   if (!userPost) return <div>Article not found</div>;
 
   const handleReportSubmit = async () => {

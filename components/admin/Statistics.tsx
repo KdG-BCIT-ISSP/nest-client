@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import DoughnutChart from "@/components/stats/DoughnutChart";
 import BarGraph from "@/components/stats/BarGraph";
 import { get } from "@/app/lib/fetchInterceptor";
+import Loader from "../Loader";
 
 export default function StatisticsComponent() {
   const [loading, setLoading] = useState(true);
@@ -68,8 +69,9 @@ export default function StatisticsComponent() {
     fetchStats();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-6">Statistics Overview</h1>

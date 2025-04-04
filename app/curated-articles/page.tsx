@@ -13,6 +13,7 @@ import Button from "@/components/Button";
 import CreateArticle from "@/components/article/CreateArticle";
 import { userAtom } from "@/atoms/user/atom";
 import Modal from "@/components/Modal";
+import Loader from "@/components/Loader";
 
 export default function CuratedArticlesPage() {
   const [userData] = useAtom(userAtom);
@@ -52,7 +53,7 @@ export default function CuratedArticlesPage() {
   const closeModal = () => setIsModalOpen(false);
 
   if (loading) {
-    return <div>{t("general.loading")}</div>;
+    return <Loader />;
   }
 
   return (

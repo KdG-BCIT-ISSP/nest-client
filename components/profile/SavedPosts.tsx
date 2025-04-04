@@ -7,6 +7,7 @@ import { PostType } from "@/types/PostType";
 import { get } from "@/app/lib/fetchInterceptor";
 import { useTranslation } from "next-i18next";
 import { formatDate } from "@/utils/formatDate";
+import Loader from "../Loader";
 
 export default function SavedPosts() {
   const { t } = useTranslation("post");
@@ -30,7 +31,7 @@ export default function SavedPosts() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   if (error) {

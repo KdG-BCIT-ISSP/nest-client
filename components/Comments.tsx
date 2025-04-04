@@ -9,6 +9,7 @@ import { userAtom } from "@/atoms/user/atom";
 import { useAtom } from "jotai";
 import { Like, Comments } from "@/components/Icons";
 import { EllipsisIcon } from "lucide-react";
+import Loader from "./Loader";
 
 interface CommentItemProps {
   comment: Comment;
@@ -342,7 +343,9 @@ export default function CommentsSection({
     }
   };
 
-  if (loading) return <div>Loading comments...</div>;
+  if (loading) {
+    return <Loader />;
+  }
   if (error) return <div>{error}</div>;
 
   return (

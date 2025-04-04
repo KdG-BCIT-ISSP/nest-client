@@ -5,6 +5,7 @@ import Button from "@/components/Button";
 import PopupWindow from "@/components/PopupWindow";
 import { useEffect, useState } from "react";
 import { del, get, post, put } from "@/app/lib/fetchInterceptor";
+import Loader from "../Loader";
 
 interface Topic {
   id: number;
@@ -254,7 +255,7 @@ export default function TagManagementComponent() {
   };
 
   if (loading) {
-    return <div> Loading...</div>;
+    return <Loader />;
   }
 
   return (

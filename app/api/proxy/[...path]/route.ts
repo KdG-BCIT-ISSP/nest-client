@@ -27,6 +27,7 @@ async function proxyRequest(request: Request, params: { path: string[] }) {
   const data = await response.text();
 
   const headers = new Headers(response.headers);
+  headers.set("Content-Length", Buffer.byteLength(data).toString());
   headers.delete("content-encoding");
 
   return new NextResponse(data, {
