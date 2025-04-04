@@ -87,7 +87,6 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
         const data = await get("/api/topic");
         setTopics(data);
         if (data.length > 0) {
-          setSelectedTopic(data[0]);
           setUserPost((prev) => ({
             ...prev,
             topicId: data[0].id,
@@ -217,7 +216,7 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
             {t("post.topic")}
           </label>
           <TopicSelector
-            selectedTopic={selectedTopic || undefined}
+            selectedTopic={selectedTopic}
             onTopicClick={handleTopicClick}
             topics={topics}
           />

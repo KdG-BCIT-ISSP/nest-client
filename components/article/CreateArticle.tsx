@@ -74,7 +74,6 @@ export default function CreateArticle({ existingArticle }: CreateArticleProps) {
       if (selectedTopic) {
         setSelectedTopic(selectedTopic);
       }
-      console.log("Existing article:", existingArticle);
     }
   }, [existingArticle, topics]);
 
@@ -228,7 +227,7 @@ export default function CreateArticle({ existingArticle }: CreateArticleProps) {
             {t("article.topic")}
           </label>
           <TopicSelector
-            selectedTopic={selectedTopic || undefined}
+            selectedTopic={selectedTopic}
             onTopicClick={handleTopicClick}
             topics={topics}
           />
