@@ -299,7 +299,7 @@ export default function CreateArticle({ existingArticle }: CreateArticleProps) {
           <Button
             label={t("article.publish")}
             onClick={handleSubmit}
-            className="text-white bg-red-500 h-12 hover:bg-red-600 font-medium rounded-md text-lg px-6 py-3"
+            className="text-white bg-secondary h-12 hover:bg-secondaryPressed font-medium rounded-md text-lg px-6 py-3"
           />
         </div>
       </form>

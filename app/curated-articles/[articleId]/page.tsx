@@ -31,7 +31,9 @@ export default function ArticleDetailsPage() {
   const [showEditArticle, setShowEditArticle] = useState(false);
   const [showDeleteWindow, setShowDeleteWindow] = useState(false);
   const [userdata] = useAtom(userAtom);
-  const isAdmin = userdata.role === "ADMIN" || userdata.role === "SUPER_ADMIN";
+  const isAdmin = userdata.role === "ADMIN"
+    || userdata.role === "SUPER_ADMIN"
+    || userdata.role === "MODERATOR";
 
   const isAuthenticated =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;

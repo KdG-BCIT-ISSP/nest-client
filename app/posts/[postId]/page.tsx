@@ -33,7 +33,8 @@ export default function PostDetailPage() {
   const isOwnerOrAdmin =
     Number(userdata.userId) === userPost?.memberId ||
     userdata.role === "ADMIN" ||
-    userdata.role === "SUPER_ADMIN";
+    userdata.role === "SUPER_ADMIN" ||
+    userdata.role === "MODERATOR"; 
 
   const isAuthenticated =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
