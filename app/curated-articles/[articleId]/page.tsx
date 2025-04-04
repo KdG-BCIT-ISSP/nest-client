@@ -10,9 +10,13 @@ import { Like, Comments, Bookmark, Share } from "@/components/Icons";
 import CommentsSection from "@/components/Comments";
 import { ArticleType } from "@/types/ContentType";
 import Tags from "@/components/admin/Tags";
-import { get, post, put } from "@/app/lib/fetchInterceptor";
+import { del, get, post, put } from "@/app/lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
 import { useTranslation } from "next-i18next";
+import { useAtom } from "jotai";
+import { userAtom } from "@/atoms/user/atom";
+import Modal from "@/components/Modal";
+import CreateArticle from "@/components/article/CreateArticle";
 
 export default function ArticleDetailsPage() {
   useTranslation();
@@ -25,6 +29,11 @@ export default function ArticleDetailsPage() {
   const [showReportButton, setShowReportButton] = useState(false);
   const [reportReason, setReportReason] = useState("");
   const [showCopied, setShowCopied] = useState(false);
+  const [showEditMenu, setShowEditMenu] = useState(false);
+  const [showEditArticle, setShowEditArticle] = useState(false);
+  const [showDeleteWindow, setShowDeleteWindow] = useState(false);
+  const [userdata] = useAtom(userAtom);
+  const isAdmin = userdata.role === "ADMIN" || userdata.role === "SUPER_ADMIN";
 
   const isAuthenticated =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
@@ -117,6 +126,17 @@ export default function ArticleDetailsPage() {
     }
   };
 
+  const handleDelete = async () => {
+    if (!article || !article.id) return;
+        try {
+          await del(`/api/article/${article.id}`);
+          alert("Posts deleted successfully");
+          window.location.href = "/curated-articles/";
+        } catch (error) {
+          console.error("Error deleting article:", error);
+        }
+  };
+
   if (loading) return <div>Loading...</div>;
   if (!article) return <div>Article not found</div>;
 
@@ -151,19 +171,38 @@ export default function ArticleDetailsPage() {
           <ArrowLeft />
         </button>
         <div className="relative">
-          <button onClick={() => setShowReportButton((prev) => !prev)}>
+          <button onClick={() => setShowEditMenu((prev) => !prev)}>
             <EllipsisIcon />
           </button>
-          {showReportButton && (
-            <div
-              className="absolute right-0 mt-1 z-10 cursor-pointer"
-              onClick={() => setShowReport((prev) => !prev)}
-            >
-              <Report />
+          {showEditMenu && (
+            <div className="absolute right-0 mt-1 z-10 cursor-pointer bg-white rounded-md shadow-lg border border-gray-200">
+              {isAdmin && (
+                <>
+                  <div
+                    onClick={() => setShowEditArticle((prev) => !prev)}
+                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    Edit
+                  </div>
+                  <div
+                    onClick={() => setShowDeleteWindow((prev) => !prev)}
+                    className="block w-full text-left px-4 py-2 text-red-500 hover:bg-red-100"
+                  >
+                    Delete
+                  </div>
+                </>
+              )}
+              <div
+                onClick={() => setShowReport((prev) => !prev)}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+              >
+                Report
+              </div>
             </div>
           )}
         </div>
       </div>
+
 
       {/* Report Modal */}
       {showReport && (
@@ -195,6 +234,40 @@ export default function ArticleDetailsPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Edit Article Modal */}
+      {showEditArticle && (
+        <Modal isOpen={showEditArticle} onClose={() => setShowEditArticle(false)}>
+          <CreateArticle existingArticle ={article} />
+        </Modal>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteWindow && (
+        <Modal
+          isOpen={showDeleteWindow}
+          onClose={() => setShowDeleteWindow(false)}
+        >
+          <div className="bg-white p-6 rounded-md flex flex-col space-y-4 justify-center items-center">
+            <h1 className="text-xl font-bold">Are you sure?</h1>
+            <p>Do you really want to delete this article?</p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowDeleteWindow(false)}
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleDelete()}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </Modal>
       )}
 
       {/* Article Content */}

@@ -30,6 +30,7 @@ export interface BaseContent {
 }
 
 export interface ArticleType extends BaseContent {
+  id: number;
   type: string;
   coverImage: string;
   likes?: number;
