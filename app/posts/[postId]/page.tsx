@@ -13,10 +13,11 @@ import { PostType } from "@/types/PostType";
 import { get, post, put, del } from "@/app/lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
 import { Like, Comments, Bookmark, Share } from "@/components/Icons";
-import { useAtom } from "jotai";
-import { userAtom } from "@/atoms/user/atom";
 import CreatePost from "@/components/post/CreatePost";
 import Modal from "@/components/Modal";
+import { useAtom } from "jotai";
+import { userAtom } from "@/atoms/user/atom";
+
 
 export default function PostDetailPage() {
   const params = useParams();
@@ -128,11 +129,29 @@ export default function PostDetailPage() {
             <EllipsisIcon />
           </button>
           {showEditMenu && (
-            <div
-              className="absolute right-0 mt-1 z-10 cursor-pointer"
-              onClick={() => setShowReport((prev) => !prev)}
-            >
-              <Report />
+            <div className="absolute right-0 mt-1 z-10 cursor-pointer bg-white rounded-md shadow-lg border border-gray-200">
+              {isOwnerOrAdmin && (
+                <>
+                  <div
+                    onClick={() => setShowEditPost((prev) => !prev)}
+                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    Edit
+                  </div>
+                  <div
+                    onClick={() => setShowDeleteWindow((prev) => !prev)}
+                    className="block w-full text-left px-4 py-2 text-red-500 hover:bg-red-100"
+                  >
+                    Delete
+                  </div>
+                </>
+              )}
+              <div
+                onClick={() => setShowReport((prev) => !prev)}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+              >
+                Report
+              </div>
             </div>
           )}
 

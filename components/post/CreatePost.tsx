@@ -132,11 +132,11 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
     }));
   };
 
-  const handleImageChange = (base64Image: string) => {
-    setImagePreviews((prev) => [...prev, base64Image]);
+  const handleImageChange = (compressedImage: string) => {
+    setImagePreviews((prev) => [...prev, compressedImage]);
     setUserPost((prevPost) => ({
       ...prevPost,
-      imageBase64: [...(prevPost.imageBase64 ?? []), base64Image],
+      imageBase64: [...(prevPost.imageBase64 ?? []), compressedImage],
     }));
   };
 
@@ -173,19 +173,15 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
 
     if (!validateForm()) return;
     try {
-      const updatedPost = {
-        ...userPost,
-        tagNames: selectedTags,
-        imageBase64: userPost.imageBase64,
-      };
 
       if (existingPost) {
-        const response = await put("/api/posts", {
-          ...updatedPost,
+        // Update existing post
+        const response = await put(`/api/posts`, {
+          ...userPost,
           id: existingPost.id,
           memberId: userData.userId,
-          topicId: updatedPost.topicId,
-          type: updatedPost.type,
+          topicId: 1,
+          type: "USERPOST",
         });
 
         if (response) {
@@ -212,7 +208,7 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
         }
       }
     } catch (error) {
-      console.error("Failed to submit post", error);
+      console.error("Failed to create userPost", error);
     }
   };
 
