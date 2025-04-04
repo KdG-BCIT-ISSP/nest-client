@@ -34,7 +34,7 @@ export default function PostDetailPage() {
     Number(userdata.userId) === userPost?.memberId ||
     userdata.role === "ADMIN" ||
     userdata.role === "SUPER_ADMIN" ||
-    userdata.role === "MODERATOR"; 
+    userdata.role === "MODERATOR";
 
   const isAuthenticated =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;

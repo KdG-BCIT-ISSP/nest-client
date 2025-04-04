@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { post, put } from "@/app/lib/fetchInterceptor";
-import { usePathname, useRouter } from "next/navigation";
+import { put } from "@/app/lib/fetchInterceptor";
+import { usePathname } from "next/navigation";
 
 export default function ResetPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -10,7 +10,6 @@ export default function ResetPasswordPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const router = useRouter();
 
   const pathname = usePathname();
   const uuid = pathname.split("/").pop() || ""; // Extract the UUID from the URL

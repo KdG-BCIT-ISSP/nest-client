@@ -30,7 +30,7 @@ export default function MyPosts() {
       }
     }
     fetchMyPosts();
-  }, []);
+  }, [userData.userId]);
 
   if (loading) {
     return <div>Loading...</div>;
