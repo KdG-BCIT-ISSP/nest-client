@@ -180,7 +180,7 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
           ...userPost,
           id: existingPost.id,
           memberId: userData.userId,
-          topicId: 1,
+          topicId: selectedTopic?.id || topics[0]?.id,
           type: "USERPOST",
         });
 

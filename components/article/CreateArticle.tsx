@@ -186,7 +186,7 @@ export default function CreateArticle({ existingArticle }: CreateArticleProps) {
           ...updatedArticle,
           id: existingArticle.id,
           memberId: userData.userId,
-          topicId: 1,
+            topicId: selectedTopic?.id || topics[0]?.id,
           type: "ARTICLE",
         })
 
