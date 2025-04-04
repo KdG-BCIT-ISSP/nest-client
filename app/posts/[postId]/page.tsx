@@ -35,13 +35,6 @@ export default function PostDetailPage() {
   const isOwnerOrAdmin =
     Number(userdata.userId) === userPost?.memberId || userdata.role === "ADMIN" || userdata.role === "SUPER_ADMIN";
 
-  console.log(isOwnerOrAdmin)
-
-
-
-
-  console.log("userdata", userdata);
-
   const isAuthenticated =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
@@ -157,6 +150,8 @@ export default function PostDetailPage() {
 
         </div>
       </div>
+
+      {/* Report Modal */}
       {showReport && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 text-black">
           <div className="bg-white p-6 rounded-md w-1/4 flex flex-col space-y-4">
@@ -190,12 +185,14 @@ export default function PostDetailPage() {
         </div>
       )}
 
+      {/* Edit Post Modal */}
       {showEditPost && (
         <Modal isOpen={showEditPost} onClose={() => setShowEditPost(false)}>
           <CreatePost existingPost={userPost} />
         </Modal>
       )}
 
+      {/* Delete Confirmation Modal */}
       {showDeleteWindow && (
         <Modal
           isOpen={showDeleteWindow}
