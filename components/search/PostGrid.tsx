@@ -37,15 +37,26 @@ export default function PostGrid({ post }: PostGridProps) {
       </div>
 
       <div className="flex items-center p-3 space-x-4">
-        <Like count={post.likesCount || 0} isLiked={post.liked || false} />
-        <Comments count={post.comments ? parseInt(post.comments) : 0} />
-        <Bookmark count={12} />
-        <Share />
+        <Like
+          count={post.likesCount || 0}
+          isLiked={post.liked || false}
+          search
+        />
+        <Comments count={post.comments ? parseInt(post.comments) : 0} search />
+        <Bookmark count={12} search />
+        <Share search />
       </div>
 
       <div className="px-3 py-2 text-sm break-words">
         <span className="font-semibold">{post.memberUsername}</span>{" "}
-        <span>{post.content}</span>{" "}
+        <span>
+          {(() => {
+            const words = post.content.split(/\s+/);
+            return words.length > 100
+              ? words.slice(0, 100).join(" ") + "..."
+              : post.content;
+          })()}
+        </span>{" "}
         <span className="text-blue-500">{hashtags}</span>
       </div>
 

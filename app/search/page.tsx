@@ -227,9 +227,11 @@ function SearchPageContent() {
           <p className="text-gray-600">No results found.</p>
         )}
         {activeTab === "posts" ? (
-          <div className="grid grid-cols-2 gap-6 items-start">
+          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6">
             {results.map((item) => (
-              <PostGrid key={item.id} post={item as PostGridType} />
+              <div key={item.id} className="mb-6 break-inside-avoid">
+                <PostGrid post={item as PostGridType} />
+              </div>
             ))}
           </div>
         ) : (
