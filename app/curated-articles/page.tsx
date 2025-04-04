@@ -65,7 +65,7 @@ export default function CuratedArticlesPage() {
           direction="right"
         />
         {(userData.role === "ADMIN" || userData.role === "SUPER_ADMIN") && (
-          <div className="absolute top-full right-6 mt-4">
+          <div className="max-w-7xl mx-auto p-6 flex justify-end mb-6">
             <Button
               label={t("article.create")}
               onClick={openModal}

@@ -12,7 +12,6 @@ import TopicSelector from "../TopicSelector";
 import { Topic } from "@/types/Topic";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
-import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string";
 
 interface CreatePostProps {
   existingPost?: PostType;
@@ -133,11 +132,11 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
     }));
   };
 
-  const handleImageChange = (compressedImage: string) => {
-    setImagePreviews((prev) => [...prev, compressedImage]);
+  const handleImageChange = (base64Image: string) => {
+    setImagePreviews((prev) => [...prev, base64Image]);
     setUserPost((prevPost) => ({
       ...prevPost,
-      imageBase64: [...(prevPost.imageBase64 ?? []), compressedImage],
+      imageBase64: [...(prevPost.imageBase64 ?? []), base64Image],
     }));
   };
 
@@ -173,27 +172,26 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
     event.preventDefault();
 
     if (!validateForm()) return;
-
-    const compressedImages = (userPost.imageBase64 ?? []).map((image) =>
-      compressToEncodedURIComponent(image)
-    );
-
-
     try {
+      const updatedPost = {
+        ...userPost,
+        tagNames: selectedTags,
+        imageBase64: userPost.imageBase64,
+      };
 
       if (existingPost) {
-        // Update existing post
-        const response = await put(`/api/posts`, {
-          ...userPost,
+        const response = await put("/api/posts", {
+          ...updatedPost,
           id: existingPost.id,
           memberId: userData.userId,
-          topicId: 1,
-          type: "USERPOST",
+          topicId: updatedPost.topicId,
+          type: updatedPost.type,
         });
 
         if (response) {
           window.alert(t("post.updateSuccess"));
           window.location.href = `/posts/${existingPost.id}`;
+<<<<<<< HEAD
         } else {
           console.error("userPost update failed: No response from server.");
         }
@@ -215,7 +213,7 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
         }
       }
     } catch (error) {
-      console.error("Failed to create userPost", error);
+      console.error("Failed to submit post", error);
     }
   };
 

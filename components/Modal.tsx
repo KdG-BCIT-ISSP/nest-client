@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
-import { useTranslation } from "next-i18next";
-import { Circle, CircleXIcon } from "lucide-react";
+import { CircleXIcon } from "lucide-react";
 
 interface ModalProps {
   isOpen: boolean;
@@ -16,7 +15,6 @@ export default function Modal({
   children,
   className,
 }: ModalProps) {
-  const { t } = useTranslation();
   if (!isOpen) return null;
 
   return (
@@ -29,7 +27,6 @@ export default function Modal({
             onClick={onClose}
             className="text-secondary hover:text-secondaryPressed cursor-pointer"
           >
-            {/* {t("navigation.close")} */}
             <CircleXIcon />
           </button>
         </div>

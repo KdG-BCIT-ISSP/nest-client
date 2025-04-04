@@ -12,7 +12,6 @@ import { get, post } from "@/app/lib/fetchInterceptor";
 import { Topic } from "@/types/Topic";
 import TopicSelector from "../TopicSelector";
 import ImageUpload from "../ImageUpload";
-import { decompressFromEncodedURIComponent } from "lz-string";
 
 export default function CreateArticle() {
   const { t, i18n } = useTranslation("article");
@@ -82,10 +81,10 @@ export default function CreateArticle() {
     }));
   };
 
-  const handleCoverImageChange = (base64Image: string) => {
+  const handleCoverImageChange = (coverImage: string) => {
     setArticle((prev) => ({
       ...prev,
-      coverImage: base64Image,
+      coverImage,
     }));
     setErrors((prevErrors) => ({ ...prevErrors, image: "" }));
   };
@@ -148,21 +147,11 @@ export default function CreateArticle() {
 
     if (!validateForm()) return;
 
-    const decompressedImage = decompressFromEncodedURIComponent(
-      article.coverImage ?? ""
-    );
-
-    if (!decompressedImage) {
-      console.error("Decompressed image is null. Skipping submit.");
-      setErrors((prev) => ({ ...prev, image: t("article.imageRequired") }));
-      return;
-    }
-
     const updatedArticle = {
       ...article,
       content: encodeURIComponent(article.content),
       tagNames: selectedTags,
-      coverImage: decompressedImage,
+      coverImage: article.coverImage,
     };
 
     try {

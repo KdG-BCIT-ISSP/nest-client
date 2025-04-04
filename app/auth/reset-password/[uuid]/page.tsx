@@ -71,7 +71,12 @@ export default function ResetPasswordPage() {
             {success && (
               <p className="text-green-500 text-sm text-center">{success}</p>
             )}
-            <form className="space-y-4 md:space-y-6" onSubmit={handleResetNewPassword}>
+
+            <form
+              className="space-y-4 md:space-y-6"
+              onSubmit={handleResetNewPassword}
+            >
+
               <div>
                 <label
                   htmlFor="newPassword"
