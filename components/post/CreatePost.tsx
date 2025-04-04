@@ -191,7 +191,6 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
         if (response) {
           window.alert(t("post.updateSuccess"));
           window.location.href = `/posts/${existingPost.id}`;
-<<<<<<< HEAD
         } else {
           console.error("userPost update failed: No response from server.");
         }
