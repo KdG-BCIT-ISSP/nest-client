@@ -1,7 +1,8 @@
 "use client";
 export const dynamic = "force-dynamic";
+
 import { Suspense, useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation"; // Add useRouter
+import { useSearchParams, useRouter } from "next/navigation";
 import { PostGridType } from "@/types/PostType";
 import { ArticleType } from "@/types/ArticleType";
 import SearchBar from "@/components/search/SearchBar";
@@ -17,30 +18,97 @@ type OptionType = {
 
 type FilterParams = {
   search_query?: string;
-  topic?: string[];
   topics?: string[];
-  tag?: string[];
   tags?: string[];
   order_by?: string;
   order?: string;
+  page?: number;
+  size?: number;
 };
+
+interface PaginatedResponse {
+  content: PostGridType[] | ArticleType[];
+  page?: {
+    number: number;
+    size: number;
+    totalElements: number;
+    totalPages: number;
+  };
+}
+
+function Pagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}) {
+  const pages = Array.from({ length: totalPages }, (_, i) => i);
+
+  return (
+    <div className="flex flex-col items-center mt-8">
+      <div className="flex gap-2 mb-2">
+        <button
+          onClick={() => onPageChange(Math.max(currentPage - 1, 0))}
+          disabled={currentPage === 0}
+          className="px-4 py-1 bg-gray-200 rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+        {pages.map((page) => (
+          <button
+            key={page}
+            onClick={() => onPageChange(page)}
+            className={`px-4 py-1 rounded ${
+              page === currentPage
+                ? "bg-secondary text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            {page + 1}
+          </button>
+        ))}
+        <button
+          onClick={() =>
+            onPageChange(Math.min(currentPage + 1, totalPages - 1))
+          }
+          disabled={currentPage === totalPages - 1}
+          className="px-4 py-1 bg-gray-200 rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function SearchPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+
   const query = searchParams.get("query");
+
   const [activeTab, setActiveTab] = useState<"posts" | "articles">("posts");
   const [results, setResults] = useState<PostGridType[] | ArticleType[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
   const [availableTopics, setAvailableTopics] = useState<OptionType[]>([]);
   const [availableTags, setAvailableTags] = useState<OptionType[]>([]);
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
   const [appliedFilters, setAppliedFilters] = useState<FilterParams>({
     search_query: query || "",
     topics: [],
     tags: [],
+    order_by: "createdAt",
+    order: "desc",
+    page: 0,
+    size: 4,
   });
 
   useEffect(() => {
@@ -67,11 +135,16 @@ function SearchPageContent() {
   }, [query]);
 
   const handleFilterApply = () => {
-    const newFilters = {
+    const newFilters: FilterParams = {
       search_query: query || "",
       topics: selectedTopics,
       tags: selectedTags,
+      order_by: appliedFilters.order_by,
+      order: appliedFilters.order,
+      page: 0,
+      size: appliedFilters.size,
     };
+
     setAppliedFilters(newFilters);
 
     const params = new URLSearchParams();
@@ -84,9 +157,7 @@ function SearchPageContent() {
     if (newFilters.tags?.length) {
       newFilters.tags.forEach((t) => params.append("tag", t));
     }
-
-    const queryString = params.toString();
-    router.push(`/search${queryString ? `?${queryString}` : ""}`);
+    router.push(`/search${params.toString() ? `?${params.toString()}` : ""}`);
   };
 
   useEffect(() => {
@@ -95,10 +166,13 @@ function SearchPageContent() {
         !appliedFilters.search_query &&
         !appliedFilters.topics?.length &&
         !appliedFilters.tags?.length
-      )
+      ) {
+        setResults([]);
+        setTotalPages(1);
         return;
-
+      }
       setLoading(true);
+      setError("");
       try {
         const params = new URLSearchParams();
         if (appliedFilters.search_query) {
@@ -110,11 +184,26 @@ function SearchPageContent() {
         if (appliedFilters.tags?.length) {
           appliedFilters.tags.forEach((t) => params.append("tag", t));
         }
-
+        if (appliedFilters.order_by) {
+          params.append("order_by", appliedFilters.order_by);
+        }
+        if (appliedFilters.order) {
+          params.append("order", appliedFilters.order);
+        }
+        if (typeof appliedFilters.page === "number") {
+          params.append("page", appliedFilters.page.toString());
+        }
+        if (typeof appliedFilters.size === "number") {
+          params.append("size", appliedFilters.size.toString());
+        }
         const queryString = params.toString() ? `?${params.toString()}` : "";
         const endpoint = activeTab === "posts" ? "post" : "article";
-        const data = await get(`/api/search/${endpoint}${queryString}`);
+        const data: PaginatedResponse = await get(
+          `/api/search/${endpoint}${queryString}`
+        );
         setResults(data?.content || []);
+        const total = data?.page?.totalPages || 1;
+        setTotalPages(total);
       } catch (err) {
         console.error(err);
         setError("An error occurred while fetching search results.");
@@ -125,16 +214,29 @@ function SearchPageContent() {
     fetchData();
   }, [activeTab, appliedFilters]);
 
+  const handleOrderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setAppliedFilters((prev) => ({
+      ...prev,
+      order_by: e.target.value,
+      page: 0,
+    }));
+  };
+
+  const handlePageChange = (page: number) => {
+    setAppliedFilters((prev) => ({
+      ...prev,
+      page,
+    }));
+  };
+
   return (
     <div className="flex min-h-screen">
-      <div className="w-1/4 p-5 shadow-md bg-container">
+      <aside className="w-1/4 p-5 shadow-md bg-white">
         <div className="mb-6">
           <SearchBar />
         </div>
         <div className="mb-6">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            TOPICS
-          </label>
+          <h2 className="text-lg font-semibold text-gray-800 mb-2">Topics</h2>
           {availableTopics.map((topic) => (
             <div key={topic.id} className="flex items-center mb-2">
               <input
@@ -155,11 +257,8 @@ function SearchPageContent() {
             </div>
           ))}
         </div>
-
         <div className="mb-6">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            TAGS
-          </label>
+          <h2 className="text-lg font-semibold text-gray-800 mb-2">Tags</h2>
           <div className="flex flex-wrap gap-2">
             {availableTags.map((tag) => (
               <button
@@ -174,7 +273,7 @@ function SearchPageContent() {
                 className={`px-3 py-1 rounded-full text-sm ${
                   selectedTags.includes(tag.name)
                     ? "bg-tertiary text-white"
-                    : "bg-gray-200 text-gray-700"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                 }`}
               >
                 {tag.name}
@@ -188,21 +287,23 @@ function SearchPageContent() {
         >
           Apply Filters
         </button>
-      </div>
-      <div className="w-3/4 p-10">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-4">
+      </aside>
+
+      <main className="w-3/4 p-10">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">
           Search Results for &quot;{query}&quot;
         </h1>
-        <div className="mb-4">
+
+        <div className="mb-6">
           <button
             onClick={() => {
               setResults([]);
               setActiveTab("posts");
             }}
-            className={`px-4 py-2 mr-2 rounded-md ${
+            className={`text-md px-4 py-2 mr-4 rounded-md font-semibold ${
               activeTab === "posts"
                 ? "bg-secondary text-white"
-                : "bg-gray-200 text-gray-700"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
             Posts
@@ -212,20 +313,35 @@ function SearchPageContent() {
               setResults([]);
               setActiveTab("articles");
             }}
-            className={`px-4 py-2 rounded-md ${
+            className={`text-md px-4 py-2 rounded-md font-semibold ${
               activeTab === "articles"
                 ? "bg-secondary text-white"
-                : "bg-gray-200 text-gray-700"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
             Articles
           </button>
         </div>
+
+        <div className="flex items-center gap-4 mb-6">
+          <label className="text-sm font-medium text-gray-700">Order By:</label>
+          <select
+            className="border border-gray-300 rounded-full py-1 px-4 text-sm"
+            value={appliedFilters.order_by}
+            onChange={handleOrderChange}
+          >
+            <option value="createdAt">Date</option>
+            <option value="likesCount">Likes</option>
+            <option value="viewCount">Views</option>
+          </select>
+        </div>
+
         {loading && <Loader />}
         {error && <p className="text-red-600">{error}</p>}
         {!loading && !error && results.length === 0 && (
           <p className="text-gray-600">No results found.</p>
         )}
+
         {activeTab === "posts" ? (
           <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6">
             {results.map((item) => (
@@ -241,7 +357,15 @@ function SearchPageContent() {
             ))}
           </div>
         )}
-      </div>
+
+        {totalPages > 0 && (
+          <Pagination
+            currentPage={appliedFilters.page || 0}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        )}
+      </main>
     </div>
   );
 }
