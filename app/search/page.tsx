@@ -1,13 +1,14 @@
 "use client";
 export const dynamic = "force-dynamic";
 import { Suspense, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation"; // Add useRouter
 import { PostGridType } from "@/types/PostType";
 import { ArticleType } from "@/types/ArticleType";
 import SearchBar from "@/components/search/SearchBar";
 import PostGrid from "@/components/search/PostGrid";
 import ArticleGrid from "@/components/search/ArticleGrid";
 import { get } from "@/app/lib/fetchInterceptor";
+import Loader from "@/components/Loader";
 
 type OptionType = {
   id: string;
@@ -17,13 +18,16 @@ type OptionType = {
 type FilterParams = {
   search_query?: string;
   topic?: string[];
+  topics?: string[];
   tag?: string[];
+  tags?: string[];
   order_by?: string;
   order?: string;
 };
 
 function SearchPageContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const query = searchParams.get("query");
   const [activeTab, setActiveTab] = useState<"posts" | "articles">("posts");
   const [results, setResults] = useState<PostGridType[] | ArticleType[]>([]);
@@ -33,9 +37,10 @@ function SearchPageContent() {
   const [availableTags, setAvailableTags] = useState<OptionType[]>([]);
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [appliedFilters, setAppliedFilters] = useState({
-    topics: [] as string[],
-    tags: [] as string[],
+  const [appliedFilters, setAppliedFilters] = useState<FilterParams>({
+    search_query: query || "",
+    topics: [],
+    tags: [],
   });
 
   useEffect(() => {
@@ -54,46 +59,71 @@ function SearchPageContent() {
     fetchOptions();
   }, []);
 
+  useEffect(() => {
+    setAppliedFilters((prev) => ({
+      ...prev,
+      search_query: query || "",
+    }));
+  }, [query]);
+
   const handleFilterApply = () => {
-    setAppliedFilters({
+    const newFilters = {
+      search_query: query || "",
       topics: selectedTopics,
       tags: selectedTags,
-    });
+    };
+    setAppliedFilters(newFilters);
+
+    const params = new URLSearchParams();
+    if (newFilters.search_query) {
+      params.append("query", newFilters.search_query);
+    }
+    if (newFilters.topics?.length) {
+      newFilters.topics.forEach((t) => params.append("topic", t));
+    }
+    if (newFilters.tags?.length) {
+      newFilters.tags.forEach((t) => params.append("tag", t));
+    }
+
+    const queryString = params.toString();
+    router.push(`/search${queryString ? `?${queryString}` : ""}`);
   };
 
   useEffect(() => {
-    if (query) {
+    const fetchData = async () => {
+      if (
+        !appliedFilters.search_query &&
+        !appliedFilters.topics?.length &&
+        !appliedFilters.tags?.length
+      )
+        return;
+
       setLoading(true);
-      const fetchData = async () => {
-        try {
-          const filterParams: FilterParams = {
-            search_query: query,
-            ...(appliedFilters.topics.length > 0 && {
-              topic: appliedFilters.topics,
-            }),
-            ...(appliedFilters.tags.length > 0 && { tag: appliedFilters.tags }),
-          };
-          const params = new URLSearchParams();
-          if (filterParams.search_query)
-            params.append("search_query", filterParams.search_query);
-          if (filterParams.topic)
-            filterParams.topic.forEach((t) => params.append("topic", t));
-          if (filterParams.tag)
-            filterParams.tag.forEach((t) => params.append("tag", t));
-          const queryString = params.toString() ? `?${params.toString()}` : "";
-          const endpoint = activeTab === "posts" ? "post" : "article";
-          const data = await get(`/api/search/${endpoint}${queryString}`);
-          setResults(data?.content || []);
-        } catch (err) {
-          console.error(err);
-          setError("An error occurred while fetching search results.");
-        } finally {
-          setLoading(false);
+      try {
+        const params = new URLSearchParams();
+        if (appliedFilters.search_query) {
+          params.append("search_query", appliedFilters.search_query);
         }
-      };
-      fetchData();
-    }
-  }, [query, activeTab, appliedFilters]);
+        if (appliedFilters.topics?.length) {
+          appliedFilters.topics.forEach((t) => params.append("topic", t));
+        }
+        if (appliedFilters.tags?.length) {
+          appliedFilters.tags.forEach((t) => params.append("tag", t));
+        }
+
+        const queryString = params.toString() ? `?${params.toString()}` : "";
+        const endpoint = activeTab === "posts" ? "post" : "article";
+        const data = await get(`/api/search/${endpoint}${queryString}`);
+        setResults(data?.content || []);
+      } catch (err) {
+        console.error(err);
+        setError("An error occurred while fetching search results.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [activeTab, appliedFilters]);
 
   return (
     <div className="flex min-h-screen">
@@ -109,22 +139,23 @@ function SearchPageContent() {
             <div key={topic.id} className="flex items-center mb-2">
               <input
                 type="checkbox"
-                value={topic.id}
-                checked={selectedTopics.includes(topic.id)}
+                value={topic.name}
+                checked={selectedTopics.includes(topic.name)}
                 onChange={(e) => {
                   const value = e.target.value;
                   setSelectedTopics((prev) =>
                     prev.includes(value)
-                      ? prev.filter((id) => id !== value)
+                      ? prev.filter((name) => name !== value)
                       : [...prev, value]
                   );
                 }}
-                className="mr-2"
+                className="mr-2 h-4 w-4 text-secondary border-gray-300 rounded"
               />
               <span className="text-gray-700">{topic.name}</span>
             </div>
           ))}
         </div>
+
         <div className="mb-6">
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             TAGS
@@ -135,13 +166,13 @@ function SearchPageContent() {
                 key={tag.id}
                 onClick={() =>
                   setSelectedTags((prev) =>
-                    prev.includes(tag.id)
-                      ? prev.filter((id) => id !== tag.id)
-                      : [...prev, tag.id]
+                    prev.includes(tag.name)
+                      ? prev.filter((name) => name !== tag.name)
+                      : [...prev, tag.name]
                   )
                 }
                 className={`px-3 py-1 rounded-full text-sm ${
-                  selectedTags.includes(tag.id)
+                  selectedTags.includes(tag.name)
                     ? "bg-tertiary text-white"
                     : "bg-gray-200 text-gray-700"
                 }`}
@@ -190,7 +221,7 @@ function SearchPageContent() {
             Articles
           </button>
         </div>
-        {loading && <p className="text-gray-600">Loading...</p>}
+        {loading && <Loader />}
         {error && <p className="text-red-600">{error}</p>}
         {!loading && !error && results.length === 0 && (
           <p className="text-gray-600">No results found.</p>
@@ -215,7 +246,7 @@ function SearchPageContent() {
 
 export default function SearchPage() {
   return (
-    <Suspense fallback={<p>Loading...</p>}>
+    <Suspense fallback={<Loader />}>
       <SearchPageContent />
     </Suspense>
   );

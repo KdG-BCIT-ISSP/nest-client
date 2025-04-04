@@ -14,7 +14,10 @@ export default function PostGrid({ post }: PostGridProps) {
   const hashtags = post.tagNames.map((tag) => `#${tag}`).join(" ");
 
   return (
-    <div className="bg-white rounded-lg shadow-md w-full mx-auto mb-4 text-gray-800 border-2">
+    <div
+      className="bg-white rounded-lg shadow-md w-full mx-auto mb-4 text-gray-800 border-2 cursor-pointer"
+      onClick={() => router.push(`/posts/${post.id}`)}
+    >
       <div className="p-3">
         <div className="font-semibold text-sm">{post.title}</div>
         <div className="text-xs text-gray-600">By: {post.memberUsername}</div>
@@ -29,7 +32,6 @@ export default function PostGrid({ post }: PostGridProps) {
             height={0}
             sizes="100vw"
             className="w-full h-auto object-cover cursor-pointer"
-            onClick={() => router.push(`/posts/${post.id}`)}
           />
         )}
       </div>
