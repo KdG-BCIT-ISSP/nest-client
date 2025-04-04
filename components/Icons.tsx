@@ -11,6 +11,7 @@ interface LikeProps {
   isLiked?: boolean;
   onClick?: () => void;
   disabled?: boolean;
+  search?: boolean;
 }
 
 export const Like: React.FC<LikeProps> = ({
@@ -18,6 +19,7 @@ export const Like: React.FC<LikeProps> = ({
   isLiked,
   onClick,
   disabled = false,
+  search,
 }) => {
   return (
     <button
@@ -30,7 +32,7 @@ export const Like: React.FC<LikeProps> = ({
       disabled={disabled}
     >
       <ThumbsUpIcon
-        size={22}
+        size={search ? 14 : 22}
         color={isLiked && !disabled ? "#7b7a6c" : "#CD6A6A"}
         fill={isLiked && !disabled ? "#CD6A6A" : "none"}
       />
@@ -48,12 +50,13 @@ export const Like: React.FC<LikeProps> = ({
 // Comments Component
 interface CommentsProps {
   count: number;
+  search?: boolean;
 }
 
-export const Comments: React.FC<CommentsProps> = ({ count }) => {
+export const Comments: React.FC<CommentsProps> = ({ count, search }) => {
   return (
     <div className="flex items-center gap-1 text-gray-600">
-      <MessageCircleIcon size={22} color="#CD6A6A" />
+      <MessageCircleIcon size={search ? 14 : 22} color="#CD6A6A" />
       <span className="text-lg ml-1 font-bold text-[#CD6A6A]">{count}</span>
     </div>
   );
@@ -64,6 +67,7 @@ interface BookmarkProps {
   isSaved?: boolean;
   onClick?: () => void;
   disabled?: boolean;
+  search?: boolean;
 }
 
 export const Bookmark: React.FC<BookmarkProps> = ({
@@ -71,6 +75,7 @@ export const Bookmark: React.FC<BookmarkProps> = ({
   isSaved,
   onClick,
   disabled = false,
+  search,
 }) => {
   return (
     <button
@@ -83,7 +88,7 @@ export const Bookmark: React.FC<BookmarkProps> = ({
       disabled={disabled}
     >
       <BookmarkIcon
-        size={22}
+        size={search ? 14 : 22}
         color={isSaved && !disabled ? "#7b7a6c" : "#CD6A6A"}
         fill={isSaved && !disabled ? "#CD6A6A" : "none"}
       />
@@ -100,15 +105,16 @@ export const Bookmark: React.FC<BookmarkProps> = ({
 
 interface ShareProps {
   onClick?: () => void;
+  search?: boolean;
 }
 
-export const Share: React.FC<ShareProps> = ({ onClick }) => {
+export const Share: React.FC<ShareProps> = ({ onClick, search }) => {
   return (
     <button
       className="flex items-center gap-1 text-gray-600 hover:text-green-600 transition-colors"
       onClick={onClick}
     >
-      <Share2Icon size={22} color="#CD6A6A" />
+      <Share2Icon size={search ? 14 : 22} color="#CD6A6A" />
     </button>
   );
 };

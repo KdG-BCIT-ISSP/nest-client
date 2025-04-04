@@ -5,6 +5,7 @@ import ReportCard from "@/components/admin/ReportCard";
 import { useEffect, useState } from "react";
 import { ReportPostType, Report } from "@/types/PostType";
 import { get } from "@/app/lib/fetchInterceptor";
+import Loader from "../Loader";
 
 export default function ReportedCommentsComponent() {
   const [loading, setLoading] = useState(true);
@@ -31,7 +32,7 @@ export default function ReportedCommentsComponent() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   const commentsWithReports = comments.filter((comment) =>

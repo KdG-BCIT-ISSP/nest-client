@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 import { get } from "@/app/lib/fetchInterceptor";
 import UserRoleToggle from "@/components/admin/UserRoleToggle";
 import { useEffect, useState } from "react";
+import Loader from "../Loader";
 
 interface User {
   id: number;
@@ -65,7 +66,7 @@ export default function UserAccessComponent() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   return (

@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { ArticleCardType } from "@/types/ArticleCardType";
 import ArticleCard from "@/components/search/ArticleCard";
 import { get } from "@/app/lib/fetchInterceptor";
+import Loader from "../Loader";
 
 export default function TopArticles({
   limit = 3,
@@ -47,7 +48,9 @@ export default function TopArticles({
     }
   }, [allArticles, limit, sortBy]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="mt-6">

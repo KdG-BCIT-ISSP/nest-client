@@ -11,6 +11,7 @@ import { useTranslation } from "next-i18next";
 import Button from "@/components/Button";
 import CreatePost from "@/components/post/CreatePost";
 import Modal from "@/components/Modal";
+import Loader from "@/components/Loader";
 
 export default function PostsPage() {
   const isAuthenticated =
@@ -45,7 +46,9 @@ export default function PostsPage() {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return <Loader />;
+  }
   if (error) return <div>Error: {error}</div>;
 
   return (

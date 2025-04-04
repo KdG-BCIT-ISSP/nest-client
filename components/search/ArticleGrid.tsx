@@ -15,46 +15,48 @@ interface ArticleGridProps {
 
 const ArticleGrid: React.FC<ArticleGridProps> = ({ article }) => {
   const router = useRouter();
-  const maxLength = 100;
+  const MAX_LENGTH = 100;
+
   const decodedContent = decodeURIComponent(article.content);
-  const truncatedHtmlString = htmlTruncate(decodedContent, maxLength) + "...";
+  const truncatedHtmlString = `${htmlTruncate(decodedContent, MAX_LENGTH)}...`;
   const truncatedHtml = parse(truncatedHtmlString);
   const formattedDate = formatDate(article.createdAt);
 
+  const handleClick = () => {
+    router.push(`/curated-articles/${article.id}`);
+  };
+
   return (
     <div
-      className="flex cursor-pointer p-4 border-b border-gray-200 hover:bg-gray-100 transition-all duration-200 rounded-lg w-full group"
-      onClick={() => router.push(`/curated-articles/${article.id}`)}
+      onClick={handleClick}
+      className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
     >
-      <div className="w-20 h-20 bg-gray-100 flex-shrink-0 mr-4 rounded-md overflow-hidden">
+      <div className="relative h-56 w-full bg-gray-100">
         {article.coverImage ? (
           <Image
             src={article.coverImage}
             alt={article.title}
-            width={80}
-            height={80}
-            className="object-cover w-full h-full transition-transform duration-200 group-hover:scale-105"
+            fill
+            className="object-cover"
           />
         ) : (
-          <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs">
+          <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
             No Image
           </div>
         )}
       </div>
 
-      <div className="flex flex-col min-w-0">
-        <div className="flex items-center justify-between mb-1">
-          <h2 className="text-lg font-semibold text-gray-900 line-clamp-1 group-hover:text-blue-600 transition-colors">
-            {article.title}
-          </h2>
-          <div className="flex items-center space-x-2 text-sm text-gray-500">
-            <span>{formattedDate}</span>
-            <span>•</span>
-            <span>{article.viewCount} views</span>
-          </div>
+      <div className="p-4">
+        <div className="flex items-center justify-between text-gray-500 text-xs">
+          <span>{formattedDate}</span>
+          <span>{article.viewCount} views</span>
         </div>
 
-        <p className="text-sm text-gray-600 mb-2">
+        <h2 className="mt-2 text-xl font-semibold text-gray-800 hover:text-blue-600 transition-colors line-clamp-1">
+          {article.title}
+        </h2>
+
+        <p className="mt-1 text-sm text-gray-600">
           By{" "}
           <span className="font-medium">
             {article.memberUsername || "Unknown"}
@@ -62,11 +64,11 @@ const ArticleGrid: React.FC<ArticleGridProps> = ({ article }) => {
         </p>
 
         {article.tagNames && article.tagNames.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-2">
+          <div className="mt-2 flex flex-wrap gap-2">
             {article.tagNames.map((tag, index) => (
               <span
                 key={index}
-                className="inline-block bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full"
+                className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full"
               >
                 #{tag}
               </span>
@@ -74,7 +76,9 @@ const ArticleGrid: React.FC<ArticleGridProps> = ({ article }) => {
           </div>
         )}
 
-        <div className="text-gray-600 break-words py-2">{truncatedHtml}</div>
+        <div className="mt-3 text-gray-700 text-sm leading-6 line-clamp-3">
+          {truncatedHtml}
+        </div>
       </div>
     </div>
   );

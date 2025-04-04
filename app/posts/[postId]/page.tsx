@@ -16,6 +16,7 @@ import CreatePost from "@/components/post/CreatePost";
 import Modal from "@/components/Modal";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
+import Loader from "@/components/Loader";
 
 export default function PostDetailPage() {
   const params = useParams();
@@ -62,7 +63,9 @@ export default function PostDetailPage() {
     fetchData();
   }, [postId]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return <Loader />;
+  }
   if (!userPost) return <div>Article not found</div>;
 
   const handleReportSubmit = async () => {
