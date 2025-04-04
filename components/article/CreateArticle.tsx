@@ -43,7 +43,6 @@ export default function CreateArticle({ existingArticle }: CreateArticleProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<Topic>();
   const [topics, setTopics] = useState<Topic[]>([]);
-  const [coverImage, setCoverImage] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchTopics = async () => {
@@ -69,7 +68,6 @@ export default function CreateArticle({ existingArticle }: CreateArticleProps) {
     if (existingArticle) {
       setArticle(existingArticle);
       setSelectedTags(existingArticle.tagNames || []);
-      setCoverImage(existingArticle.imageBase64 || []);
       const selectedTopic = topics.find(
         (topic) => topic.id === existingArticle.topicId
       );

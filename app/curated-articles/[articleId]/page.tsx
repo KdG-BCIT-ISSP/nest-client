@@ -5,7 +5,6 @@ import Image from "next/image";
 import { ArrowLeft, CircleXIcon } from "lucide-react";
 import { EllipsisIcon } from "lucide-react";
 import parse from "html-react-parser";
-import Report from "@/public/svg/Report";
 import { Like, Comments, Bookmark, Share } from "@/components/Icons";
 import CommentsSection from "@/components/Comments";
 import { ArticleType } from "@/types/ContentType";
@@ -26,7 +25,6 @@ export default function ArticleDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [views, setViews] = useState(0);
   const [showReport, setShowReport] = useState(false);
-  const [showReportButton, setShowReportButton] = useState(false);
   const [reportReason, setReportReason] = useState("");
   const [showCopied, setShowCopied] = useState(false);
   const [showEditMenu, setShowEditMenu] = useState(false);
