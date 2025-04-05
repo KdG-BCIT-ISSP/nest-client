@@ -52,7 +52,6 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
       if (selectedTopic) {
         setSelectedTopic(selectedTopic);
       }
-      console.log("Existing post:", existingPost);
     }
   }, [existingPost, topics]);
 
@@ -157,13 +156,9 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
     }));
   };
 
-  useEffect(() => {
-    console.log("Updated imagePreviews:", imagePreviews);
-  }, [imagePreviews]);
+  useEffect(() => {}, [imagePreviews]);
 
-  useEffect(() => {
-    console.log("Updated userPost:", userPost);
-  }, [userPost]);
+  useEffect(() => {}, [userPost]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
