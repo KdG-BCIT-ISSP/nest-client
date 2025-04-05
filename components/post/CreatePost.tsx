@@ -156,8 +156,6 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
     }));
   };
 
-  useEffect(() => {}, [imagePreviews]);
-
   useEffect(() => {}, [userPost]);
 
   const handleSubmit = async (event: React.FormEvent) => {
