@@ -303,13 +303,6 @@ export default function CreateArticle({ existingArticle }: CreateArticleProps) {
           />
         </div>
       </form>
-
-      {/* HTML Preview */}
-      <div className="prose mt-8 border-t border-gray-200 pt-6 ">
-        {" "}
-        <h3>{t("article.preview")}</h3>
-        <pre style={{ whiteSpace: "pre-wrap" }}>{article.content}</pre>
-      </div>
     </div>
   );
 }
