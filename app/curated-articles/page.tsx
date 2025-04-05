@@ -43,12 +43,6 @@ export default function CuratedArticlesPage() {
     fetchArticles();
   }, [setArticleData]);
 
-  const handleDelete = (id: number) => {
-    setArticles((prevArticles) =>
-      prevArticles.filter((article) => article.id !== id)
-    );
-  };
-
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
@@ -80,11 +74,7 @@ export default function CuratedArticlesPage() {
       <div className="w-full mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
           {articles.map((article) => (
-            <ArticleCard
-              key={article.id}
-              article={article}
-              onDelete={handleDelete}
-            />
+            <ArticleCard key={article.id} article={article} />
           ))}
         </div>
       </div>

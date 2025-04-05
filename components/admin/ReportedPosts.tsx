@@ -55,7 +55,12 @@ export default function ReportedPostsComponent() {
             (report) => report.postId === post.id
           );
           return (
-            <ReportCard key={post.id} post={post} reports={associatedReports} />
+            <ReportCard
+              key={post.id}
+              post={post}
+              reports={associatedReports}
+              isPost
+            />
           );
         })}
       </div>

@@ -14,7 +14,6 @@ export default function TopicSelector({
   topics,
 }: TopicSelectorProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  console.log("Selected topic:", selectedTopic);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);

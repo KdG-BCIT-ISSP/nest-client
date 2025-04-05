@@ -6,7 +6,7 @@ export default function Loader() {
       <Oval
         visible={true}
         height="35"
-        strokeWidth={5}
+        strokeWidth={4}
         width="35"
         color="#547756"
         ariaLabel="oval-loading"
