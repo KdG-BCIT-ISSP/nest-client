@@ -22,6 +22,8 @@ export type PostType = {
   likesCount?: number;
   viewCount?: number;
   shareCount?: number;
+  bookmarkCount?: number;
+  commentsCount?: number;
 };
 
 export type ReportPostType = {

@@ -14,5 +14,6 @@ export type ArticleCardType = {
   viewCount?: number;
   shareCount?: number;
   likesCount?: number;
+  bookmarkCount?: number;
   createdAt?: string;
 };
