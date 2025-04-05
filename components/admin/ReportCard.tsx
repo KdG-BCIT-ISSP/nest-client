@@ -5,10 +5,12 @@ import Link from "next/link";
 import { ReportCardProps } from "@/types/ReportCard";
 import { Like, Comments, Bookmark } from "../Icons";
 
-export default function ReportCard({ post, reports }: ReportCardProps) {
+export default function ReportCard({ post, reports, isPost }: ReportCardProps) {
   return (
     <div className="bg-report border border-gray-200 rounded-md p-4 w-full mx-auto shadow-md">
-      <Link href={`/curated-articles/${post.id}`}>
+      <Link
+        href={isPost ? `/posts/${post.id}` : `/curated-articles/${post.id}`}
+      >
         {/* Mobile view */}
         <div className="sm:hidden">
           <h2 className="text-lg font-bold text-gray-900 mb-2">{post.title}</h2>
@@ -33,7 +35,10 @@ export default function ReportCard({ post, reports }: ReportCardProps) {
       </Link>
 
       {/* Desktop view */}
-      <Link href={`/curated-articles/${post.id}`}>
+      <Link
+        href={isPost ? `/posts/${post.id}` : `/curated-articles/${post.id}`}
+      >
+        {" "}
         <div className="hidden sm:block">
           <div className="flex gap-4 mb-3">
             <div className="flex-1 min-w-0">
