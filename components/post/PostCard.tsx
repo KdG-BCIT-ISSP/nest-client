@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 import { PostCardType } from "@/types/PostCardType";
@@ -8,56 +8,24 @@ import { useRouter } from "next/navigation";
 import { post } from "@/app/lib/fetchInterceptor";
 import { useTranslation } from "next-i18next";
 import { Like, Comments } from "../Icons";
+import { formatDate } from "@/utils/formatDate";
+import { trimContent } from "@/utils/trimContent";
 
 export default function PostCard({
-  id,
-  className,
-  title,
-  content,
-  tags = [],
-  imageBase64 = [],
-  author,
-  createdAt,
-  isLiked = false,
-  likesCount,
-  viewCount = 0,
-  shareCount = 0,
+  postData,
   // onDelete,
 }: PostCardType & { onDelete?: (id: number) => void }) {
   const { t } = useTranslation("post");
-  const displayTitle = title || t("post.untitled");
-  const displayContent = content || t("post.noContent");
-  const displayAuthor = author || t("post.anonymous");
-  const displayDate = createdAt || t("post.unknownDate");
+  const displayTitle = postData.title || t("post.untitled");
+  const displayContent =
+    trimContent(postData.content || "", 30) || t("post.noContent");
+  const displayAuthor = postData.memberUsername || t("post.anonymous");
+  const displayDate =
+    formatDate(postData.createdAt ?? "") || t("post.unknownDate");
 
   const router = useRouter();
-  const [upvoteCount, setUpvoteCount] = useState(likesCount || 0);
-  const [userLiked, setUserLiked] = useState(isLiked);
 
-  const handleUpvote = () => {
-    setUserLiked(true);
-    setUpvoteCount((prev) => prev + 1);
-  };
-
-  const handleDownvote = () => {
-    setUserLiked(false);
-    setUpvoteCount((prev) => (prev > 0 ? prev - 1 : 0));
-  };
-
-  // const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   e.stopPropagation();
-  //   e.preventDefault();
-
-  //   if (!confirm(t("post.confirmDelete"))) return;
-
-  //   try {
-  //     await del(`/api/posts/${id}`);
-  //     onDelete?.(id);
-  //     alert(t("post.deletedSuccess"));
-  //   } catch (error) {
-  //     console.error("Error deleting post:", error);
-  //   }
-  // };
+  const id = postData.id;
 
   const handleClick = useCallback(() => {
     if (id) {
@@ -69,49 +37,26 @@ export default function PostCard({
   return (
     <div
       className={clsx(
-        "border rounded-md relative mx-auto p-4 shadow-md w-full cursor-pointer bg-container",
-        className
+        "border rounded-md relative mx-auto p-4 shadow-md w-full cursor-pointer bg-container"
       )}
       onClick={handleClick}
     >
-      {/* Mobile View */}
       <div className="block sm:hidden">
-        {imageBase64.length > 0 && (
+        {postData.imageBase64.length > 0 && (
           <div className="flex flex-wrap">
-            {imageBase64.map((base64, index) => (
-              <div
-                key={index}
-                className="w-full h-52 mb-3 relative overflow-hidden rounded-sm border border-gray-300"
-              >
-                <Image
-                  src={base64}
-                  alt={`Post Image ${index}`}
-                  fill
-                  className="object-cover"
-                  unoptimized
-                  onClick={handleClick}
-                />
-              </div>
-            ))}
+            <div className="w-full h-52 mb-3 relative overflow-hidden rounded-sm border border-gray-300">
+              <Image
+                src={postData.imageBase64[0]}
+                alt={`Post Image `}
+                fill
+                className="object-cover"
+                unoptimized
+                onClick={handleClick}
+              />
+            </div>
           </div>
         )}
         <div className="flex gap-4">
-          {/* Upvote and Downvote Buttons */}
-          <div className="flex flex-col items-center text-gray-500">
-            <button
-              className={`p-1 ${userLiked ? "text-cyan-500" : "text-gray-400"} hover:text-cyan-500`}
-              onClick={handleUpvote}
-            >
-              ▲
-            </button>
-            <span className="font-bold text-gray-800">{upvoteCount}</span>
-            <button
-              className="p-1 text-gray-400 hover:text-red-500"
-              onClick={handleDownvote}
-            >
-              ▼
-            </button>
-          </div>
           <div className="flex-1">
             <h1 className="text-lg font-bold text-gray-900 mb-2">
               {displayTitle}
@@ -128,13 +73,13 @@ export default function PostCard({
               </div>
 
               <div className="mt-4 gap-4 flex justify-between text-gray-500 text-sm">
-                <Like count={1} />
+                <Like count={1} isLiked={postData.liked} />
                 <Comments count={234} />
               </div>
             </div>
-            {tags.length > 0 && (
+            {(postData.tagNames || []).length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
-                {tags.map((tag) => (
+                {(postData.tagNames || []).map((tag) => (
                   <span
                     key={tag}
                     className="bg-gray-200 text-sm px-3 py-1 rounded-full text-gray-700"
@@ -145,46 +90,26 @@ export default function PostCard({
               </div>
             )}
 
-            {/* View Count & Share Count */}
             <div className="flex justify-between text-gray-500 mt-2">
               <span>
-                {viewCount} {t("post.views")}
+                {postData.viewCount} {t("post.views")}
               </span>
               <span>
-                {shareCount} {t("post.shares")}
+                {postData.bookmarkCount} {t("post.saves")}
               </span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Desktop View */}
-      <div className="hidden sm:flex gap-4">
-        <div
-          className="flex flex-col items-center text-gray-500"
-          onClick={handleClick}
-        >
-          <button
-            className={`p-1 ${userLiked ? "text-cyan-500" : "text-gray-400"} hover:text-cyan-500`}
-            onClick={handleUpvote}
-          >
-            ▲
-          </button>
-          <span className="font-bold text-gray-800">{upvoteCount}</span>
-          <button
-            className="p-1 text-gray-400 hover:text-red-500"
-            onClick={handleDownvote}
-          >
-            ▼
-          </button>
-        </div>
+      <div className="hidden sm:flex gap-4" onClick={handleClick}>
         <div className="flex-1 flex flex-col p-2">
           <div className="text-sm text-gray-500 mb-2">
-            {imageBase64.length > 0 && (
+            {postData.imageBase64.length > 0 && (
               <div className="flex flex-wrap">
                 <div className="relative w-72 h-auto aspect-[16/9] overflow-hidden rounded-sm border border-gray-300">
                   <Image
-                    src={imageBase64[0]}
+                    src={postData.imageBase64[0]}
                     alt={`Post Image `}
                     fill
                     className="object-cover"
@@ -201,9 +126,9 @@ export default function PostCard({
           <p className="text-base text-gray-700 whitespace-pre-wrap mb-4 line-clamp-5">
             {displayContent}
           </p>
-          {tags.length > 0 && (
+          {(postData.tagNames || []).length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
-              {tags.map((tag) => (
+              {(postData.tagNames || []).map((tag) => (
                 <span
                   key={tag}
                   className="bg-primary text-sm px-3 py-1 rounded-md text-darkGray"
@@ -218,7 +143,12 @@ export default function PostCard({
             <div className="flex justify-start items-center">
               <Image
                 className="w-8 h-8 rounded-full mr-2"
-                src={"/images/default_profile_image.png"}
+                src={
+                  (Array.isArray(postData.memberAvatar)
+                    ? postData.memberAvatar[0]
+                    : postData.memberAvatar) ||
+                  "/images/default_profile_image.png"
+                }
                 alt="User profile"
                 width={70}
                 height={70}
@@ -233,8 +163,8 @@ export default function PostCard({
               </div>
             </div>
             <div className="mt-4 gap-4  flex justify-between text-gray-500 text-sm">
-              <Like count={likesCount || 0} />
-              <Comments count={2} />
+              <Like count={postData.likesCount || 0} isLiked={postData.liked} />
+              <Comments count={postData.comment?.length || 0} />
             </div>
           </div>
         </div>

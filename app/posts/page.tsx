@@ -6,7 +6,6 @@ import { PostType } from "@/types/PostType";
 import PostCard from "@/components/post/PostCard";
 import HeroSection from "@/components/index/HeroSection";
 import { get } from "../lib/fetchInterceptor";
-import { formatDate } from "@/utils/formatDate";
 import { useTranslation } from "next-i18next";
 import Button from "@/components/Button";
 import CreatePost from "@/components/post/CreatePost";
@@ -72,22 +71,7 @@ export default function PostsPage() {
       <div className="max-w-7xl mx-auto px-6 pt-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {posts.map((post) => (
-            <PostCard
-              key={post.id}
-              id={post.id ?? 0}
-              title={post.title}
-              content={post.content}
-              tags={post.tagNames}
-              imageBase64={post.imageBase64}
-              author={post.memberUsername}
-              createdAt={formatDate(post.createdAt ?? "")}
-              isBookmarked={post.bookmarked}
-              isLiked={post.liked}
-              likesCount={post.likesCount ?? 0}
-              viewCount={post.viewCount ?? 0}
-              shareCount={post.shareCount ?? 0}
-              onDelete={handleDelete}
-            />
+            <PostCard key={post.id} postData={post} onDelete={handleDelete} />
           ))}
         </div>
       </div>
