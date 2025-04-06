@@ -13,6 +13,7 @@ import CreateArticle from "@/components/article/CreateArticle";
 import { userAtom } from "@/atoms/user/atom";
 import Modal from "@/components/Modal";
 import Loader from "@/components/Loader";
+import Pagination from "@/components/Pagination";
 
 export default function CuratedArticlesPage() {
   const [userData] = useAtom(userAtom);
@@ -78,25 +79,11 @@ export default function CuratedArticlesPage() {
           ))}
         </div>
       </div>
-      <div className="flex justify-center mt-10">
-        <button
-          className="px-4 py-2 bg-gray-300 rounded mr-2 disabled:opacity-50"
-          onClick={() => setCurrentPage((prev) => prev - 1)}
-          disabled={currentPage === 0}
-        >
-          Previous
-        </button>
-        <span className="px-4 py-2">
-          Page {currentPage + 1} of {totalPages}
-        </span>
-        <button
-          className="px-4 py-2 bg-gray-300 rounded ml-2 disabled:opacity-50"
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-          disabled={currentPage >= totalPages - 1}
-        >
-          Next
-        </button>
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <CreateArticle />
       </Modal>

@@ -6,6 +6,7 @@ import { ArticleCardType } from "@/types/ArticleCardType";
 import ArticleCard from "@/components/search/ArticleCard";
 import { get } from "@/app/lib/fetchInterceptor";
 import Loader from "../Loader";
+import Pagination from "../Pagination";
 
 export default function TopArticles({
   limit = 3,
@@ -75,25 +76,11 @@ export default function TopArticles({
           />
         ))}
       </div>
-      <div className="flex justify-center mt-10">
-        <button
-          className="px-4 py-2 bg-gray-300 rounded mr-2 disabled:opacity-50"
-          onClick={() => setCurrentPage((prev) => prev - 1)}
-          disabled={currentPage === 0}
-        >
-          Previous
-        </button>
-        <span className="px-4 py-2">
-          Page {currentPage + 1} of {totalPages}
-        </span>
-        <button
-          className="px-4 py-2 bg-gray-300 rounded ml-2 disabled:opacity-50"
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-          disabled={currentPage >= totalPages - 1}
-        >
-          Next
-        </button>
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 }

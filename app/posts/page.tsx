@@ -11,6 +11,7 @@ import Button from "@/components/Button";
 import CreatePost from "@/components/post/CreatePost";
 import Modal from "@/components/Modal";
 import Loader from "@/components/Loader";
+import Pagination from "@/components/Pagination";
 
 export default function PostsPage() {
   const isAuthenticated =
@@ -80,25 +81,11 @@ export default function PostsPage() {
             <PostCard key={post.id} postData={post} onDelete={handleDelete} />
           ))}
         </div>
-        <div className="flex justify-center mt-10">
-          <button
-            className="px-4 py-2 bg-gray-300 rounded mr-2 disabled:opacity-50"
-            onClick={() => setCurrentPage((prev) => prev - 1)}
-            disabled={currentPage === 0}
-          >
-            Previous
-          </button>
-          <span className="px-4 py-2">
-            Page {currentPage + 1} of {totalPages}
-          </span>
-          <button
-            className="px-4 py-2 bg-gray-300 rounded ml-2 disabled:opacity-50"
-            onClick={() => setCurrentPage((prev) => prev + 1)}
-            disabled={currentPage >= totalPages - 1}
-          >
-            Next
-          </button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <CreatePost />
