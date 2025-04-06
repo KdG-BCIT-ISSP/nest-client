@@ -290,7 +290,7 @@ function SearchPageContent() {
       </aside>
 
       <main className="w-3/4 p-10">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">
+        <h1 className="text-2xl font-bold text-gray-800 mb-6">
           Search Results for &quot;{query}&quot;
         </h1>
 

@@ -86,7 +86,11 @@ function CommentItem({
   };
 
   const canReply = comment.parentId === null;
-  const isOwnComment = userData?.userId == String(comment.memberId);
+  const isOwnCommentOrAdmin =
+    userData?.userId == String(comment.memberId) ||
+    userData.role === "ADMIN" ||
+    userData.role === "SUPER_ADMIN" ||
+    userData.role === "MODERATOR";
 
   return (
     <div className="relative ml-4 pl-4 border-l border-gray-300 mb-4">
@@ -112,7 +116,7 @@ function CommentItem({
           )}
           {showOptions && (
             <div className="absolute right-0 mt-1 z-10 flex flex-col gap-1 bg-white shadow-md rounded-md p-1">
-              {isOwnComment ? (
+              {isOwnCommentOrAdmin ? (
                 <>
                   <button
                     onClick={() => {
