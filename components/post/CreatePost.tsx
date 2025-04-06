@@ -52,6 +52,7 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
       if (selectedTopic) {
         setSelectedTopic(selectedTopic);
       }
+      console.log(selectedTopic);
     }
   }, [existingPost, topics]);
 
@@ -85,6 +86,7 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
       try {
         const data = await get("/api/topic");
         setTopics(data);
+        setSelectedTopic(data[0]);
         if (data.length > 0) {
           setUserPost((prev) => ({
             ...prev,
