@@ -31,6 +31,8 @@ function CommentItem({
   onDelete,
 }: CommentItemProps) {
   const [showReplyBox, setShowReplyBox] = useState(false);
+  const [commentLiked, setCommentLiked] = useState(false);
+  const [commentLikes, setCommentLikes] = useState(0);
   const [replyContent, setReplyContent] = useState("");
   const [showOptions, setShowOptions] = useState(false);
   const [userData] = useAtom(userAtom);
@@ -46,12 +48,53 @@ function CommentItem({
     setShowReplyBox(false);
   };
 
+  useEffect(() => {
+    const fetchCommentLikes = async () => {
+      try {
+        const likes = await get(`/api/comment/${comment.id}/likes`);
+        setCommentLikes(likes);
+      } catch (error) {
+        console.error("Error fetching comment likes:", error);
+      }
+    };
+
+    const checkIfLiked = async () => {
+      try {
+        const isLiked = await get(`/api/comment/${comment.id}/isLiked`);
+        setCommentLiked(isLiked);
+      } catch (error) {
+        console.error("Error checking if comment is liked:", error);
+      }
+    };
+
+    fetchCommentLikes();
+    checkIfLiked();
+  }, [comment.id]);
+
+  console.log(commentLiked, commentLikes);
+
   const handleToggleLike = async () => {
+    const previousLiked = commentLiked;
+    const previousLikes = commentLikes;
+
+    // optimistic update
+    const newLiked = !previousLiked;
+    const newLikes = newLiked
+      ? previousLikes + 1
+      : Math.max(0, previousLikes - 1);
+    setCommentLiked(newLiked);
+    setCommentLikes(newLikes);
+    updateCommentLikes(comment.id, newLikes, newLiked);
+
     try {
-      const isLiked = await post(`/api/comment/${comment.id}/toggleLike`, {});
-      const likes = await get(`/api/comment/${comment.id}/likes`);
-      updateCommentLikes(comment.id, likes, isLiked);
+      await post(`/api/comment/${comment.id}/toggleLike`, {});
+      const likesResponse = await get(`/api/comment/${comment.id}/likes`);
+      setCommentLikes(likesResponse);
+      updateCommentLikes(comment.id, likesResponse, newLiked);
     } catch (error) {
+      setCommentLiked(previousLiked);
+      setCommentLikes(previousLikes);
+      updateCommentLikes(comment.id, previousLikes, previousLiked);
       console.error("Error toggling comment like:", error);
     }
   };
@@ -177,8 +220,8 @@ function CommentItem({
 
       <div className="flex gap-4 mb-2">
         <Like
-          count={comment.likesCount || 0}
-          isLiked={comment.liked || false}
+          count={commentLikes || 0}
+          isLiked={commentLiked || false}
           onClick={handleToggleLike}
           disabled={!isAuthenticated}
         />
@@ -247,8 +290,7 @@ export default function CommentsSection({
   useEffect(() => {
     try {
       setLoading(true);
-      const organizedComments = organizeComments(contentData.comment || []);
-      setComments(organizedComments);
+      setComments(contentData.comment || []);
     } catch (error) {
       console.error("Error organizing comments:", error);
       setError("Failed to load comments.");
@@ -256,29 +298,6 @@ export default function CommentsSection({
       setLoading(false);
     }
   }, [contentData]);
-
-  const organizeComments = (flatComments: Comment[]): Comment[] => {
-    const commentMap = new Map<number, Comment>();
-    const topLevelComments: Comment[] = [];
-
-    flatComments.forEach((comment) => {
-      comment.replies = [];
-      commentMap.set(comment.id, comment);
-    });
-
-    flatComments.forEach((comment) => {
-      if (comment.parentId === null) {
-        topLevelComments.push(comment);
-      } else {
-        const parent = commentMap.get(comment.parentId);
-        if (parent) {
-          parent.replies.push(comment);
-        }
-      }
-    });
-
-    return topLevelComments;
-  };
 
   const updateCommentLikes = (
     commentId: number,
@@ -288,7 +307,7 @@ export default function CommentsSection({
     const updateLikes = (commentList: Comment[]): Comment[] => {
       return commentList.map((c) => {
         if (c.id === commentId) {
-          return { ...c, likes, isLiked };
+          return { ...c, likesCount: likes, liked: isLiked };
         } else if (c.replies && c.replies.length > 0) {
           return { ...c, replies: updateLikes(c.replies) };
         }
