@@ -13,9 +13,17 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const data = await get("/article");
+    const { searchParams } = new URL(req.url);
+    const page = searchParams.get("page") || "0";
+    const size = searchParams.get("size") || "1";
+    const sort = searchParams.getAll("sort");
+    const queryParams = new URLSearchParams();
+    queryParams.append("page", page);
+    queryParams.append("size", size);
+    sort.forEach((s) => queryParams.append("sort", s));
+    const data = await get(`/article?${queryParams.toString()}`);
     return NextResponse.json(data);
   } catch (error: unknown) {
     const errorMessage =

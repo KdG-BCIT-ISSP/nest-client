@@ -21,12 +21,19 @@ export default function PostsPage() {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [currentPage, setCurrentPage] = useState(0);
+  const pageSize = 8;
+  const [totalPages, setTotalPages] = useState(1);
+
   useEffect(() => {
     async function fetchPosts() {
       try {
         setLoading(true);
-        const data = await get("/api/posts");
-        setPosts(data);
+        const data = await get(
+          `/api/posts?page=${currentPage}&size=${pageSize}`
+        );
+        setPosts(data.content);
+        setTotalPages(data.page.totalPages);
       } catch (err) {
         console.error("Failed to fetch posts:", err);
         setError("Failed to fetch posts. Please try again.");
@@ -36,7 +43,7 @@ export default function PostsPage() {
     }
 
     fetchPosts();
-  }, []);
+  }, [currentPage]);
 
   const handleDelete = (id: number) => {
     setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
@@ -67,12 +74,30 @@ export default function PostsPage() {
           />
         </div>
       )}
-      {/* Posts Grid */}
       <div className="max-w-7xl mx-auto px-6 pt-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {posts.map((post) => (
             <PostCard key={post.id} postData={post} onDelete={handleDelete} />
           ))}
+        </div>
+        <div className="flex justify-center mt-10">
+          <button
+            className="px-4 py-2 bg-gray-300 rounded mr-2 disabled:opacity-50"
+            onClick={() => setCurrentPage((prev) => prev - 1)}
+            disabled={currentPage === 0}
+          >
+            Previous
+          </button>
+          <span className="px-4 py-2">
+            Page {currentPage + 1} of {totalPages}
+          </span>
+          <button
+            className="px-4 py-2 bg-gray-300 rounded ml-2 disabled:opacity-50"
+            onClick={() => setCurrentPage((prev) => prev + 1)}
+            disabled={currentPage >= totalPages - 1}
+          >
+            Next
+          </button>
         </div>
       </div>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
