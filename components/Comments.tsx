@@ -71,8 +71,6 @@ function CommentItem({
     checkIfLiked();
   }, [comment.id]);
 
-  console.log(commentLiked, commentLikes);
-
   const handleToggleLike = async () => {
     const previousLiked = commentLiked;
     const previousLikes = commentLikes;
