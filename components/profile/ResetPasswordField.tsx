@@ -52,7 +52,12 @@ export default function ResetPasswordField() {
           "An unexpected error occurred";
         setError(message);
       } else {
-        setError("Network error or server is unavailable.");
+        const errorMsg = error instanceof Error ? error.message : String(error);
+        const cleanedMsg = errorMsg.replace(
+          /^Request failed:\s*\d+\s*-\s*/,
+          ""
+        );
+        setError(cleanedMsg);
       }
     }
   };
