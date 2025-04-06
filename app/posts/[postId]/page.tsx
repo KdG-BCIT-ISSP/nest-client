@@ -1,14 +1,12 @@
 "use client";
-export const dynamic = "force-dynamic";
-
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ArrowLeft, CircleXIcon } from "lucide-react";
 import { EllipsisIcon } from "lucide-react";
 import Tags from "@/components/admin/Tags";
-// import CommentsSection from "@/components/Comments";
-import { PostType } from "@/types/PostType";
+import CommentsSection from "@/components/Comments";
+import { PostType } from "@/types/ContentType";
 import { get, post, put, del } from "@/app/lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
 import { Like, Comments, Bookmark, Share } from "@/components/Icons";
@@ -24,7 +22,8 @@ export default function PostDetailPage() {
   const params = useParams();
   const postId = Number(params.postId);
   const [userdata] = useAtom(userAtom);
-  const [userPost, setPost] = useState<PostType>();
+  // Provide an initial default with a valid "type"
+  const [userPost, setPost] = useState<PostType>({ type: "post" } as PostType);
   const [loading, setLoading] = useState(true);
   const [showReport, setShowReport] = useState(false);
   const [showEditMenu, setShowEditMenu] = useState(false);
@@ -43,27 +42,31 @@ export default function PostDetailPage() {
   const isAuthenticated =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setLoading(true);
-        const [userPost, views] = await Promise.all([
-          get(`/api/content/id/${postId}`),
-          get(`/api/content/${postId}/views`),
-        ]);
-        setPost({
-          ...userPost,
-          content: userPost.content,
-        });
-        setViews(views);
-      } catch (error) {
-        console.error("Error fetching article:", error);
-      } finally {
-        setLoading(false);
-      }
+  const fetchPostData = async () => {
+    try {
+      setLoading(true);
+      const [userPostData, viewsData] = await Promise.all([
+        get(`/api/content/id/${postId}`),
+        get(`/api/content/${postId}/views`),
+      ]);
+      // Ensure that the "type" property is defined, defaulting to "post" if missing.
+      setPost({
+        ...userPostData,
+        type: userPostData.type ?? "post",
+        content: userPostData.content,
+      });
+      setViews(viewsData);
+    } catch (error) {
+      console.error("Error fetching article:", error);
+    } finally {
+      setLoading(false);
     }
-    fetchData();
-  }, [postId]);
+  };
+
+  useEffect(() => {
+    fetchPostData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [postId, isAuthenticated]);
 
   useEffect(() => {
     if (!userPost?.content) return;
@@ -283,7 +286,16 @@ export default function PostDetailPage() {
       {/* Edit Post Modal */}
       {showEditPost && (
         <Modal isOpen={showEditPost} onClose={() => setShowEditPost(false)}>
-          <CreatePost existingPost={userPost} />
+          <CreatePost
+            existingPost={{
+              ...userPost,
+              topicId: userPost.topicId || 0,
+              memberAvatar: userPost.memberAvatar
+                ? [userPost.memberAvatar]
+                : undefined,
+              imageBase64: userPost.imageBase64 || [],
+            }}
+          />
         </Modal>
       )}
 
@@ -372,7 +384,10 @@ export default function PostDetailPage() {
             />
             <Share onClick={handleShareClick} />
           </div>
-          {/* <CommentsSection /> */}
+          <CommentsSection
+            contentData={userPost}
+            refetchContent={fetchPostData}
+          />
         </div>
 
         {showCopied && (

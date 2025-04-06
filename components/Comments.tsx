@@ -36,6 +36,8 @@ function CommentItem({
   const [userData] = useAtom(userAtom);
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(comment.content);
+  const isAuthenticated =
+    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
   const handleReplySubmit = async () => {
     if (!replyContent.trim()) return;
@@ -91,7 +93,9 @@ function CommentItem({
       <div className="flex items-center mb-1">
         <Image
           className="w-8 h-8 rounded-full object-cover mr-2"
-          src={comment.memberAvatar.image}
+          src={
+            comment.memberAvatar.image || "/images/default_profile_image.png"
+          }
           alt="Member avatar"
           width={8}
           height={8}
@@ -101,9 +105,11 @@ function CommentItem({
           {formatDate(comment.createAt)}
         </span>
         <div className="ml-auto relative">
-          <button onClick={() => setShowOptions((prev) => !prev)}>
-            <EllipsisIcon />
-          </button>
+          {isAuthenticated && (
+            <button onClick={() => setShowOptions((prev) => !prev)}>
+              <EllipsisIcon />
+            </button>
+          )}
           {showOptions && (
             <div className="absolute right-0 mt-1 z-10 flex flex-col gap-1 bg-white shadow-md rounded-md p-1">
               {isOwnComment ? (
@@ -170,11 +176,13 @@ function CommentItem({
           count={comment.likes || 0}
           isLiked={comment.isLiked || false}
           onClick={handleToggleLike}
+          disabled={!isAuthenticated}
         />
         {canReply && (
           <button
             className="text-sm text-tertiary hover:underline"
             onClick={() => setShowReplyBox(!showReplyBox)}
+            disabled={!isAuthenticated}
           >
             <Comments count={comment.replies?.length || 0} />
           </button>
@@ -229,6 +237,8 @@ export default function CommentsSection({
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const isAuthenticated =
+    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
   useEffect(() => {
     try {
@@ -350,20 +360,22 @@ export default function CommentsSection({
 
   return (
     <div className="w-full mx-auto font-sans text-gray-800 py-10">
-      <div className="flex items-start mb-4 gap-2">
-        <textarea
-          className="flex-1 p-2 border rounded border-gray-300 h-10"
-          placeholder="Write a comment"
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-        />
-        <button
-          className="px-4 py-2 bg-secondary text-white rounded hover:bg-secondaryPressed"
-          onClick={handleAddComment}
-        >
-          Send
-        </button>
-      </div>
+      {isAuthenticated && (
+        <div className="flex items-start mb-4 gap-2">
+          <textarea
+            className="flex-1 p-2 border rounded border-gray-300 h-10"
+            placeholder="Write a comment"
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+          />
+          <button
+            className="px-4 py-2 bg-secondary text-white rounded hover:bg-secondaryPressed"
+            onClick={handleAddComment}
+          >
+            Send
+          </button>
+        </div>
+      )}
 
       <div>
         {comments.map((comment) => (

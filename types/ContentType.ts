@@ -25,6 +25,7 @@ export interface BaseContent {
   bookmarked?: boolean;
   bookmarkCount?: number;
   viewCount?: number;
+  topicId?: number;
   shareCount?: number;
   memberAvatar?: string;
   imageBase64?: string[];
@@ -44,6 +45,7 @@ export interface ArticleType extends BaseContent {
 
 export interface PostType extends BaseContent {
   type: string;
+  memberId?: number;
   imageBase64?: string[];
   liked?: boolean;
   comment?: Comment[];
