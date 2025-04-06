@@ -18,9 +18,10 @@ const ProfileContent = () => {
   const { t } = useTranslation("common");
   const [userData] = useAtom(userAtom);
   const searchParams = useSearchParams();
-  const [selectedComponent, setSelectedComponent] = useState<React.ReactNode>(null);
+  const [selectedComponent, setSelectedComponent] =
+    useState<React.ReactNode>(null);
   const [hasNewNotification, setHasNewNotification] = useState(false);
-  
+
   useEffect(() => {
     if (!userData?.userId) return;
 
@@ -47,13 +48,21 @@ const ProfileContent = () => {
 
   const profileItems = [
     {
-      label: (        
-        t("navigation.notifications")
+      label: t("navigation.notifications"),
+      component: (
+        <Notifications
+          hasNewNotification={hasNewNotification}
+          onViewed={() => setHasNewNotification(false)}
+        />
       ),
-      component: <Notifications hasNewNotification={hasNewNotification} onViewed={() => setHasNewNotification(false)} />,
       onClick: () => {
         setHasNewNotification(false);
-        setSelectedComponent(<Notifications hasNewNotification={hasNewNotification} onViewed={() => setHasNewNotification(false)} />);
+        setSelectedComponent(
+          <Notifications
+            hasNewNotification={hasNewNotification}
+            onViewed={() => setHasNewNotification(false)}
+          />
+        );
       },
     },
     {
@@ -96,7 +105,12 @@ const ProfileContent = () => {
         setSelectedComponent(<MyPosts />);
         break;
       case "notifications":
-        setSelectedComponent(<Notifications onViewed={() => setHasNewNotification(false)} hasNewNotification={false} />);
+        setSelectedComponent(
+          <Notifications
+            onViewed={() => setHasNewNotification(false)}
+            hasNewNotification={false}
+          />
+        );
         break;
       case "profile":
       default:
@@ -127,7 +141,13 @@ const ProfileView = ({ username, email, region, avatar }: ProfileDataType) => (
   />
 );
 
-const Notifications = ({ hasNewNotification, onViewed }: { hasNewNotification: boolean; onViewed: () => void }) => (
+const Notifications = ({
+  hasNewNotification,
+  onViewed,
+}: {
+  hasNewNotification: boolean;
+  onViewed: () => void;
+}) => (
   <>
     <NotificationSection onViewed={onViewed} />
     {hasNewNotification && (

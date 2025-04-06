@@ -12,7 +12,7 @@ export async function POST(request: Request) {
         // Request Body: { message: string, announcement: true }
         const announcementData = await post(`/notification/announcement/send`, {
           message: body.message,
-          announcement: true
+          announcement: true,
         });
         return NextResponse.json(announcementData);
 
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
         // Request Body: { memberId: string, message: string }
         const sendData = await post(`/notification/send`, {
           memberId: body.memberId,
-          message: body.message
+          message: body.message,
         });
         return NextResponse.json(sendData);
 
