@@ -105,15 +105,94 @@ export default function PostDetailPage() {
     }
   };
 
-  const handleBookmarkToggle = async () => {
+  const handleToggleLike = async () => {
+    if (!userPost || !isAuthenticated) {
+      alert("Please log in to like this article.");
+      return;
+    }
+
+    const previousState = {
+      isLiked: userPost.liked,
+      likesCount: userPost.likesCount,
+    };
+
+    // Optimistic update
+    setPost((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        liked: !prev.liked,
+        likesCount: !prev.liked
+          ? (prev.likesCount || 0) + 1
+          : (prev.likesCount || 0) - 1,
+      };
+    });
+
     try {
-      if (typeof postId === "number") {
-        await put(`/api/content/${postId}/toggleBookmark`, {});
-      } else {
-        console.error("Invalid postId:", postId);
-      }
+      const response = await post(`/api/content/${userPost.id}/toggleLike`, {
+        userPostId: userPost.id,
+      });
+      const newIsLiked =
+        response.isLiked !== undefined ? response.isLiked : !userPost.liked;
+      const updatedLikes = await get(`/api/content/${userPost.id}/likes`);
+      setPost((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          liked: newIsLiked,
+          likesCount: updatedLikes,
+        };
+      });
+    } catch (error) {
+      console.error("Error toggling like:", error);
+      setPost((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          liked: previousState.isLiked,
+          likesCount: previousState.likesCount,
+        };
+      });
+      alert("Failed to toggle like. Please try again.");
+    }
+  };
+
+  const handleBookmarkToggle = async () => {
+    if (!userPost || !isAuthenticated) {
+      alert("Please log in to bookmark this article.");
+      return;
+    }
+
+    const previousState = {
+      bookmarked: userPost.bookmarked,
+      bookmarkCount: userPost.bookmarkCount,
+    };
+
+    // Optimistically update
+    setPost((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        bookmarked: !prev.bookmarked,
+        bookmarkCount: !prev.bookmarked
+          ? (prev.bookmarkCount || 0) + 1
+          : (prev.bookmarkCount || 0) - 1,
+      };
+    });
+
+    try {
+      await put(`/api/content/${postId}/toggleBookmark`, {});
     } catch (error) {
       console.error("Bookmark toggle failed:", error);
+      setPost((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          bookmarked: previousState.bookmarked,
+          bookmarkCount: previousState.bookmarkCount,
+        };
+      });
+      alert("Failed to toggle bookmark. Please try again.");
     }
   };
 
@@ -121,7 +200,7 @@ export default function PostDetailPage() {
     if (!userPost || !userPost.id) return;
     try {
       await del(`/api/posts/${userPost.id}`);
-      alert("Posts deleted successfully");
+      alert("Post deleted successfully");
       window.location.href = "/posts";
     } catch (error) {
       console.error("Error deleting post:", error);
@@ -216,7 +295,7 @@ export default function PostDetailPage() {
         >
           <div className="bg-white p-6 rounded-md flex flex-col space-y-4 justify-center items-center">
             <h1 className="text-xl font-bold">Are you sure?</h1>
-            <p>Do you really want to delete this article?</p>
+            <p>Do you really want to delete this post?</p>
             <div className="flex justify-end gap-4">
               <button
                 onClick={() => setShowDeleteWindow(false)}
@@ -281,12 +360,12 @@ export default function PostDetailPage() {
             <Like
               count={userPost.likesCount || 0}
               isLiked={userPost.liked || false}
-              onClick={() => {}}
+              onClick={handleToggleLike}
               disabled={!isAuthenticated}
             />
             <Comments count={userPost.comment?.length ?? 0} />
             <Bookmark
-              count={12}
+              count={userPost.bookmarkCount || 0}
               isSaved={userPost.bookmarked || false}
               disabled={!isAuthenticated}
               onClick={handleBookmarkToggle}
