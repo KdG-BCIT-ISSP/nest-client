@@ -23,6 +23,7 @@ export interface BaseContent {
   tagNames?: string[];
   liked?: boolean;
   bookmarked?: boolean;
+  bookmarkCount?: number;
   viewCount?: number;
   shareCount?: number;
   memberAvatar?: string;

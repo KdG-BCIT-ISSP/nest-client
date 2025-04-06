@@ -313,7 +313,7 @@ export default function ArticleDetailsPage() {
           />
           <Comments count={article.comment?.length ?? 0} />
           <Bookmark
-            count={12}
+            count={article.bookmarkCount || 0}
             isSaved={article.bookmarked || false}
             disabled={!isAuthenticated}
             onClick={handleBookmarkToggle}
