@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import { ArrowLeft, CircleXIcon } from "lucide-react";
 import { EllipsisIcon } from "lucide-react";
+import { marked } from "marked";
 import parse from "html-react-parser";
 import { Like, Comments, Bookmark, Share } from "@/components/Icons";
 import CommentsSection from "@/components/Comments";
@@ -17,6 +18,7 @@ import { userAtom } from "@/atoms/user/atom";
 import Modal from "@/components/Modal";
 import CreateArticle from "@/components/article/CreateArticle";
 import Loader from "@/components/Loader";
+import { fixQuillLists } from "@/utils/fixQuillLists";
 
 export default function ArticleDetailsPage() {
   useTranslation();
@@ -31,6 +33,7 @@ export default function ArticleDetailsPage() {
   const [showEditMenu, setShowEditMenu] = useState(false);
   const [showEditArticle, setShowEditArticle] = useState(false);
   const [showDeleteWindow, setShowDeleteWindow] = useState(false);
+  const [htmlContent, setHtmlContent] = useState<string>("");
   const [userdata] = useAtom(userAtom);
   const isAdmin =
     userdata.role === "ADMIN" ||
@@ -52,12 +55,18 @@ export default function ArticleDetailsPage() {
         promises.push(get(`/api/content/${articleId}/isLiked`));
       }
       const [articleData, views, likes, isLiked] = await Promise.all(promises);
+
+      const decoded = decodeURIComponent(articleData.content);
+      const fixed = fixQuillLists(decoded);
+      const html = await marked.parse(fixed);
+
       setArticle({
         ...articleData,
-        content: decodeURIComponent(articleData.content),
+        content: fixed,
         likes,
         isLiked: isAuthenticated ? isLiked : false,
       });
+      setHtmlContent(html);
       setViews(views);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -146,8 +155,6 @@ export default function ArticleDetailsPage() {
   }
 
   if (!article) return <div>Article not found</div>;
-
-  const html = parse(article.content);
 
   const handleReportSubmit = async () => {
     if (!article || !article.id) return;
@@ -303,7 +310,7 @@ export default function ArticleDetailsPage() {
           </div>
         </div>
         <hr className="border-gray-600 p-4" />
-        <div className="prose prose-green mb-8">{html}</div>
+        <div className="prose prose-green mb-8">{parse(htmlContent)}</div>
         <div className="flex justify-end gap-4">
           <Like
             count={article.likes || 0}
