@@ -25,17 +25,21 @@ export default function Container({
         </h2>
 
         <div className="top_post_container flex rounded-sm overflow-hidden shadow-lg">
-          <div className="top_post_image w-1/2 relative">
-            <Image
-              src={top_post_image}
-              alt="pregnancy photo"
-              className="w-full h-full object-cover"
-              width={600}
-              height={400}
-              priority
-            />
-          </div>
-          <div className="top_post_title w-1/2 bg-secondary p-8 lg:p-16">
+          {top_post_image && (
+            <div className="top_post_image w-1/2 relative">
+              <Image
+                src={top_post_image}
+                alt="pregnancy photo"
+                className="w-full h-full object-cover"
+                width={600}
+                height={400}
+                priority
+              />
+            </div>
+          )}
+          <div
+            className={`${top_post_image ? "w-1/2" : "w-full"} top_post_title bg-secondary p-8 lg:p-16`}
+          >
             <h3 className="top_post_text mb-2 text-2xl font-bold tracking-tight text-white">
               {top_post_header}
             </h3>

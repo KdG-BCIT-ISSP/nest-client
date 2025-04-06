@@ -48,7 +48,7 @@ export default function Home() {
         {topArticle && (
           <Container
             section_title="Most Popular Articles"
-            top_post_image={topArticle.coverImage || "/default-image.jpg"}
+            top_post_image={topArticle.coverImage}
             top_post_header={topArticle.title}
             top_post_text={decodeAndTrim(topArticle.content)}
             href={`/curated-articles/${topArticle.id}`}
@@ -64,7 +64,7 @@ export default function Home() {
         {topPost && (
           <Container
             section_title="Most Popular Posts"
-            top_post_image={topPost.imageBase64?.[0] || "/default-image.jpg"}
+            top_post_image={topPost.imageBase64?.[0] || ""}
             top_post_header={topPost.title}
             top_post_text={decodeAndTrim(topPost.content)}
             href={`/posts/${topPost.id}`}
