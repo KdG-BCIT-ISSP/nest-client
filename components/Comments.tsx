@@ -177,8 +177,8 @@ function CommentItem({
 
       <div className="flex gap-4 mb-2">
         <Like
-          count={comment.likes || 0}
-          isLiked={comment.isLiked || false}
+          count={comment.likesCount || 0}
+          isLiked={comment.liked || false}
           onClick={handleToggleLike}
           disabled={!isAuthenticated}
         />

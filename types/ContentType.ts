@@ -10,8 +10,8 @@ export interface Comment {
   parentId: number | null;
   postId: number;
   replies: Comment[];
-  likes?: number;
-  isLiked?: boolean;
+  likesCount?: number;
+  liked?: boolean;
 }
 export interface BaseContent {
   id: number;
