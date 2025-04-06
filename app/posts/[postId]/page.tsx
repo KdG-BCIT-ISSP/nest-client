@@ -17,6 +17,8 @@ import Modal from "@/components/Modal";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
 import Loader from "@/components/Loader";
+import { marked } from "marked";
+import parse from "html-react-parser";
 
 export default function PostDetailPage() {
   const params = useParams();
@@ -31,6 +33,7 @@ export default function PostDetailPage() {
   const [showDeleteWindow, setShowDeleteWindow] = useState(false);
   const [showEditPost, setShowEditPost] = useState(false);
   const [views, setViews] = useState(0);
+  const [html, setHtml] = useState<string>("");
   const isOwnerOrAdmin =
     Number(userdata.userId) === userPost?.memberId ||
     userdata.role === "ADMIN" ||
@@ -61,6 +64,17 @@ export default function PostDetailPage() {
     }
     fetchData();
   }, [postId]);
+
+  useEffect(() => {
+    if (!userPost?.content) return;
+
+    async function convertMarkdown() {
+      const parsed = await marked.parse(userPost?.content ?? "");
+      setHtml(parsed);
+    }
+
+    convertMarkdown();
+  }, [userPost?.content]);
 
   if (loading) {
     return <Loader />;
@@ -262,13 +276,7 @@ export default function PostDetailPage() {
             </div>
           )}
           <Tags tagsList={userPost.tagNames ?? []} />
-          <div
-            style={{ whiteSpace: "pre-line" }}
-            className="prose prose-green mb-8"
-          >
-            {userPost.content}
-          </div>
-
+          <div className="prose prose-green mb-8">{parse(html)}</div>
           <div className="flex justify-end gap-4">
             <Like
               count={userPost.likesCount || 0}
