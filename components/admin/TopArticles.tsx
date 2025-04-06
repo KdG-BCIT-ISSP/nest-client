@@ -20,16 +20,25 @@ export default function TopArticles({
   const [topArticles, setTopArticles] = useState<ArticleCardType[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [currentPage, setCurrentPage] = useState(0);
+  const pageSize = 3;
+  const [totalPages, setTotalPages] = useState(1);
+
   useEffect(() => {
     async function fetchArticles() {
       try {
         setLoading(true);
-        const data = await get("/api/article");
-        const updatedArticles = data.map((article: ArticleCardType) => ({
-          ...article,
-          content: decodeURIComponent(article.content),
-        }));
+        const data = await get(
+          `/api/article?page=${currentPage}&size=${pageSize}`
+        );
+        const updatedArticles = data.content.map(
+          (article: ArticleCardType) => ({
+            ...article,
+            content: decodeURIComponent(article.content),
+          })
+        );
         setAllArticles(updatedArticles);
+        setTotalPages(data.page.totalPages);
       } catch (error) {
         console.error("Error fetching articles:", error);
       } finally {
@@ -37,7 +46,7 @@ export default function TopArticles({
       }
     }
     fetchArticles();
-  }, []);
+  }, [currentPage]);
 
   useEffect(() => {
     if (allArticles.length > 0 && sortBy) {
@@ -65,6 +74,25 @@ export default function TopArticles({
             }
           />
         ))}
+      </div>
+      <div className="flex justify-center mt-10">
+        <button
+          className="px-4 py-2 bg-gray-300 rounded mr-2 disabled:opacity-50"
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+          disabled={currentPage === 0}
+        >
+          Previous
+        </button>
+        <span className="px-4 py-2">
+          Page {currentPage + 1} of {totalPages}
+        </span>
+        <button
+          className="px-4 py-2 bg-gray-300 rounded ml-2 disabled:opacity-50"
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+          disabled={currentPage >= totalPages - 1}
+        >
+          Next
+        </button>
       </div>
     </div>
   );

@@ -20,12 +20,19 @@ export default function TopPosts({
   const [topPosts, setTopPosts] = useState<PostType[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [currentPage, setCurrentPage] = useState(0);
+  const pageSize = 3;
+  const [totalPages, setTotalPages] = useState(1);
+
   useEffect(() => {
     async function fetchPosts() {
       try {
         setLoading(true);
-        const posts = await get("/api/posts");
-        setAllPosts(posts); // Stores all posts in state
+        const posts = await get(
+          `/api/posts?page=${currentPage}&size=${pageSize}`
+        );
+        setAllPosts(posts.content);
+        setTotalPages(posts.page.totalPages);
       } catch (error) {
         console.error("Error fetching posts:", error);
       } finally {
@@ -33,7 +40,7 @@ export default function TopPosts({
       }
     }
     fetchPosts();
-  }, []);
+  }, [currentPage]);
 
   useEffect(() => {
     if (allPosts.length > 0 && sortBy) {
@@ -61,6 +68,25 @@ export default function TopPosts({
             }
           />
         ))}
+      </div>
+      <div className="flex justify-center mt-10">
+        <button
+          className="px-4 py-2 bg-gray-300 rounded mr-2 disabled:opacity-50"
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+          disabled={currentPage === 0}
+        >
+          Previous
+        </button>
+        <span className="px-4 py-2">
+          Page {currentPage + 1} of {totalPages}
+        </span>
+        <button
+          className="px-4 py-2 bg-gray-300 rounded ml-2 disabled:opacity-50"
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+          disabled={currentPage >= totalPages - 1}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
