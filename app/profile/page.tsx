@@ -12,15 +12,50 @@ import ResetPasswordField from "@/components/profile/ResetPasswordField";
 import MyPosts from "@/components/profile/MyPosts";
 import { useSearchParams } from "next/navigation";
 import { useTranslation } from "next-i18next";
+import NotificationSection from "@/components/profile/notifications/NotificationSection";
 
 const ProfileContent = () => {
   const { t } = useTranslation("common");
   const [userData] = useAtom(userAtom);
   const searchParams = useSearchParams();
-  const [selectedComponent, setSelectedComponent] =
-    useState<React.ReactNode>(null);
+  const [selectedComponent, setSelectedComponent] = useState<React.ReactNode>(null);
+  const [hasNewNotification, setHasNewNotification] = useState(false);
+  
+  useEffect(() => {
+    if (!userData?.userId) return;
+
+    const eventSource = new EventSource(`/api/notification/subscribe`);
+
+    eventSource.addEventListener("connect", () => {
+      console.log("SSE connected");
+    });
+
+    eventSource.addEventListener("message", (event) => {
+      setHasNewNotification(true);
+      console.log("New Notification:", event.data);
+    });
+
+    eventSource.onerror = (err) => {
+      console.error("SSE error:", err);
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, [userData?.userId]);
 
   const profileItems = [
+    {
+      label: (        
+        t("navigation.notifications")
+      ),
+      component: <Notifications hasNewNotification={hasNewNotification} onViewed={() => setHasNewNotification(false)} />,
+      onClick: () => {
+        setHasNewNotification(false);
+        setSelectedComponent(<Notifications hasNewNotification={hasNewNotification} onViewed={() => setHasNewNotification(false)} />);
+      },
+    },
     {
       label: t("navigation.profile"),
       component: <ProfileView {...userData} />,
@@ -45,11 +80,6 @@ const ProfileContent = () => {
       onClick: () => setSelectedComponent(<MyPosts />),
     },
     {
-      label: t("navigation.notifications"),
-      component: <Notifications />,
-      onClick: () => setSelectedComponent(<Notifications />),
-    },
-    {
       label: t("navigation.resetPassword"),
       component: <ResetPasswordField />,
       onClick: () => setSelectedComponent(<ResetPasswordField />),
@@ -66,7 +96,7 @@ const ProfileContent = () => {
         setSelectedComponent(<MyPosts />);
         break;
       case "notifications":
-        setSelectedComponent(<Notifications />);
+        setSelectedComponent(<Notifications onViewed={() => setHasNewNotification(false)} hasNewNotification={false} />);
         break;
       case "profile":
       default:
@@ -97,7 +127,14 @@ const ProfileView = ({ username, email, region, avatar }: ProfileDataType) => (
   />
 );
 
-const Notifications = () => <div>Notifications Content</div>;
+const Notifications = ({ hasNewNotification, onViewed }: { hasNewNotification: boolean; onViewed: () => void }) => (
+  <>
+    <NotificationSection onViewed={onViewed} />
+    {hasNewNotification && (
+      <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500" />
+    )}
+  </>
+);
 
 export default function ProfilePage() {
   return (
