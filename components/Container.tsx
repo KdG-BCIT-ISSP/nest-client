@@ -18,10 +18,7 @@ export default function Container({
       <div className="section1">
         <h2 className="section_title mb-2 text-3xl font-bold tracking-tight text-black pb-4 flex justify-between items-center">
           {section_title}
-          <Link
-            href={href}
-            className="inline-block text-sm flex flow-row gap-2"
-          >
+          <Link href={href} className="text-sm flex flow-row gap-2">
             MORE
             <ArrowRight size={20} />
           </Link>
