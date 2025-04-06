@@ -52,7 +52,7 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
       if (selectedTopic) {
         setSelectedTopic(selectedTopic);
       }
-      console.log("Existing post:", existingPost);
+      console.log(selectedTopic);
     }
   }, [existingPost, topics]);
 
@@ -86,6 +86,7 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
       try {
         const data = await get("/api/topic");
         setTopics(data);
+        setSelectedTopic(data[0]);
         if (data.length > 0) {
           setUserPost((prev) => ({
             ...prev,
@@ -156,14 +157,6 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
         : t("post.requiredField", { name: t(`post.${name}`) }),
     }));
   };
-
-  useEffect(() => {
-    console.log("Updated imagePreviews:", imagePreviews);
-  }, [imagePreviews]);
-
-  useEffect(() => {
-    console.log("Updated userPost:", userPost);
-  }, [userPost]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();

@@ -50,9 +50,8 @@ export default function PostDetailPage() {
         ]);
         setPost({
           ...userPost,
-          content: decodeURIComponent(userPost.content),
+          content: userPost.content,
         });
-        console.log("userPost", userPost);
         setViews(views);
       } catch (error) {
         console.error("Error fetching article:", error);
@@ -116,7 +115,7 @@ export default function PostDetailPage() {
   };
 
   return (
-    <div className="w-max mx-auto pt-10">
+    <div className="max-w-2xl w-full mx-auto pt-10">
       <div className="flex justify-between items-center p-4">
         <button onClick={() => window.history.back()}>
           <ArrowLeft />
@@ -229,11 +228,9 @@ export default function PostDetailPage() {
             {formatDate(userPost.createdAt ?? "Unknown date")}
           </p>
           <p className="text-xs mt-2">{views} verified views</p>
-
           <h1 className="text-3xl text-black font-bold mt-2 mb-2 font-serif">
             {userPost.title}
           </h1>
-
           {userPost.imageBase64?.length === 1 ? (
             <div className="w-full max-w-screen-md mx-auto px-4 py-6">
               <Image
@@ -264,10 +261,14 @@ export default function PostDetailPage() {
               ))}
             </div>
           )}
-
           <Tags tagsList={userPost.tagNames ?? []} />
+          <div
+            style={{ whiteSpace: "pre-line" }}
+            className="prose prose-green mb-8"
+          >
+            {userPost.content}
+          </div>
 
-          <div className="prose prose-green mb-8">{userPost.content}</div>
           <div className="flex justify-end gap-4">
             <Like
               count={userPost.likesCount || 0}
@@ -284,7 +285,6 @@ export default function PostDetailPage() {
             />
             <Share onClick={handleShareClick} />
           </div>
-
           {/* <CommentsSection /> */}
         </div>
 

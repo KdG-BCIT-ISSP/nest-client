@@ -13,4 +13,5 @@ export interface ReportCardProps {
     reason: string;
     createdAt: string;
   }>;
+  isPost?: boolean;
 }

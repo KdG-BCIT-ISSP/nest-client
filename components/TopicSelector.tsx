@@ -14,7 +14,6 @@ export default function TopicSelector({
   topics,
 }: TopicSelectorProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  console.log("Selected topic:", selectedTopic);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -56,14 +55,14 @@ export default function TopicSelector({
           className="absolute z-10 mt-2 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44"
         >
           <ul
-            className="py-2 text-sm text-gray-700 dark:text-gray-200 max-h-60 overflow-y-auto"
+            className="py-2 text-sm text-gray-700 max-h-60 overflow-y-auto"
             aria-labelledby="dropdownInformationButton"
           >
             {topics.map((topic) => (
               <li key={topic.id}>
                 <button
                   onClick={() => handleTopicClick(topic)}
-                  className={`block w-full text-left px-4 py-2 bg-white hover:bg-gray-100 dark:hover:bg-gray-600 ${
+                  className={`block w-full text-left px-4 py-2 bg-white hover:bg-gray-100 ${
                     selectedTopic?.id === topic.id ? "bg-gray-100" : ""
                   }`}
                 >

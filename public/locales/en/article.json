@@ -3,6 +3,7 @@
     "likes": "Likes",
     "views": "Views",
     "shares": "Shares",
+    "saves": "Saves",
     "delete": "Delete",
     "confirmDelete": "Are you sure you want to delete this article?",
     "deletedSuccess": "Article deleted successfully!",

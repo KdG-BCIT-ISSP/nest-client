@@ -24,25 +24,17 @@ export const Like: React.FC<LikeProps> = ({
   return (
     <button
       className={`flex items-center gap-1 transition-colors ${
-        disabled
-          ? "text-gray-400 cursor-not-allowed"
-          : "text-gray-600 hover:text-red-600"
+        disabled ? "cursor-not-allowed" : ""
       }`}
       onClick={onClick}
       disabled={disabled}
     >
       <ThumbsUpIcon
         size={search ? 14 : 22}
-        color={isLiked && !disabled ? "#7b7a6c" : "#CD6A6A"}
+        color={"#CD6A6A"}
         fill={isLiked && !disabled ? "#CD6A6A" : "none"}
       />
-      <span
-        className={`text-lg ml-1 font-bold ${
-          disabled ? "text-gray-400" : "text-[#CD6A6A]"
-        }`}
-      >
-        {count}
-      </span>
+      <span className={`text-lg ml-1 font-bold text-[#CD6A6A]`}>{count}</span>
     </button>
   );
 };
@@ -80,25 +72,17 @@ export const Bookmark: React.FC<BookmarkProps> = ({
   return (
     <button
       className={`flex items-center gap-1 transition-colors ${
-        disabled
-          ? "text-gray-400 cursor-not-allowed"
-          : "text-gray-600 hover:text-blue-600"
+        disabled ? "cursor-not-allowed" : "text-gray-600 hover:text-blue-600"
       }`}
       onClick={onClick}
       disabled={disabled}
     >
       <BookmarkIcon
         size={search ? 14 : 22}
-        color={isSaved && !disabled ? "#7b7a6c" : "#CD6A6A"}
+        color={"#CD6A6A"}
         fill={isSaved && !disabled ? "#CD6A6A" : "none"}
       />
-      <span
-        className={`text-lg ml-1 font-bold ${
-          disabled ? "text-gray-400" : "text-[#CD6A6A]"
-        }`}
-      >
-        {count}
-      </span>
+      <span className={`text-lg ml-1 font-bold text-[#CD6A6A]`}>{count}</span>
     </button>
   );
 };
