@@ -1,3 +1,6 @@
+"use client";
+export const dynamic = "force-dynamic";
+
 import Layout from "@/components/Layout";
 import Providers from "./providers";
 import "./globals.css";
