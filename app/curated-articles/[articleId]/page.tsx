@@ -128,14 +128,42 @@ export default function ArticleDetailsPage() {
   };
 
   const handleBookmarkToggle = async () => {
+    if (!article || !isAuthenticated) {
+      alert("Please log in to bookmark this article.");
+      return;
+    }
+
+    const previousState = {
+      bookmarked: article.bookmarked,
+      bookmarkCount: article.bookmarkCount,
+    };
+
+    setArticle((prev) => {
+      if (!prev) return prev;
+      const newBookmarked = !prev.bookmarked;
+      const newBookmarkCount = newBookmarked
+        ? (prev.bookmarkCount || 0) + 1
+        : (prev.bookmarkCount || 0) - 1;
+      return {
+        ...prev,
+        bookmarked: newBookmarked,
+        bookmarkCount: newBookmarkCount,
+      };
+    });
+
     try {
-      if (typeof articleId === "number") {
-        await put(`/api/content/${articleId}/toggleBookmark`, {});
-      } else {
-        console.error("Invalid articleId:", articleId);
-      }
+      await put(`/api/content/${articleId}/toggleBookmark`, {});
     } catch (error) {
       console.error("Bookmark toggle failed:", error);
+      setArticle((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          bookmarked: previousState.bookmarked,
+          bookmarkCount: previousState.bookmarkCount,
+        };
+      });
+      alert("Failed to toggle bookmark. Please try again.");
     }
   };
 
