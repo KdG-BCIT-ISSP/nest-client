@@ -27,8 +27,8 @@ export default function StatisticsComponent() {
       try {
         const [users, posts, articles] = await Promise.all([
           get("/api/member/all"),
-          get("/api/posts"),
-          get("/api/article"),
+          get("/api/posts/stats"),
+          get("/api/article/stats"),
         ]);
 
         // Count user roles

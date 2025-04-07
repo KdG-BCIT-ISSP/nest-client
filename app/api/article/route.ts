@@ -13,9 +13,23 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET(req: Request) {
+export async function GET(request: Request) {
+  const { pathname, searchParams } = new URL(request.url);
+
+  if (pathname.endsWith("/stats")) {
+    try {
+      const data = await get("/article/stats");
+      return NextResponse.json(data);
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch article stats";
+      return NextResponse.json({ message: errorMessage }, { status: 500 });
+    }
+  }
+
   try {
-    const { searchParams } = new URL(req.url);
     const page = searchParams.get("page") || "0";
     const size = searchParams.get("size") || "1";
     const sort = searchParams.getAll("sort");
