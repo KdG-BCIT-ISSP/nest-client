@@ -75,7 +75,8 @@ export async function PUT(request: Request) {
   try {
     switch (true) {
       case url.includes("/read/"):
-        const notificationId = url.split("/read/")[1]; // Extract notificationID from URL
+        const pathname = new URL(url).pathname;
+        const notificationId = pathname.split("/read/")[1]; // Extract notificationID from URL
         if (!notificationId) {
           return NextResponse.json(
             { message: "Notification ID is required" },
