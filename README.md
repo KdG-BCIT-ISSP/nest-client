@@ -123,4 +123,4 @@ To learn more about Next.js, take a look at the following resources:
 
 ## Credits
 
-<img src="/public/nest-kdg-bcit.png" alt="KdG BCIT NEST" width="100" height="100">
+<img src="/public/nest-kdg-bcit.png" alt="KdG BCIT NEST" width="350" height="100">
