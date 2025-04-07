@@ -1,5 +1,4 @@
 "use client";
-export const dynamic = "force-dynamic";
 
 import { useEffect, useRef } from "react";
 import { userAtom } from "@/atoms/user/atom";
@@ -9,7 +8,11 @@ import { get } from "@/app/lib/fetchInterceptor";
 import { useTranslation } from "next-i18next";
 import { announcementAtom } from "@/atoms/announcement/atom";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function ClientLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { i18n } = useTranslation();
   const [, setUserData] = useAtom(userAtom);
   const [, setAnnouncementState] = useAtom(announcementAtom); // Use announcementAtom
@@ -69,9 +72,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="antialiased min-h-screen flex flex-col p-12">
-      <main className="flex-grow" style={{ backgroundColor: "#ffffff" }}>
-        {children}
-      </main>
+      <main className="flex-grow bg-white">{children}</main>
     </div>
   );
 }

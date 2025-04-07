@@ -18,34 +18,35 @@ export default function Container({
       <div className="section1">
         <h2 className="section_title mb-2 text-3xl font-bold tracking-tight text-black pb-4 flex justify-between items-center">
           {section_title}
-          <Link
-            href={href}
-            className="inline-block text-sm flex flow-row gap-2"
-          >
+          <Link href={href} className="text-sm flex flow-row gap-2">
             MORE
             <ArrowRight size={20} />
           </Link>
         </h2>
 
         <div className="top_post_container flex rounded-sm overflow-hidden shadow-lg">
-          <div className="top_post_image w-1/2 relative">
-            <Image
-              src={top_post_image}
-              alt="pregnancy photo"
-              className="w-full h-full object-cover"
-              width={600}
-              height={400}
-              priority
-            />
-          </div>
-          <div className="top_post_title w-1/2 bg-secondary p-8 lg:p-16">
+          {top_post_image && (
+            <div className="top_post_image w-1/2 relative">
+              <Image
+                src={top_post_image}
+                alt="pregnancy photo"
+                className="w-full h-full object-cover"
+                width={600}
+                height={400}
+                priority
+              />
+            </div>
+          )}
+          <div
+            className={`${top_post_image ? "w-1/2" : "w-full"} top_post_title bg-secondary p-8 lg:p-16`}
+          >
             <h3 className="top_post_text mb-2 text-2xl font-bold tracking-tight text-white">
               {top_post_header}
             </h3>
             <p className="font-normal text-lg text-white/90">{top_post_text}</p>
             <div className="flex justify-end gap-2 pt-10">
-              <Like count={likes || 0} />
-              <Comments count={comments ?? 0} />
+              <Like count={likes || 0} disabled color="#FFFFFF" />
+              <Comments count={comments ?? 0} color="#FFFFFF" />
             </div>
           </div>
         </div>

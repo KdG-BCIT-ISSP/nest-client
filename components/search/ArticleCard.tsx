@@ -26,7 +26,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
   return (
     <div
       onClick={handleClick}
-      className="flex flex-col bg-white md:flex-row md:max-w-2xl hover:bg-lightGray cursor-pointer"
+      className="flex flex-col bg-white md:flex-row hover:bg-lightGray cursor-pointer"
     >
       <div className="md:w-80 h-48 md:h-auto relative">
         <Image

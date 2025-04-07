@@ -31,11 +31,15 @@ function CommentItem({
   onDelete,
 }: CommentItemProps) {
   const [showReplyBox, setShowReplyBox] = useState(false);
+  const [commentLiked, setCommentLiked] = useState(false);
+  const [commentLikes, setCommentLikes] = useState(0);
   const [replyContent, setReplyContent] = useState("");
   const [showOptions, setShowOptions] = useState(false);
   const [userData] = useAtom(userAtom);
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(comment.content);
+  const isAuthenticated =
+    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
   const handleReplySubmit = async () => {
     if (!replyContent.trim()) return;
@@ -44,12 +48,51 @@ function CommentItem({
     setShowReplyBox(false);
   };
 
+  useEffect(() => {
+    const fetchCommentLikes = async () => {
+      try {
+        const likes = await get(`/api/comment/${comment.id}/likes`);
+        setCommentLikes(likes);
+      } catch (error) {
+        console.error("Error fetching comment likes:", error);
+      }
+    };
+
+    const checkIfLiked = async () => {
+      try {
+        const isLiked = await get(`/api/comment/${comment.id}/isLiked`);
+        setCommentLiked(isLiked);
+      } catch (error) {
+        console.error("Error checking if comment is liked:", error);
+      }
+    };
+
+    fetchCommentLikes();
+    checkIfLiked();
+  }, [comment.id]);
+
   const handleToggleLike = async () => {
+    const previousLiked = commentLiked;
+    const previousLikes = commentLikes;
+
+    // optimistic update
+    const newLiked = !previousLiked;
+    const newLikes = newLiked
+      ? previousLikes + 1
+      : Math.max(0, previousLikes - 1);
+    setCommentLiked(newLiked);
+    setCommentLikes(newLikes);
+    updateCommentLikes(comment.id, newLikes, newLiked);
+
     try {
-      const isLiked = await post(`/api/comment/${comment.id}/toggleLike`, {});
-      const likes = await get(`/api/comment/${comment.id}/likes`);
-      updateCommentLikes(comment.id, likes, isLiked);
+      await post(`/api/comment/${comment.id}/toggleLike`, {});
+      const likesResponse = await get(`/api/comment/${comment.id}/likes`);
+      setCommentLikes(likesResponse);
+      updateCommentLikes(comment.id, likesResponse, newLiked);
     } catch (error) {
+      setCommentLiked(previousLiked);
+      setCommentLikes(previousLikes);
+      updateCommentLikes(comment.id, previousLikes, previousLiked);
       console.error("Error toggling comment like:", error);
     }
   };
@@ -84,14 +127,20 @@ function CommentItem({
   };
 
   const canReply = comment.parentId === null;
-  const isOwnComment = userData?.userId == String(comment.memberId);
+  const isOwnCommentOrAdmin =
+    userData?.userId == String(comment.memberId) ||
+    userData.role === "ADMIN" ||
+    userData.role === "SUPER_ADMIN" ||
+    userData.role === "MODERATOR";
 
   return (
     <div className="relative ml-4 pl-4 border-l border-gray-300 mb-4">
       <div className="flex items-center mb-1">
         <Image
           className="w-8 h-8 rounded-full object-cover mr-2"
-          src={comment.memberAvatar.image}
+          src={
+            comment.memberAvatar.image || "/images/default_profile_image.png"
+          }
           alt="Member avatar"
           width={8}
           height={8}
@@ -101,12 +150,14 @@ function CommentItem({
           {formatDate(comment.createAt)}
         </span>
         <div className="ml-auto relative">
-          <button onClick={() => setShowOptions((prev) => !prev)}>
-            <EllipsisIcon />
-          </button>
+          {isAuthenticated && (
+            <button onClick={() => setShowOptions((prev) => !prev)}>
+              <EllipsisIcon />
+            </button>
+          )}
           {showOptions && (
             <div className="absolute right-0 mt-1 z-10 flex flex-col gap-1 bg-white shadow-md rounded-md p-1">
-              {isOwnComment ? (
+              {isOwnCommentOrAdmin ? (
                 <>
                   <button
                     onClick={() => {
@@ -167,14 +218,16 @@ function CommentItem({
 
       <div className="flex gap-4 mb-2">
         <Like
-          count={comment.likes || 0}
-          isLiked={comment.isLiked || false}
+          count={commentLikes || 0}
+          isLiked={commentLiked || false}
           onClick={handleToggleLike}
+          disabled={!isAuthenticated}
         />
         {canReply && (
           <button
             className="text-sm text-tertiary hover:underline"
             onClick={() => setShowReplyBox(!showReplyBox)}
+            disabled={!isAuthenticated}
           >
             <Comments count={comment.replies?.length || 0} />
           </button>
@@ -229,12 +282,13 @@ export default function CommentsSection({
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const isAuthenticated =
+    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
   useEffect(() => {
     try {
       setLoading(true);
-      const organizedComments = organizeComments(contentData.comment || []);
-      setComments(organizedComments);
+      setComments(contentData.comment || []);
     } catch (error) {
       console.error("Error organizing comments:", error);
       setError("Failed to load comments.");
@@ -242,29 +296,6 @@ export default function CommentsSection({
       setLoading(false);
     }
   }, [contentData]);
-
-  const organizeComments = (flatComments: Comment[]): Comment[] => {
-    const commentMap = new Map<number, Comment>();
-    const topLevelComments: Comment[] = [];
-
-    flatComments.forEach((comment) => {
-      comment.replies = [];
-      commentMap.set(comment.id, comment);
-    });
-
-    flatComments.forEach((comment) => {
-      if (comment.parentId === null) {
-        topLevelComments.push(comment);
-      } else {
-        const parent = commentMap.get(comment.parentId);
-        if (parent) {
-          parent.replies.push(comment);
-        }
-      }
-    });
-
-    return topLevelComments;
-  };
 
   const updateCommentLikes = (
     commentId: number,
@@ -274,7 +305,7 @@ export default function CommentsSection({
     const updateLikes = (commentList: Comment[]): Comment[] => {
       return commentList.map((c) => {
         if (c.id === commentId) {
-          return { ...c, likes, isLiked };
+          return { ...c, likesCount: likes, liked: isLiked };
         } else if (c.replies && c.replies.length > 0) {
           return { ...c, replies: updateLikes(c.replies) };
         }
@@ -350,20 +381,22 @@ export default function CommentsSection({
 
   return (
     <div className="w-full mx-auto font-sans text-gray-800 py-10">
-      <div className="flex items-start mb-4 gap-2">
-        <textarea
-          className="flex-1 p-2 border rounded border-gray-300 h-10"
-          placeholder="Write a comment"
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-        />
-        <button
-          className="px-4 py-2 bg-secondary text-white rounded hover:bg-secondaryPressed"
-          onClick={handleAddComment}
-        >
-          Send
-        </button>
-      </div>
+      {isAuthenticated && (
+        <div className="flex items-start mb-4 gap-2">
+          <textarea
+            className="flex-1 p-2 border rounded border-gray-300 h-10"
+            placeholder="Write a comment"
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+          />
+          <button
+            className="px-4 py-2 bg-secondary text-white rounded hover:bg-secondaryPressed"
+            onClick={handleAddComment}
+          >
+            Send
+          </button>
+        </div>
+      )}
 
       <div>
         {comments.map((comment) => (

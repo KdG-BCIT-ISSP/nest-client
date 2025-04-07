@@ -10,8 +10,8 @@ export interface Comment {
   parentId: number | null;
   postId: number;
   replies: Comment[];
-  likes?: number;
-  isLiked?: boolean;
+  likesCount?: number;
+  liked?: boolean;
 }
 export interface BaseContent {
   id: number;
@@ -23,7 +23,9 @@ export interface BaseContent {
   tagNames?: string[];
   liked?: boolean;
   bookmarked?: boolean;
+  bookmarkCount?: number;
   viewCount?: number;
+  topicId?: number;
   shareCount?: number;
   memberAvatar?: string;
   imageBase64?: string[];
@@ -43,6 +45,7 @@ export interface ArticleType extends BaseContent {
 
 export interface PostType extends BaseContent {
   type: string;
+  memberId?: number;
   imageBase64?: string[];
   liked?: boolean;
   comment?: Comment[];

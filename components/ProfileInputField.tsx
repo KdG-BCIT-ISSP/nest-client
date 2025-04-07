@@ -7,10 +7,9 @@ import React from "react";
 import Image from "next/image";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
+import imageCompression from "browser-image-compression";
 import { useTranslation } from "next-i18next";
 import { get, put } from "@/app/lib/fetchInterceptor";
-import ImageUpload from "./ImageUpload";
-import Button from "./Button";
 
 export default function ProfileInputField({
   username,
@@ -79,27 +78,32 @@ export default function ProfileInputField({
     return null;
   }
 
-  const handleAvatarChange = async (image: string) => {
-    setFormData((prev) => ({ ...prev, avatar: image }));
-    setImagePreview(image);
-    try {
-      await put("/api/member/me", { avatar: image });
-      const updated = await get("/api/member/me");
-      setUserData(updated);
-    } catch (error) {
-      console.error("Failed to auto-save avatar", error);
-    }
-  };
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    if (file) {
+      setImagePreview(URL.createObjectURL(file));
 
-  const handleAvatarRemove = async () => {
-    setFormData((prev) => ({ ...prev, avatar: "" }));
-    setImagePreview(null);
-    try {
-      await put("/api/member/me", { avatar: "" });
-      const updated = await get("/api/member/me");
-      setUserData(updated);
-    } catch (error) {
-      console.error("Failed to remove avatar", error);
+      try {
+        const options = {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 300,
+          useWebWorker: true,
+          initialQuality: 0.7,
+        };
+
+        const compressedFile = await imageCompression(file, options);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (reader.result) {
+            setImagePreview(reader.result as string);
+            setFormData({ ...formData, avatar: reader.result as string });
+          }
+        };
+
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
+        console.error("Failed to upload image", error);
+      }
     }
   };
 
@@ -151,27 +155,23 @@ export default function ProfileInputField({
             height={70}
             priority
           />
-          <Button
-            onClick={() =>
-              document.getElementById("profileImageUpload")?.click()
-            }
-            className="mt-2 p-2 border-secondary border-2 rounded-md text-sm text-secondary hover:text-white hover:bg-secondary"
-          >
-            {t("profile.uploadImage")}
-          </Button>
         </div>
 
-        {/* Text Info Section */}
         <div className="flex flex-col justify-center ml-3">
           <h5 className="text-md text-gray-600">{formData.username}</h5>
           <p className="text-gray-500 text-sm">{formData.email}</p>
-          <ImageUpload
-            onImageChange={handleAvatarChange}
-            onRemoveImage={handleAvatarRemove}
-            imagePreviews={formData.avatar ? [formData.avatar] : []}
-            multiple={false}
-            triggerId="profileImageUpload"
-            button={<></>} // disables internal button
+          <button
+            className="mt-2 border-secondary border-2 rounded-md text-sm text-secondary hover:text-white hover:bg-secondary"
+            onClick={() => document.getElementById("imageInput")?.click()}
+          >
+            {t("profile.uploadImage")}
+          </button>
+          <input
+            type="file"
+            id="imageInput"
+            className="hidden"
+            accept="image/*"
+            onChange={handleImageChange}
           />
         </div>
       </div>

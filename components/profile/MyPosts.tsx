@@ -7,6 +7,7 @@ import { PostType } from "@/types/PostType";
 import { get } from "@/app/lib/fetchInterceptor";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
+import Loader from "../Loader";
 
 export default function MyPosts() {
   const [loading, setLoading] = useState(true);
@@ -30,7 +31,7 @@ export default function MyPosts() {
   }, [userData.userId]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   if (error) {
@@ -39,7 +40,7 @@ export default function MyPosts() {
 
   return (
     <div className="pl-0 p-8 flex flex-col items-start">
-      <h1 className="text-2xl font-bold text-black mb-4">Saved Posts</h1>
+      <h1 className="text-2xl font-bold text-black mb-4">My Posts</h1>
       <div className="flex flex-col gap-6 w-full">
         {myPosts.map((post) => (
           <PostCard

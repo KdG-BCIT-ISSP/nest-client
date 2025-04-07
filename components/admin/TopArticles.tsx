@@ -6,6 +6,7 @@ import { ArticleCardType } from "@/types/ArticleCardType";
 import ArticleCard from "@/components/search/ArticleCard";
 import { get } from "@/app/lib/fetchInterceptor";
 import Loader from "../Loader";
+import Pagination from "../Pagination";
 
 export default function TopArticles({
   limit = 3,
@@ -20,16 +21,25 @@ export default function TopArticles({
   const [topArticles, setTopArticles] = useState<ArticleCardType[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [currentPage, setCurrentPage] = useState(0);
+  const pageSize = 3;
+  const [totalPages, setTotalPages] = useState(1);
+
   useEffect(() => {
     async function fetchArticles() {
       try {
         setLoading(true);
-        const data = await get("/api/article");
-        const updatedArticles = data.map((article: ArticleCardType) => ({
-          ...article,
-          content: decodeURIComponent(article.content),
-        }));
+        const data = await get(
+          `/api/article?page=${currentPage}&size=${pageSize}`
+        );
+        const updatedArticles = data.content.map(
+          (article: ArticleCardType) => ({
+            ...article,
+            content: decodeURIComponent(article.content),
+          })
+        );
         setAllArticles(updatedArticles);
+        setTotalPages(data.page.totalPages);
       } catch (error) {
         console.error("Error fetching articles:", error);
       } finally {
@@ -37,7 +47,7 @@ export default function TopArticles({
       }
     }
     fetchArticles();
-  }, []);
+  }, [currentPage]);
 
   useEffect(() => {
     if (allArticles.length > 0 && sortBy) {
@@ -66,6 +76,11 @@ export default function TopArticles({
           />
         ))}
       </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 }

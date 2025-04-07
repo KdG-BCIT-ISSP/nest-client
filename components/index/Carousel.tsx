@@ -3,13 +3,19 @@
 import { useRef, useState, useEffect } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Card from "./Card";
-import { CardType } from "@/types/CardType";
 import { chunkArray } from "@/utils/chunkArray";
+import { ArticleCardType } from "@/types/ArticleCardType";
+import { PostType } from "@/types/ContentType";
 
 const CARD_WIDTH = 330;
 const CARDS_PER_SLIDE = 3;
 
-export default function Carousel({ cardsData }: { cardsData: CardType[] }) {
+type CarouselProps = {
+  cardsData: (ArticleCardType | PostType)[];
+  type: "curated-articles" | "posts";
+};
+
+export default function Carousel({ cardsData, type }: CarouselProps) {
   const slidesRef = useRef<HTMLDivElement>(null);
   const [activeSlide, setActiveSlide] = useState(0);
 
@@ -22,7 +28,7 @@ export default function Carousel({ cardsData }: { cardsData: CardType[] }) {
       left: slideWidth * activeSlide,
       behavior: "smooth",
     });
-  }, [activeSlide]);
+  }, [activeSlide, slides]);
 
   const handleNext = () => {
     setActiveSlide((prev) => Math.min(prev + 1, slides.length - 1));
@@ -38,7 +44,7 @@ export default function Carousel({ cardsData }: { cardsData: CardType[] }) {
         className="absolute left-[-55px] top-1/2 -translate-y-1/2 z-10"
         onClick={handlePrev}
       >
-        <ArrowLeft onClick={handlePrev} />
+        <ArrowLeft />
       </button>
 
       <div className="overflow-hidden">
@@ -54,7 +60,15 @@ export default function Carousel({ cardsData }: { cardsData: CardType[] }) {
             >
               <div className="flex gap-4 justify-center items-stretch">
                 {slide.map((card, cardIndex) => (
-                  <Card key={cardIndex} {...card} />
+                  <Card
+                    key={cardIndex}
+                    id={card.id}
+                    header={card.title}
+                    content={card.content}
+                    likes={card.likesCount || 0}
+                    comments={card.comment?.length || 0}
+                    type={type}
+                  />
                 ))}
               </div>
             </div>
@@ -66,7 +80,7 @@ export default function Carousel({ cardsData }: { cardsData: CardType[] }) {
         className="absolute right-[-55px] top-1/2 -translate-y-1/2 z-10"
         onClick={handleNext}
       >
-        <ArrowRight onClick={handleNext} />
+        <ArrowRight />
       </button>
 
       <div className="flex justify-center gap-2 mt-6">

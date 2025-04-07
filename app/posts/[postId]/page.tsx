@@ -1,14 +1,12 @@
 "use client";
-export const dynamic = "force-dynamic";
-
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ArrowLeft, CircleXIcon } from "lucide-react";
 import { EllipsisIcon } from "lucide-react";
 import Tags from "@/components/admin/Tags";
-// import CommentsSection from "@/components/Comments";
-import { PostType } from "@/types/PostType";
+import CommentsSection from "@/components/Comments";
+import { PostType } from "@/types/ContentType";
 import { get, post, put, del } from "@/app/lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
 import { Like, Comments, Bookmark, Share } from "@/components/Icons";
@@ -17,12 +15,15 @@ import Modal from "@/components/Modal";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
 import Loader from "@/components/Loader";
+import { marked } from "marked";
+import parse from "html-react-parser";
 
 export default function PostDetailPage() {
   const params = useParams();
   const postId = Number(params.postId);
   const [userdata] = useAtom(userAtom);
-  const [userPost, setPost] = useState<PostType>();
+  // Provide an initial default with a valid "type"
+  const [userPost, setPost] = useState<PostType>({ type: "post" } as PostType);
   const [loading, setLoading] = useState(true);
   const [showReport, setShowReport] = useState(false);
   const [showEditMenu, setShowEditMenu] = useState(false);
@@ -31,6 +32,7 @@ export default function PostDetailPage() {
   const [showDeleteWindow, setShowDeleteWindow] = useState(false);
   const [showEditPost, setShowEditPost] = useState(false);
   const [views, setViews] = useState(0);
+  const [html, setHtml] = useState<string>("");
   const isOwnerOrAdmin =
     Number(userdata.userId) === userPost?.memberId ||
     userdata.role === "ADMIN" ||
@@ -40,27 +42,42 @@ export default function PostDetailPage() {
   const isAuthenticated =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setLoading(true);
-        const [userPost, views] = await Promise.all([
-          get(`/api/content/id/${postId}`),
-          get(`/api/content/${postId}/views`),
-        ]);
-        setPost({
-          ...userPost,
-          content: userPost.content,
-        });
-        setViews(views);
-      } catch (error) {
-        console.error("Error fetching article:", error);
-      } finally {
-        setLoading(false);
-      }
+  const fetchPostData = async () => {
+    try {
+      setLoading(true);
+      const [userPostData, viewsData] = await Promise.all([
+        get(`/api/content/id/${postId}`),
+        get(`/api/content/${postId}/views`),
+      ]);
+      // Ensure that the "type" property is defined, defaulting to "post" if missing.
+      setPost({
+        ...userPostData,
+        type: userPostData.type ?? "post",
+        content: userPostData.content,
+      });
+      setViews(viewsData);
+    } catch (error) {
+      console.error("Error fetching article:", error);
+    } finally {
+      setLoading(false);
     }
-    fetchData();
-  }, [postId]);
+  };
+
+  useEffect(() => {
+    fetchPostData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [postId, isAuthenticated]);
+
+  useEffect(() => {
+    if (!userPost?.content) return;
+
+    async function convertMarkdown() {
+      const parsed = await marked.parse(userPost?.content ?? "");
+      setHtml(parsed);
+    }
+
+    convertMarkdown();
+  }, [userPost?.content]);
 
   if (loading) {
     return <Loader />;
@@ -91,15 +108,94 @@ export default function PostDetailPage() {
     }
   };
 
-  const handleBookmarkToggle = async () => {
+  const handleToggleLike = async () => {
+    if (!userPost || !isAuthenticated) {
+      alert("Please log in to like this article.");
+      return;
+    }
+
+    const previousState = {
+      isLiked: userPost.liked,
+      likesCount: userPost.likesCount,
+    };
+
+    // Optimistic update
+    setPost((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        liked: !prev.liked,
+        likesCount: !prev.liked
+          ? (prev.likesCount || 0) + 1
+          : (prev.likesCount || 0) - 1,
+      };
+    });
+
     try {
-      if (typeof postId === "number") {
-        await put(`/api/content/${postId}/toggleBookmark`, {});
-      } else {
-        console.error("Invalid postId:", postId);
-      }
+      const response = await post(`/api/content/${userPost.id}/toggleLike`, {
+        userPostId: userPost.id,
+      });
+      const newIsLiked =
+        response.isLiked !== undefined ? response.isLiked : !userPost.liked;
+      const updatedLikes = await get(`/api/content/${userPost.id}/likes`);
+      setPost((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          liked: newIsLiked,
+          likesCount: updatedLikes,
+        };
+      });
+    } catch (error) {
+      console.error("Error toggling like:", error);
+      setPost((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          liked: previousState.isLiked,
+          likesCount: previousState.likesCount,
+        };
+      });
+      alert("Failed to toggle like. Please try again.");
+    }
+  };
+
+  const handleBookmarkToggle = async () => {
+    if (!userPost || !isAuthenticated) {
+      alert("Please log in to bookmark this article.");
+      return;
+    }
+
+    const previousState = {
+      bookmarked: userPost.bookmarked,
+      bookmarkCount: userPost.bookmarkCount,
+    };
+
+    // Optimistically update
+    setPost((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        bookmarked: !prev.bookmarked,
+        bookmarkCount: !prev.bookmarked
+          ? (prev.bookmarkCount || 0) + 1
+          : (prev.bookmarkCount || 0) - 1,
+      };
+    });
+
+    try {
+      await put(`/api/content/${postId}/toggleBookmark`, {});
     } catch (error) {
       console.error("Bookmark toggle failed:", error);
+      setPost((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          bookmarked: previousState.bookmarked,
+          bookmarkCount: previousState.bookmarkCount,
+        };
+      });
+      alert("Failed to toggle bookmark. Please try again.");
     }
   };
 
@@ -107,7 +203,7 @@ export default function PostDetailPage() {
     if (!userPost || !userPost.id) return;
     try {
       await del(`/api/posts/${userPost.id}`);
-      alert("Posts deleted successfully");
+      alert("Post deleted successfully");
       window.location.href = "/posts";
     } catch (error) {
       console.error("Error deleting post:", error);
@@ -190,7 +286,16 @@ export default function PostDetailPage() {
       {/* Edit Post Modal */}
       {showEditPost && (
         <Modal isOpen={showEditPost} onClose={() => setShowEditPost(false)}>
-          <CreatePost existingPost={userPost} />
+          <CreatePost
+            existingPost={{
+              ...userPost,
+              topicId: userPost.topicId || 0,
+              memberAvatar: userPost.memberAvatar
+                ? [userPost.memberAvatar]
+                : undefined,
+              imageBase64: userPost.imageBase64 || [],
+            }}
+          />
         </Modal>
       )}
 
@@ -202,7 +307,7 @@ export default function PostDetailPage() {
         >
           <div className="bg-white p-6 rounded-md flex flex-col space-y-4 justify-center items-center">
             <h1 className="text-xl font-bold">Are you sure?</h1>
-            <p>Do you really want to delete this article?</p>
+            <p>Do you really want to delete this post?</p>
             <div className="flex justify-end gap-4">
               <button
                 onClick={() => setShowDeleteWindow(false)}
@@ -262,30 +367,27 @@ export default function PostDetailPage() {
             </div>
           )}
           <Tags tagsList={userPost.tagNames ?? []} />
-          <div
-            style={{ whiteSpace: "pre-line" }}
-            className="prose prose-green mb-8"
-          >
-            {userPost.content}
-          </div>
-
+          <div className="prose prose-green mb-8">{parse(html)}</div>
           <div className="flex justify-end gap-4">
             <Like
               count={userPost.likesCount || 0}
               isLiked={userPost.liked || false}
-              onClick={() => {}}
+              onClick={handleToggleLike}
               disabled={!isAuthenticated}
             />
             <Comments count={userPost.comment?.length ?? 0} />
             <Bookmark
-              count={12}
+              count={userPost.bookmarkCount || 0}
               isSaved={userPost.bookmarked || false}
               disabled={!isAuthenticated}
               onClick={handleBookmarkToggle}
             />
             <Share onClick={handleShareClick} />
           </div>
-          {/* <CommentsSection /> */}
+          <CommentsSection
+            contentData={userPost}
+            refetchContent={fetchPostData}
+          />
         </div>
 
         {showCopied && (

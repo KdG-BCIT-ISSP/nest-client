@@ -5,7 +5,6 @@ import ArticleCard from "@/components/search/ArticleCard";
 import { useEffect, useState } from "react";
 import { ArticleCardType } from "@/types/ArticleCardType";
 import HeroSection from "@/components/index/HeroSection";
-import { articlesAtom } from "@/atoms/articles/atom";
 import { useAtom } from "jotai";
 import { get } from "../lib/fetchInterceptor";
 import { useTranslation } from "next-i18next";
@@ -14,26 +13,28 @@ import CreateArticle from "@/components/article/CreateArticle";
 import { userAtom } from "@/atoms/user/atom";
 import Modal from "@/components/Modal";
 import Loader from "@/components/Loader";
+import Pagination from "@/components/Pagination";
 
 export default function CuratedArticlesPage() {
   const [userData] = useAtom(userAtom);
   const { t } = useTranslation("article");
-  const [, setArticleData] = useAtom(articlesAtom);
   const [loading, setLoading] = useState(true);
   const [articles, setArticles] = useState<ArticleCardType[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const pageSize = 8;
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     async function fetchArticles() {
       try {
         setLoading(true);
-        const data = await get("/api/article");
-        const updatedArticles = data.map((article: ArticleCardType) => ({
-          ...article,
-          content: decodeURIComponent(article.content),
-        }));
-        setArticles(updatedArticles);
-        setArticleData(updatedArticles);
+        const data = await get(
+          `/api/article?page=${currentPage}&size=${pageSize}`
+        );
+        setArticles(data.content);
+        setTotalPages(data.page.totalPages);
       } catch (error) {
         console.error("Failed to fetch articles:", error);
       } finally {
@@ -41,7 +42,7 @@ export default function CuratedArticlesPage() {
       }
     }
     fetchArticles();
-  }, [setArticleData]);
+  }, [currentPage]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -78,6 +79,11 @@ export default function CuratedArticlesPage() {
           ))}
         </div>
       </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <CreateArticle />
       </Modal>

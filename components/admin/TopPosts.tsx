@@ -6,6 +6,7 @@ import { PostType } from "@/types/PostType";
 import PostCard from "../post/PostCard";
 import { get } from "@/app/lib/fetchInterceptor";
 import Loader from "../Loader";
+import Pagination from "../Pagination";
 
 export default function TopPosts({
   limit = 3,
@@ -20,12 +21,19 @@ export default function TopPosts({
   const [topPosts, setTopPosts] = useState<PostType[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [currentPage, setCurrentPage] = useState(0);
+  const pageSize = 3;
+  const [totalPages, setTotalPages] = useState(1);
+
   useEffect(() => {
     async function fetchPosts() {
       try {
         setLoading(true);
-        const posts = await get("/api/posts");
-        setAllPosts(posts); // Stores all posts in state
+        const posts = await get(
+          `/api/posts?page=${currentPage}&size=${pageSize}`
+        );
+        setAllPosts(posts.content);
+        setTotalPages(posts.page.totalPages);
       } catch (error) {
         console.error("Error fetching posts:", error);
       } finally {
@@ -33,7 +41,7 @@ export default function TopPosts({
       }
     }
     fetchPosts();
-  }, []);
+  }, [currentPage]);
 
   useEffect(() => {
     if (allPosts.length > 0 && sortBy) {
@@ -62,6 +70,11 @@ export default function TopPosts({
           />
         ))}
       </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 }
