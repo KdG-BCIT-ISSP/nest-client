@@ -7,6 +7,7 @@ import { PostType } from "@/types/PostType";
 import { get } from "@/app/lib/fetchInterceptor";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
+import Loader from "../Loader";
 
 export default function MyPosts() {
   const [loading, setLoading] = useState(true);
@@ -30,7 +31,7 @@ export default function MyPosts() {
   }, [userData.userId]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   if (error) {

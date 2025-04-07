@@ -17,18 +17,15 @@ export default function ReportedCommentsComponent() {
       setLoading(true);
       try {
         const reportedCommentsData = await get("/report/comment");
+        console.log(reportedCommentsData);
         setReportedComments(reportedCommentsData);
 
         const uniqueCommentIds = Array.from(
-          new Set(
-            reportedCommentsData.map((report: Report) => report.commentId)
-          )
+          new Set(reportedCommentsData.map((report: Report) => report.id))
         ) as number[];
 
         const commentsData = await Promise.all(
-          uniqueCommentIds.map((commentId: number) =>
-            get(`/comment/id/${commentId}`)
-          )
+          uniqueCommentIds.map((id: number) => get(`/content/id/${id}`))
         );
         setComments(commentsData);
       } catch (err) {

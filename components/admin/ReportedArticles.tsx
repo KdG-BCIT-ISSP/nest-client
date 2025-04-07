@@ -26,7 +26,7 @@ export default function ReportedArticlesComponent() {
 
         const articlesData = await Promise.all(
           uniqueArticleIds.map((articleId: number) =>
-            get(`/article/id/${articleId}`)
+            get(`/content/id/${articleId}`)
           )
         );
 
