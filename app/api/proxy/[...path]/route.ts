@@ -24,8 +24,19 @@ async function proxyRequest(request: Request, params: { path: string[] }) {
   }
 
   const response = await fetch(targetUrl.toString(), init);
-  const data = await response.text();
 
+  if (response.headers.get("Content-Type")?.includes("text/event-stream")) {
+    return new NextResponse(response.body, {
+      status: response.status,
+      headers: {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
+      },
+    });
+  }
+
+  const data = await response.text();
   const headers = new Headers(response.headers);
   headers.set("Content-Length", Buffer.byteLength(data).toString());
   headers.delete("content-encoding");

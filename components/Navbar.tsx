@@ -12,11 +12,13 @@ import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
 import { useTranslation } from "next-i18next";
 import LocaleSwitcher from "./LocaleSwitcher";
+import { announcementAtom } from "@/atoms/announcement/atom";
 
 export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   const { t } = useTranslation("common");
   const [userData] = useAtom(userAtom);
+  const [announcementState, setAnnouncementState] = useAtom(announcementAtom);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
@@ -79,6 +81,9 @@ export default function Navbar() {
   const handleLinkClick = (href: string, section?: string) => {
     if (section) {
       router.push(`/profile?section=${section}`);
+      if (section === "notifications") {
+        setAnnouncementState((prev) => ({ ...prev, newAnnouncement: false }));
+      }
     } else {
       router.push(href);
     }
@@ -132,7 +137,7 @@ export default function Navbar() {
               <button
                 onClick={toggleUserDropdown}
                 type="button"
-                className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300"
+                className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 relative"
               >
                 <span className="sr-only">Open user menu</span>
                 <Image
@@ -143,6 +148,10 @@ export default function Navbar() {
                   height={70}
                   priority
                 />
+                {/* Red dot when newAnnouncement is true */}
+                {announcementState.newAnnouncement && (
+                  <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-white" />
+                )}
               </button>
 
               {isUserDropdownOpen && (
