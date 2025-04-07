@@ -33,8 +33,9 @@ export async function GET(request: Request) {
       }
     }
 
-    const { contentId } = await request.json();
-    if (contentId !== null && isNaN(contentId)) {
+    const { searchParams } = new URL(url);
+    const contentId = searchParams.get("contentId");
+    if (contentId !== null && isNaN(Number(contentId))) {
       return NextResponse.json(
         { message: "Invalid content ID" },
         { status: 400 }
