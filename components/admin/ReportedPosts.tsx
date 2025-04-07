@@ -15,14 +15,17 @@ export default function ReportedPostsComponent() {
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      console.time("fetchData");
       try {
-        const [reportedPostsData, postsData] = await Promise.all([
-          get("/api/report/post"),
-          get("/api/posts"),
-        ]);
-        console.timeEnd("fetchData");
+        const reportedPostsData = await get("/report/post");
         setReportedPosts(reportedPostsData);
+
+        const uniquePostIds = Array.from(
+          new Set(reportedPostsData.map((report: Report) => report.postId))
+        ) as number[];
+
+        const postsData = await Promise.all(
+          uniquePostIds.map((postId) => get(`/content/id/${postId}`))
+        );
         setPosts(postsData);
       } catch (err) {
         console.error("Failed to fetch data:", err);
@@ -37,20 +40,16 @@ export default function ReportedPostsComponent() {
     return <Loader />;
   }
 
-  const postsWithReports = posts.filter((post) =>
-    reportedPosts.some((report) => report.postId === post.id)
-  );
-
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold text-black mb-4 pb-4">
         Reported Posts
       </h1>
-      {postsWithReports.length === 0 && (
+      {posts.length === 0 && (
         <div className="text-gray-500">No reported posts</div>
       )}
       <div className="flex flex-col gap-6 w-full">
-        {postsWithReports.map((post) => {
+        {posts.map((post: ReportPostType) => {
           const associatedReports = reportedPosts.filter(
             (report) => report.postId === post.id
           );

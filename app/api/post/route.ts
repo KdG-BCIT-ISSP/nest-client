@@ -1,10 +1,29 @@
 import { NextResponse } from "next/server";
 import { get, post, put, del } from "@/app/lib/fetchInterceptor";
 
-// GET /api/v1/posts - Get all posts
-export async function GET() {
+export async function GET(request: Request) {
+  const { pathname, searchParams } = new URL(request.url);
+
+  if (pathname.endsWith("/stats")) {
+    try {
+      const data = await get("/posts/stats");
+      return NextResponse.json(data);
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to fetch posts stats";
+      return NextResponse.json({ message: errorMessage }, { status: 500 });
+    }
+  }
+
   try {
-    const data = await get("/posts");
+    const page = searchParams.get("page") || "0";
+    const size = searchParams.get("size") || "1";
+    const sort = searchParams.getAll("sort");
+    const queryParams = new URLSearchParams();
+    queryParams.append("page", page);
+    queryParams.append("size", size);
+    sort.forEach((s) => queryParams.append("sort", s));
+    const data = await get(`/posts?${queryParams.toString()}`);
     return NextResponse.json(data);
   } catch (error: unknown) {
     const errorMessage =

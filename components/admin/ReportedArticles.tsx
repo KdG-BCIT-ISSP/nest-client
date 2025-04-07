@@ -10,23 +10,32 @@ import Loader from "../Loader";
 
 export default function ReportedArticlesComponent() {
   const [loading, setLoading] = useState(true);
-  const [reportedPosts, setReportedPosts] = useState<Report[]>([]);
-  const [posts, setPosts] = useState<ReportPostType[]>([]);
+  const [reportedArticles, setReportedArticles] = useState<Report[]>([]);
+  const [articles, setArticles] = useState<ReportPostType[]>([]);
 
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
       try {
-        const [reportedPostsData, postsData] = await Promise.all([
-          get("/api/report/article"),
-          get("/api/article"),
-        ]);
-        const cleanedArticles = postsData.map((post: ReportPostType) => ({
-          ...post,
-          content: decodeAndTruncateHtml(post.content),
+        const reportedArticlesData = await get("/report/article");
+        setReportedArticles(reportedArticlesData);
+
+        const uniqueArticleIds = Array.from(
+          new Set(reportedArticlesData.map((report: Report) => report.postId))
+        ) as number[];
+
+        const articlesData = await Promise.all(
+          uniqueArticleIds.map((articleId: number) =>
+            get(`/content/id/${articleId}`)
+          )
+        );
+
+        const cleanedArticles = articlesData.map((article: ReportPostType) => ({
+          ...article,
+          content: decodeAndTruncateHtml(article.content),
         }));
-        setReportedPosts(reportedPostsData);
-        setPosts(cleanedArticles);
+
+        setArticles(cleanedArticles);
       } catch (err) {
         console.error("Failed to fetch data:", err);
       } finally {
@@ -40,25 +49,25 @@ export default function ReportedArticlesComponent() {
     return <Loader />;
   }
 
-  const postsWithReports = posts.filter((post) =>
-    reportedPosts.some((report) => report.postId === post.id)
-  );
-
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold text-black mb-4 pb-4">
         Reported Articles
       </h1>
-      {postsWithReports.length === 0 && (
-        <div className="text-gray-500">No reported posts</div>
+      {articles.length === 0 && (
+        <div className="text-gray-500">No reported articles</div>
       )}
       <div className="flex flex-col gap-6 w-full">
-        {postsWithReports.map((post) => {
-          const associatedReports = reportedPosts.filter(
-            (report) => report.postId === post.id
+        {articles.map((article: ReportPostType) => {
+          const associatedReports = reportedArticles.filter(
+            (report) => report.postId === article.id
           );
           return (
-            <ReportCard key={post.id} post={post} reports={associatedReports} />
+            <ReportCard
+              key={article.id}
+              post={article}
+              reports={associatedReports}
+            />
           );
         })}
       </div>

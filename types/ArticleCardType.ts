@@ -16,4 +16,13 @@ export type ArticleCardType = {
   likesCount?: number;
   bookmarkCount?: number;
   createdAt?: string;
+  comment?: {
+    id: number;
+    content: string;
+    createdAt: string;
+    memberUsername: string;
+    memberAvatar: string;
+    likesCount: number;
+    isLiked: boolean;
+  }[];
 };

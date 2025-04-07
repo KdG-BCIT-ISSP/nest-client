@@ -2,17 +2,46 @@ import { NextResponse } from "next/server";
 import { get, post, put } from "@/app/lib/fetchInterceptor";
 
 export async function GET(request: Request) {
-  const { contentId } = await request.json();
   const url = request.url;
 
-  if (contentId !== null && isNaN(contentId)) {
-    return NextResponse.json(
-      { message: "Invalid content ID" },
-      { status: 400 }
-    );
-  }
-
   try {
+    if (
+      url.includes("/article/mostActive") ||
+      url.includes("/post/mostActive")
+    ) {
+      const { searchParams } = new URL(url);
+      const count = searchParams.get("count");
+      const region = searchParams.get("region");
+
+      const queryParams: string[] = [];
+      if (count !== null) queryParams.push(`count=${count}`);
+      if (region !== null) queryParams.push(`region=${region}`);
+      const queryString = queryParams.length ? `?${queryParams.join("&")}` : "";
+
+      if (url.includes("/article/mostActive")) {
+        const articleMostActiveData = await get(
+          `/content/article/mostActive${queryString}`
+        );
+        return NextResponse.json(articleMostActiveData);
+      }
+
+      if (url.includes("/post/mostActive")) {
+        const postMostActiveData = await get(
+          `/content/post/mostActive${queryString}`
+        );
+        return NextResponse.json(postMostActiveData);
+      }
+    }
+
+    const { searchParams } = new URL(url);
+    const contentId = searchParams.get("contentId");
+    if (contentId !== null && isNaN(Number(contentId))) {
+      return NextResponse.json(
+        { message: "Invalid content ID" },
+        { status: 400 }
+      );
+    }
+
     switch (true) {
       case url.includes("/isLiked"):
         const isLikedData = await get(`/content/${contentId}/isLiked`);

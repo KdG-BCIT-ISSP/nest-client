@@ -81,7 +81,7 @@ export default function ForgotPassword({ onClose }: ForgotPasswordProps) {
           name="email"
           id="email"
           onChange={setEmail}
-          placeholder="name@company.com"
+          placeholder="username@domain.com"
         />
 
         <Button

@@ -16,12 +16,20 @@ export default function ReportedCommentsComponent() {
     async function fetchData() {
       setLoading(true);
       try {
-        const [reportedPostsData, postsData] = await Promise.all([
-          get("/api/report/comment"),
-          get("/api/article"),
-        ]);
-        setReportedComments(reportedPostsData);
-        setComments(postsData);
+        const reportedCommentsData = await get("/report/comment");
+        console.log(reportedCommentsData);
+        setReportedComments(reportedCommentsData);
+
+        const uniqueContentIds = Array.from(
+          new Set(
+            reportedCommentsData.map((report: Report) => report.contentId)
+          )
+        ) as number[];
+
+        const commentsData = await Promise.all(
+          uniqueContentIds.map((id: number) => get(`/content/id/${id}`))
+        );
+        setComments(commentsData);
       } catch (err) {
         console.error("Failed to fetch data:", err);
       } finally {
@@ -35,22 +43,18 @@ export default function ReportedCommentsComponent() {
     return <Loader />;
   }
 
-  const commentsWithReports = comments.filter((comment) =>
-    reportedComments.some((report) => report.commentId === comment.id)
-  );
-
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold text-black mb-4 pb-4">
         Reported Comments
       </h1>
-      {commentsWithReports.length === 0 && (
+      {comments.length === 0 && (
         <div className="text-gray-500">No reported comments</div>
       )}
       <div className="flex flex-col gap-6 w-full">
-        {commentsWithReports.map((comment) => {
+        {comments.map((comment: ReportPostType) => {
           const associatedReports = reportedComments.filter(
-            (report) => report.commentId === comment.id
+            (report) => report.contentId === comment.id
           );
           return (
             <ReportCard

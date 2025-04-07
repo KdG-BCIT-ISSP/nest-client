@@ -39,6 +39,7 @@ export type ReportPostType = {
 export interface Report {
   postId: number;
   commentId?: number;
+  contentId?: number;
   id: number;
   reason: string;
   createdAt: string;
