@@ -12,6 +12,7 @@ interface LikeProps {
   onClick?: () => void;
   disabled?: boolean;
   search?: boolean;
+  color?: string;
 }
 
 export const Like: React.FC<LikeProps> = ({
@@ -20,21 +21,22 @@ export const Like: React.FC<LikeProps> = ({
   onClick,
   disabled = false,
   search,
+  color = "#CD6A6A",
 }) => {
   return (
     <button
-      className={`flex items-center gap-1 transition-colors ${
-        disabled ? "cursor-not-allowed" : ""
-      }`}
+      className={`flex items-center gap-1 transition-colors ${disabled ? "cursor-not-allowed" : ""
+        }`}
       onClick={onClick}
       disabled={disabled}
     >
       <ThumbsUpIcon
         size={search ? 14 : 22}
-        color={"#CD6A6A"}
-        fill={isLiked && !disabled ? "#CD6A6A" : "none"}
+        color={color}
+        fill={isLiked && !disabled ? color : "none"}
       />
-      <span className={`text-lg ml-1 font-bold text-[#CD6A6A]`}>{count}</span>
+      <span className="text-lg ml-1 font-bold" style={{ color }}>{count}</span>
+
     </button>
   );
 };
@@ -43,13 +45,14 @@ export const Like: React.FC<LikeProps> = ({
 interface CommentsProps {
   count: number;
   search?: boolean;
+  color?: string;
 }
 
-export const Comments: React.FC<CommentsProps> = ({ count, search }) => {
+export const Comments: React.FC<CommentsProps> = ({ count, search, color = "#CD6A6A" }) => {
   return (
     <div className="flex items-center gap-1 text-gray-600">
-      <MessageCircleIcon size={search ? 14 : 22} color="#CD6A6A" />
-      <span className="text-lg ml-1 font-bold text-[#CD6A6A]">{count}</span>
+      <MessageCircleIcon size={search ? 14 : 22} color= {color} />
+      <span className="text-lg ml-1 font-bold" style={{ color }}>{count}</span>
     </div>
   );
 };
@@ -71,9 +74,8 @@ export const Bookmark: React.FC<BookmarkProps> = ({
 }) => {
   return (
     <button
-      className={`flex items-center gap-1 transition-colors ${
-        disabled ? "cursor-not-allowed" : "text-gray-600 hover:text-blue-600"
-      }`}
+      className={`flex items-center gap-1 transition-colors ${disabled ? "cursor-not-allowed" : "text-gray-600 hover:text-blue-600"
+        }`}
       onClick={onClick}
       disabled={disabled}
     >

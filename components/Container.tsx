@@ -45,8 +45,8 @@ export default function Container({
             </h3>
             <p className="font-normal text-lg text-white/90">{top_post_text}</p>
             <div className="flex justify-end gap-2 pt-10">
-              <Like count={likes || 0} disabled />
-              <Comments count={comments ?? 0} />
+              <Like count={likes || 0} disabled color="#FFFFFF"/>
+              <Comments count={comments ?? 0} color="#FFFFFF"/>
             </div>
           </div>
         </div>
