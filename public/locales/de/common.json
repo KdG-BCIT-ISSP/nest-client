@@ -39,5 +39,23 @@
   },
   "footer": {
     "copyright": "Alle Rechte vorbehalten."
+  },
+  "notifications": {
+    "announcement": "Ankündigung",
+    "detail": "Details",
+    "message": "Nachricht",
+    "from": "Von",
+    "timestamp": "Zeitstempel",
+    "status": "Status",
+    "read": "Gelesen",
+    "unread": "Ungelesen",
+    "close": "Schließen",
+    "sendNotification": "Benachrichtigung senden",
+    "typeMessage": "Nachricht eingeben",
+    "send": "Senden",
+    "recent": "Kürzlich",
+    "noNotifications": "Keine Benachrichtigungen",
+    "prev": "Zurück",
+    "next": "Weiter"
   }
 }

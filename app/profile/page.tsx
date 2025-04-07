@@ -12,13 +12,15 @@ import ResetPasswordField from "@/components/profile/ResetPasswordField";
 import MyPosts from "@/components/profile/MyPosts";
 import { useSearchParams } from "next/navigation";
 import { useTranslation } from "next-i18next";
+import NotificationSection from "../../components/profile/notifications/NotificationSection";
 
 const ProfileContent = () => {
   const { t } = useTranslation("common");
   const [userData] = useAtom(userAtom);
-  const searchParams = useSearchParams();
   const [selectedComponent, setSelectedComponent] =
     useState<React.ReactNode>(null);
+  const [hasNewNotification, setHasNewNotification] = useState(false);
+  const searchParams = useSearchParams();
 
   const profileItems = [
     {
@@ -35,6 +37,24 @@ const ProfileContent = () => {
         ),
     },
     {
+      label: t("navigation.notifications"),
+      component: (
+        <NotificationSection
+          hasNewNotification={hasNewNotification}
+          onViewed={() => setHasNewNotification(false)}
+        />
+      ),
+      onClick: () => {
+        setHasNewNotification(false); // Reset when viewed
+        setSelectedComponent(
+          <NotificationSection
+            hasNewNotification={hasNewNotification}
+            onViewed={() => setHasNewNotification(false)}
+          />
+        );
+      },
+    },
+    {
       label: t("navigation.savedPosts"),
       component: <SavedPosts />,
       onClick: () => setSelectedComponent(<SavedPosts />),
@@ -43,11 +63,6 @@ const ProfileContent = () => {
       label: t("navigation.myPosts"),
       component: <MyPosts />,
       onClick: () => setSelectedComponent(<MyPosts />),
-    },
-    {
-      label: t("navigation.notifications"),
-      component: <Notifications />,
-      onClick: () => setSelectedComponent(<Notifications />),
     },
     {
       label: t("navigation.resetPassword"),
@@ -66,14 +81,19 @@ const ProfileContent = () => {
         setSelectedComponent(<MyPosts />);
         break;
       case "notifications":
-        setSelectedComponent(<Notifications />);
+        setSelectedComponent(
+          <NotificationSection
+            hasNewNotification={hasNewNotification}
+            onViewed={() => setHasNewNotification(false)}
+          />
+        );
         break;
       case "profile":
       default:
         setSelectedComponent(<ProfileView {...userData} />);
         break;
     }
-  }, [searchParams, userData]);
+  }, [searchParams, userData, hasNewNotification]);
 
   return (
     <div className="sm:ml-64 bg-white">
@@ -96,8 +116,6 @@ const ProfileView = ({ username, email, region, avatar }: ProfileDataType) => (
     avatar={avatar}
   />
 );
-
-const Notifications = () => <div>Notifications Content</div>;
 
 export default function ProfilePage() {
   return (

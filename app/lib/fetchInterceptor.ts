@@ -1,4 +1,5 @@
 import { getCookie, deleteCookie, setCookie } from "cookies-next";
+import { EventSourcePolyfill } from "event-source-polyfill";
 
 const PROXY_BASE_URL = "/api/proxy";
 const EXTERNAL_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -30,9 +31,9 @@ function handleLogout() {
   window.location.href = "/auth/login";
 }
 
-export async function fetchInterceptor(
+export function fetchInterceptor(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit & { useEventSource?: boolean } = {}
 ) {
   const accessToken = localStorage.getItem("accessToken");
 
@@ -46,7 +47,6 @@ export async function fetchInterceptor(
     ...(options.headers || {}),
   };
 
-  // Remove the /api prefix if present for proxy routing
   const finalEndpoint = endpoint.startsWith("/api")
     ? endpoint.replace(/^\/api/, "")
     : endpoint;
@@ -57,13 +57,27 @@ export async function fetchInterceptor(
     credentials: "include",
   };
 
-  try {
+  // Handle SSE with EventSourcePolyfill
+  if (options.useEventSource) {
+    const url = `${PROXY_BASE_URL}${finalEndpoint}`;
+
+    const eventSource = new EventSourcePolyfill(url, {
+      headers: {
+        Authorization: headers.Authorization || "",
+      },
+    });
+
+    return eventSource;
+  }
+
+  // Handle regular fetch requests
+  const fetchRequest = async () => {
     const response = await fetch(`${PROXY_BASE_URL}${finalEndpoint}`, config);
 
     if (response.status === 401 && !config._retry) {
       config._retry = true;
       const errorData = await response.json().catch(() => ({}));
-      const responseType = errorData.error || "";
+      const responseType = errorData.error || "Expired token";
 
       if (EXPIRED_TOKEN_ERROR.includes(responseType)) {
         const refreshToken = getCookie("refreshToken")?.toString() || "";
@@ -102,14 +116,18 @@ export async function fetchInterceptor(
       return await response.json();
     }
     return response;
-  } catch (error) {
+  };
+
+  return fetchRequest().catch((error) => {
     console.error("Fetch error:", error);
     throw error;
-  }
+  });
 }
 
-export const get = (endpoint: string, options: RequestInit = {}) =>
-  fetchInterceptor(endpoint, { ...options, method: "GET" });
+export const get = (
+  endpoint: string,
+  options: RequestInit & { useEventSource?: boolean } = {}
+) => fetchInterceptor(endpoint, { ...options, method: "GET" });
 
 export const post = <T>(endpoint: string, body: T, options: RequestInit = {}) =>
   fetchInterceptor(endpoint, {
