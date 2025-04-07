@@ -24,6 +24,19 @@ const ProfileContent = () => {
 
   const profileItems = [
     {
+      label: t("navigation.profile"),
+      component: <ProfileView {...userData} />,
+      onClick: () =>
+        setSelectedComponent(
+          <ProfileInputField
+            username={userData.username}
+            email={userData.email}
+            region={userData.region}
+            avatar={userData.avatar}
+          />
+        ),
+    },
+    {
       label: t("navigation.notifications"),
       component: (
         <NotificationSection
@@ -40,19 +53,6 @@ const ProfileContent = () => {
           />
         );
       },
-    },
-    {
-      label: t("navigation.profile"),
-      component: <ProfileView {...userData} />,
-      onClick: () =>
-        setSelectedComponent(
-          <ProfileInputField
-            username={userData.username}
-            email={userData.email}
-            region={userData.region}
-            avatar={userData.avatar}
-          />
-        ),
     },
     {
       label: t("navigation.savedPosts"),

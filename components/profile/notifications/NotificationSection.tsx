@@ -64,7 +64,7 @@ export default function NotificationSection({
 
       const data = response.content || [];
       setNotifications(data);
-      setTotalPages(response.page?.totalPages || 1); // Access totalPages from page object
+      setTotalPages(response.page?.totalPages || 1);
     } catch (error) {
       console.error("Error fetching notifications:", error);
       const mockNotifications = [
@@ -117,7 +117,7 @@ export default function NotificationSection({
   const markNotificationAsRead = async (notificationId: number) => {
     try {
       const token = localStorage.getItem("accessToken") || "";
-      const response = await put(
+      await put(
         `/api/notification/read/${notificationId}`,
         {},
         {
@@ -127,7 +127,6 @@ export default function NotificationSection({
         }
       );
 
-      // Update local state
       setNotifications((prev) =>
         prev.map((n) => (n.id === notificationId ? { ...n, read: true } : n))
       );
@@ -159,6 +158,12 @@ export default function NotificationSection({
     }
   }, [userData, currentPage]);
 
+  useEffect(() => {
+    if (hasNewNotification) {
+      onViewed();
+    }
+  }, [hasNewNotification, onViewed]);
+
   const goToPage = (page: number) => {
     if (page >= 0 && page < totalPages) {
       setCurrentPage(page);
@@ -172,7 +177,9 @@ export default function NotificationSection({
         <button
           key={i}
           onClick={() => goToPage(i)}
-          className={`px-3 py-1 mx-1 rounded ${currentPage === i ? "bg-secondary text-white" : "bg-gray-200"}`}
+          className={`px-3 py-1 mx-1 rounded ${
+            currentPage === i ? "bg-secondary text-white" : "bg-gray-200"
+          }`}
         >
           {i + 1}
         </button>
@@ -184,7 +191,10 @@ export default function NotificationSection({
   return (
     <div className="pl-0 p-8 flex flex-col">
       <h1 className="text-2xl font-bold text-black mb-4">
-        {t("navigation.notifications")}
+        {t("navigation.notifications")}{" "}
+        {hasNewNotification && (
+          <span className="ml-2 text-sm text-red-500">(New)</span>
+        )}
       </h1>
 
       {userData?.role === "ADMIN" && (
@@ -231,11 +241,15 @@ export default function NotificationSection({
                     : "No timestamp available"}
                 </span>
                 {notification.announcement && (
-                  <span className="text-sm text-blue-500 ml-2">
+                  <span className="text-sm text-secondary ml-2">
                     [Announcement]
                   </span>
                 )}
-                <span className="text-sm text-gray-500 ml-2">
+                <span
+                  className={`text-sm ml-2 ${
+                    notification.read ? "text-gray-500" : "text-red-500"
+                  }`}
+                >
                   {notification.read ? "[Read]" : "[Unread]"}
                 </span>
               </li>
@@ -245,7 +259,6 @@ export default function NotificationSection({
           <p className="text-gray-500">{t("notifications.noNotifications")}</p>
         )}
 
-        {/* Pagination Controls */}
         {totalPages > 1 && (
           <div className="mt-4 flex justify-center items-center space-x-2">
             <button

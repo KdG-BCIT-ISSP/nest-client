@@ -40,5 +40,23 @@
   },
   "footer": {
     "copyright": "All rights reserved."
+  },
+  "notifications": {
+    "announcement": "Announcement",
+    "detail": "Detail",
+    "message": "Message",
+    "from": "From",
+    "timestamp": "Timestamp",
+    "status": "Status",
+    "read": "Read",
+    "unread": "Unread",
+    "close": "Close",
+    "sendNotification": "Send Notification",
+    "typeMessage": "Type a message",
+    "send": "Send",
+    "recent": "Recent",
+    "noNotifications": "No notifications",
+    "prev": "Previous",
+    "next": "Next"
   }
 }
