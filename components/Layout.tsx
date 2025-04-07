@@ -33,15 +33,12 @@ export default function ClientLayout({
 
         eventSourceRef.current = eventSource;
 
-        eventSource.onopen = () => {
-          console.log("SSE connection opened");
-        };
+        eventSource.onopen = () => {};
 
         eventSource.addEventListener(
           "new-notification",
           (event: MessageEvent) => {
             const notificationData = JSON.parse(event.data);
-            console.log("New notification:", notificationData);
 
             if (notificationData.announcement) {
               setAnnouncementState((prev) => ({
@@ -65,7 +62,6 @@ export default function ClientLayout({
     return () => {
       if (eventSourceRef.current) {
         eventSourceRef.current.close();
-        console.log("SSE connection closed");
       }
     };
   }, [i18n.language, setUserData, setAnnouncementState]);

@@ -60,8 +60,6 @@ export function fetchInterceptor(
   // Handle SSE with EventSourcePolyfill
   if (options.useEventSource) {
     const url = `${PROXY_BASE_URL}${finalEndpoint}`;
-    console.log("EventSource URL:", url);
-    console.log("Headers:", headers);
 
     const eventSource = new EventSourcePolyfill(url, {
       headers: {

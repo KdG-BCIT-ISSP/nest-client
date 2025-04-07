@@ -52,7 +52,6 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
       if (selectedTopic) {
         setSelectedTopic(selectedTopic);
       }
-      console.log(selectedTopic);
     }
   }, [existingPost, topics]);
 

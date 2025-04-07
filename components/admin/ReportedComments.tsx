@@ -17,7 +17,6 @@ export default function ReportedCommentsComponent() {
       setLoading(true);
       try {
         const reportedCommentsData = await get("/report/comment");
-        console.log(reportedCommentsData);
         setReportedComments(reportedCommentsData);
 
         const uniqueContentIds = Array.from(
