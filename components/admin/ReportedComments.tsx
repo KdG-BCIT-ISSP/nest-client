@@ -20,12 +20,14 @@ export default function ReportedCommentsComponent() {
         console.log(reportedCommentsData);
         setReportedComments(reportedCommentsData);
 
-        const uniqueCommentIds = Array.from(
-          new Set(reportedCommentsData.map((report: Report) => report.id))
+        const uniqueContentIds = Array.from(
+          new Set(
+            reportedCommentsData.map((report: Report) => report.contentId)
+          )
         ) as number[];
 
         const commentsData = await Promise.all(
-          uniqueCommentIds.map((id: number) => get(`/content/id/${id}`))
+          uniqueContentIds.map((id: number) => get(`/content/id/${id}`))
         );
         setComments(commentsData);
       } catch (err) {
@@ -52,7 +54,7 @@ export default function ReportedCommentsComponent() {
       <div className="flex flex-col gap-6 w-full">
         {comments.map((comment: ReportPostType) => {
           const associatedReports = reportedComments.filter(
-            (report) => report.commentId === comment.id
+            (report) => report.contentId === comment.id
           );
           return (
             <ReportCard
