@@ -51,7 +51,8 @@ export default function Home() {
             top_post_image={topArticle.coverImage}
             top_post_header={topArticle.title}
             top_post_text={decodeAndTrim(topArticle.content)}
-            href={`/curated-articles/${topArticle.id}`}
+            href={`/curated-articles`}
+            href2={`/curated-articles/${topArticle.id}`}
             likes={topArticle.likesCount || 0}
             comments={topArticle.comment?.length || 0}
           />
@@ -67,7 +68,8 @@ export default function Home() {
             top_post_image={topPost.imageBase64?.[0] || ""}
             top_post_header={topPost.title}
             top_post_text={decodeAndTrim(topPost.content)}
-            href={`/posts/${topPost.id}`}
+            href={`/posts`}
+            href2={`/posts/${topPost.id}`}
             likes={topPost.likesCount || 0}
             comments={topPost.comment?.length || 0}
           />
