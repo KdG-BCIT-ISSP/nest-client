@@ -18,7 +18,9 @@ export default function UserRoleToggle({
 
   const changeUserRole = async (id: number, role: string) => {
     try {
-      const response = await put(`/api/member/role/${id}`, { role: role });
+      const response = await put(`/api/member/role/${id}`, {
+        memberRole: role,
+      });
       if (response) {
         window.alert("User role updated successfully");
       } else {

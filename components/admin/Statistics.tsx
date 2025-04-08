@@ -143,7 +143,7 @@ export default function StatisticsComponent() {
         <BarGraph
           title="Posts (Last 6 Months)"
           data={posts}
-          months={6}
+          months={3}
           colour="rgb(96, 165, 250)"
         />
         <BarGraph

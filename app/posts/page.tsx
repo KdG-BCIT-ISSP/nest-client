@@ -23,8 +23,12 @@ export default function PostsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(0);
-  const pageSize = 8;
+  const pageSize = 9;
   const [totalPages, setTotalPages] = useState(1);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     async function fetchPosts() {

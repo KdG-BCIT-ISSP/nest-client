@@ -4,6 +4,7 @@ export type HomePageContainer = {
   top_post_header: string;
   top_post_text: string | JSX.Element | JSX.Element[];
   href: string;
+  href2: string;
   likes: number;
   comments: number;
 };

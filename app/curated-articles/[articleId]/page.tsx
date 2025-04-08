@@ -43,6 +43,10 @@ export default function ArticleDetailsPage() {
   const isAuthenticated =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const fetchArticleData = async () => {
     try {
       setLoading(true);
