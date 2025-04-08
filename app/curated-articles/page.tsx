@@ -27,6 +27,10 @@ export default function CuratedArticlesPage() {
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     async function fetchArticles() {
       try {
         setLoading(true);

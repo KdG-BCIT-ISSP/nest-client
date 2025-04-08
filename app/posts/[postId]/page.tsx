@@ -42,6 +42,10 @@ export default function PostDetailPage() {
   const isAuthenticated =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const fetchPostData = async () => {
     try {
       setLoading(true);
