@@ -63,7 +63,7 @@ export default function PostsPage() {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="p-6">
+    <div className="md:p-6">
       <HeroSection
         img={"/images/mom_and_baby.png"}
         title={t("post.communityTitle")}

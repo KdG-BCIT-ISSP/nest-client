@@ -56,7 +56,7 @@ export default function CuratedArticlesPage() {
   }
 
   return (
-    <div className="flex flex-col items-center p-6 pt-10">
+    <div className="flex flex-col items-center md:p-6 pt-10">
       <div className="relative w-full h-96 mb-10">
         <HeroSection
           img={"/images/pregnancy1.jpg"}

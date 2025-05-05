@@ -36,7 +36,7 @@ export default function SavedPosts() {
   }
 
   return (
-    <div className="pl-0 p-8 flex flex-col items-start">
+    <div className="md:p-8 flex flex-col items-start">
       <h1 className="text-2xl font-bold text-black mb-4">Saved Posts</h1>
       <div className="flex flex-col gap-6 w-full">
         {bookmarkedPosts.map((post) => (
