@@ -189,19 +189,16 @@ export default function NotificationSection({
   };
 
   return (
-    <div className="pl-0 p-8 flex flex-col">
-      <h1 className="text-2xl font-bold text-black mb-4">
-        {t("navigation.notifications")}{" "}
+    <div className="max-w-4xl w-full mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6 flex items-center justify-between">
+        {t("navigation.notifications")}
         {hasNewNotification && (
-          <span className="ml-2 text-sm text-red-500">(New)</span>
+          <span className="text-base text-red-500">New</span>
         )}
       </h1>
 
       {userData?.role === "ADMIN" && (
-        <div
-          className="mb-6 p-4 border rounded-lg bg-gray-50"
-          data-testid="send-notification-section"
-        >
+        <div className="mb-8 p-4 border rounded-lg bg-gray-50">
           <h2 className="text-lg font-semibold mb-2">
             {t("notifications.sendNotification")}
           </h2>
@@ -209,76 +206,155 @@ export default function NotificationSection({
             value={notificationMessage}
             onChange={(e) => setNotificationMessage(e.target.value)}
             placeholder={t("notifications.typeMessage")}
-            className="w-full p-2 border rounded mb-2"
-            rows={3}
+            className="w-full p-2 border rounded mb-3"
+            rows={4}
           />
           <button
             onClick={handleSendNotification}
-            className="bg-secondary text-white px-4 py-2 rounded hover:bg-blue-600"
             disabled={!notificationMessage.trim()}
+            className="px-5 py-2 bg-secondary text-white rounded hover:bg-blue-600 disabled:opacity-50"
           >
             {t("notifications.send")}
           </button>
         </div>
       )}
 
-      <div className="p-4 border rounded-lg">
-        <h2 className="text-lg font-semibold mb-2">
-          {t("notifications.recent")}
-        </h2>
-        {notifications.length > 0 ? (
-          <ul className="space-y-2">
-            {notifications.map((notification) => (
+      {/* ── MOBILE VIEW ── */}
+      <div className="sm:hidden bg-white rounded-lg overflow-hidden shadow-sm mb-6">
+        <ul className="divide-y divide-gray-200">
+          {notifications.length > 0 ? (
+            notifications.map((n) => (
               <li
-                key={notification.id}
-                className="p-2 bg-white border rounded cursor-pointer hover:bg-gray-100"
-                onClick={() => handleNotificationClick(notification)}
+                key={n.id}
+                onClick={() => handleNotificationClick(n)}
+                className="flex items-start p-4 cursor-pointer hover:bg-gray-50"
               >
-                <p>{truncateMessage(notification.message)}</p>
-                <span className="text-sm text-gray-500">
-                  {notification.timestamp
-                    ? new Date(notification.timestamp).toLocaleString()
-                    : "No timestamp available"}
-                </span>
-                {notification.announcement && (
-                  <span className="text-sm text-secondary ml-2">
-                    [Announcement]
-                  </span>
-                )}
-                <span
-                  className={`text-sm ml-2 ${
-                    notification.read ? "text-gray-500" : "text-red-500"
-                  }`}
-                >
-                  {notification.read ? "[Read]" : "[Unread]"}
-                </span>
+                <div className="flex-shrink-0">
+                  <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+                    <span className="text-white font-semibold">
+                      {n.userName.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+                <div className="ml-3 flex-1">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-sm font-medium text-gray-900">
+                      {n.userName}
+                    </h3>
+                    <time className="text-xs text-gray-500">
+                      {new Date(n.timestamp).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </time>
+                  </div>
+                  <p className="mt-1 text-sm text-gray-700">
+                    {truncateMessage(n.message)}
+                  </p>
+                  <div className="mt-2 flex items-center space-x-2">
+                    {n.announcement && (
+                      <span className="inline-block px-2 text-xs font-semibold text-blue-800 bg-blue-100 rounded">
+                        Announcement
+                      </span>
+                    )}
+                    {n.read ? (
+                      <span className="text-xs text-gray-500">Read</span>
+                    ) : (
+                      <span className="text-xs text-red-500">Unread</span>
+                    )}
+                  </div>
+                </div>
               </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-500">{t("notifications.noNotifications")}</p>
-        )}
-
-        {totalPages > 1 && (
-          <div className="mt-4 flex justify-center items-center space-x-2">
-            <button
-              onClick={() => goToPage(currentPage - 1)}
-              disabled={currentPage === 0}
-              className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-            >
-              {t("notifications.prev")}
-            </button>
-            {renderPageNumbers()}
-            <button
-              onClick={() => goToPage(currentPage + 1)}
-              disabled={currentPage === totalPages - 1}
-              className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-            >
-              {t("notifications.next")}
-            </button>
-          </div>
-        )}
+            ))
+          ) : (
+            <li className="p-4 text-center text-gray-500">
+              {t("notifications.noNotifications")}
+            </li>
+          )}
+        </ul>
       </div>
+
+      {/* ──WEB VIEW ── */}
+      <div className="hidden sm:block bg-white rounded-lg overflow-hidden shadow-sm mb-6">
+        <table className="min-w-full table-auto">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                User
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                Message
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                Date
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                Type
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                Status
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {notifications.map((n) => (
+              <tr
+                key={n.id}
+                onClick={() => handleNotificationClick(n)}
+                className="cursor-pointer hover:bg-gray-50"
+              >
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  {n.userName}
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-700">
+                  {truncateMessage(n.message)}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {new Date(n.timestamp).toLocaleString()}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {n.announcement ? (
+                    <span className="inline-flex px-2 text-xs font-semibold leading-5 bg-blue-100 text-blue-800 rounded-full">
+                      Announcement
+                    </span>
+                  ) : (
+                    <span className="inline-flex px-2 text-xs font-semibold leading-5 bg-gray-100 text-gray-800 rounded-full">
+                      Info
+                    </span>
+                  )}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                  {n.read ? (
+                    <span className="text-gray-500">Read</span>
+                  ) : (
+                    <span className="text-red-500">Unread</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {totalPages > 1 && (
+        <div className="flex justify-center space-x-2 mb-6">
+          <button
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 0}
+            className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+          >
+            ‹ Prev
+          </button>
+          {renderPageNumbers()}
+          <button
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages - 1}
+            className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+          >
+            Next ›
+          </button>
+        </div>
+      )}
 
       <NotificationModal
         isOpen={!!selectedNotification}
