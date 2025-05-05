@@ -96,13 +96,47 @@ const ProfileContent = () => {
   }, [searchParams, userData, hasNewNotification]);
 
   return (
-    <div className="sm:ml-64 bg-white">
-      <SideMenu
-        customItems={profileItems}
-        onItemSelect={(item) => item.onClick && item.onClick()}
-      />
-      <div className="container mr-auto max-w-5xl">
-        {selectedComponent || <ProfileView {...userData} />}
+    <div>
+      {/* ───────────── MOBILE VIEW ───────────── */}
+      <div className="block md:hidden bg-white">
+        <div className="flex items-center justify-between p-4 "></div>
+
+        <div className="flex overflow-x-auto space-x-2 px-4 py-2">
+          {profileItems.map(({ label, onClick }, idx) => (
+            <button
+              key={idx}
+              onClick={onClick}
+              className="flex-none px-3 py-1 rounded-full bg-accent text-sm shadow-sm"
+              style={{
+                scrollbarWidth: "none",
+                overflowY: "hidden",
+              }}
+              onMouseOver={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.overflowY = "auto";
+              }}
+              onMouseOut={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.overflowY =
+                  "hidden";
+              }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <div className="p-4">
+          {selectedComponent || <ProfileView {...userData} />}
+        </div>
+      </div>
+
+      <div className="hidden md:block sm:ml-64 bg-white">
+        <SideMenu
+          customItems={profileItems}
+          onItemSelect={(item) => item.onClick && item.onClick()}
+        />
+        <div className="container mr-auto max-w-5xl">
+          {selectedComponent || <ProfileView {...userData} />}
+        </div>
       </div>
     </div>
   );

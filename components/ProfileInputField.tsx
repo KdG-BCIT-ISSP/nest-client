@@ -143,110 +143,204 @@ export default function ProfileInputField({
   };
 
   return (
-    <div className="bg-white border-2 rounded-md relative m-10">
-      <div className="flex items-center gap-3 py-2 pl-10 pt-10">
-        {/* Avatar Section */}
-        <div className="flex flex-col items-center">
-          <Image
-            src={imagePreview || avatar || "/images/default_profile_image.png"}
-            className="object-cover rounded-full shrink-0 md:w-16 md:h-16"
-            alt="avatar"
-            width={70}
-            height={70}
-            priority
-          />
-        </div>
+    <div>
+      {/* ───────────── MOBILE VIEW ───────────── */}
+      <div className="block md:hidden">
+        <div className="bg-white border-2 rounded-md m-4">
+          <div className="flex flex-col items-center py-6">
+            <Image
+              src={
+                imagePreview || avatar || "/images/default_profile_image.png"
+              }
+              alt="avatar"
+              width={70}
+              height={70}
+              className="object-cover rounded-full w-16 h-16"
+              priority
+            />
+            <h5 className="mt-2 text-md text-gray-600">{formData.username}</h5>
+            <p className="text-gray-500 text-sm">{formData.email}</p>
+            <button
+              className="mt-2 border-secondary border-2 rounded-md text-sm text-secondary hover:text-white hover:bg-secondary px-3 py-1"
+              onClick={() => document.getElementById("imageInput")?.click()}
+            >
+              {t("profile.uploadImage")}
+            </button>
+            <input
+              id="imageInput"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageChange}
+            />
+          </div>
 
-        <div className="flex flex-col justify-center ml-3">
-          <h5 className="text-md text-gray-600">{formData.username}</h5>
-          <p className="text-gray-500 text-sm">{formData.email}</p>
-          <button
-            className="mt-2 border-secondary border-2 rounded-md text-sm text-secondary hover:text-white hover:bg-secondary"
-            onClick={() => document.getElementById("imageInput")?.click()}
-          >
-            {t("profile.uploadImage")}
-          </button>
-          <input
-            type="file"
-            id="imageInput"
-            className="hidden"
-            accept="image/*"
-            onChange={handleImageChange}
-          />
-        </div>
-      </div>
-      <div className="p-6 space-y-6">
-        <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-6 gap-6">
-            <div className="col-span-6 sm:col-span-3">
+          <form onSubmit={handleSubmit} className="px-4 pb-6 space-y-4">
+            <div>
               <label
                 htmlFor="username"
-                className="text-sm font-medium text-gray-900 block mb-2"
+                className="block text-sm font-medium text-gray-900 mb-1"
               >
                 {t("profile.username")}
               </label>
               <input
-                type="text"
-                name="username"
                 id="username"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                name="username"
+                type="text"
                 value={formData.username}
                 onChange={handleChange}
+                className="w-full p-2.5 text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-cyan-600 focus:border-cyan-600"
               />
               {errors.username && (
-                <p className="text-red-500 text-sm">{errors.username}</p>
+                <p className="mt-1 text-red-500 text-sm">{errors.username}</p>
               )}
             </div>
-            <div className="col-span-6 sm:col-span-3">
+
+            <div>
               <label
-                htmlFor="category"
-                className="text-sm font-medium text-gray-900 block mb-2"
-              >
-                {t("profile.email")}
-              </label>
-              <input
-                type="text"
-                name="category"
-                id="category"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-500 sm:text-sm rounded-lg block w-full p-2.5 pointer-events-none focus:outline-none"
-                value={formData.email}
-                readOnly
-              />
-            </div>
-            <div className="col-span-6 sm:col-span-3">
-              <label
-                htmlFor="brand"
-                className="text-sm font-medium text-gray-900 block mb-2"
+                htmlFor="region"
+                className="block text-sm font-medium text-gray-900 mb-1"
               >
                 {t("profile.region")}
               </label>
               <select
-                name="region"
                 id="region"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                name="region"
                 value={formData.region}
                 onChange={handleChange}
+                className="w-full p-2.5 text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-cyan-600 focus:border-cyan-600"
               >
-                {REGION_VALUES.map((region) => (
-                  <option key={region.value} value={region.value}>
-                    {region.label}
+                {REGION_VALUES.map(({ value, label }) => (
+                  <option key={value} value={value}>
+                    {label}
                   </option>
                 ))}
               </select>
               {errors.region && (
-                <p className="text-red-500 text-sm">{errors.region}</p>
+                <p className="mt-1 text-red-500 text-sm">{errors.region}</p>
               )}
             </div>
+
+            <div className="pt-2">
+              <button
+                type="submit"
+                className="w-full py-2.5 bg-secondary hover:bg-tertiary text-white font-medium rounded-md"
+              >
+                {t("profile.save")}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      {/* ───────────── WEB VIEW ───────────── */}
+      <div className="hidden md:block">
+        <div className="bg-white border-2 rounded-md relative m-10">
+          <div className="flex items-center gap-3 py-2 pl-10 pt-10">
+            <div className="flex flex-col items-center">
+              <Image
+                src={
+                  imagePreview || avatar || "/images/default_profile_image.png"
+                }
+                alt="avatar"
+                width={70}
+                height={70}
+                className="object-cover rounded-full shrink-0 md:w-16 md:h-16"
+                priority
+              />
+            </div>
+            <div className="flex flex-col justify-center ml-3">
+              <h5 className="text-md text-gray-600">{formData.username}</h5>
+              <p className="text-gray-500 text-sm">{formData.email}</p>
+              <button
+                className="mt-2 border-secondary border-2 rounded-md text-sm text-secondary hover:text-white hover:bg-secondary"
+                onClick={() => document.getElementById("imageInput")?.click()}
+              >
+                {t("profile.uploadImage")}
+              </button>
+              <input
+                type="file"
+                id="imageInput"
+                className="hidden"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+            </div>
           </div>
-          <div className="p-6 mt-6 border-t border-gray-200 flex justify-end">
-            <button
-              className="text-white bg-secondary hover:bg-tertiary font-medium rounded-md text-sm px-5 py-2.5 text-center"
-              type="submit"
-            >
-              {t("profile.save")}
-            </button>
+          <div className="p-6 space-y-6">
+            <form onSubmit={handleSubmit}>
+              <div className="grid grid-cols-6 gap-6">
+                <div className="col-span-6 sm:col-span-3">
+                  <label
+                    htmlFor="username"
+                    className="text-sm font-medium text-gray-900 block mb-2"
+                  >
+                    {t("profile.username")}
+                  </label>
+                  <input
+                    type="text"
+                    name="username"
+                    id="username"
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                    value={formData.username}
+                    onChange={handleChange}
+                  />
+                  {errors.username && (
+                    <p className="text-red-500 text-sm">{errors.username}</p>
+                  )}
+                </div>
+                <div className="col-span-6 sm:col-span-3">
+                  <label
+                    htmlFor="email"
+                    className="text-sm font-medium text-gray-900 block mb-2"
+                  >
+                    {t("profile.email")}
+                  </label>
+                  <input
+                    type="text"
+                    name="email"
+                    id="email"
+                    readOnly
+                    value={formData.email}
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-500 sm:text-sm rounded-lg block w-full p-2.5 pointer-events-none"
+                  />
+                </div>
+                <div className="col-span-6 sm:col-span-3">
+                  <label
+                    htmlFor="region"
+                    className="text-sm font-medium text-gray-900 block mb-2"
+                  >
+                    {t("profile.region")}
+                  </label>
+                  <select
+                    name="region"
+                    id="region"
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                    value={formData.region}
+                    onChange={handleChange}
+                  >
+                    {REGION_VALUES.map(({ value, label }) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.region && (
+                    <p className="text-red-500 text-sm">{errors.region}</p>
+                  )}
+                </div>
+              </div>
+              <div className="p-6 mt-6 border-t border-gray-200 flex justify-end">
+                <button
+                  className="text-white bg-secondary hover:bg-tertiary font-medium rounded-md text-sm px-5 py-2.5 text-center"
+                  type="submit"
+                >
+                  {t("profile.save")}
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
