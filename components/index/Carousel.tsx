@@ -39,7 +39,7 @@ export default function Carousel({ cardsData, type }: CarouselProps) {
   };
 
   return (
-    <div className="relative mt-8 mx-auto max-w-screen-lg px-4">
+    <div className="relative mt-8 mx-auto max-w-screen-lg md:px-4">
       <button
         className="absolute left-[-55px] top-1/2 -translate-y-1/2 z-10"
         onClick={handlePrev}
@@ -83,7 +83,7 @@ export default function Carousel({ cardsData, type }: CarouselProps) {
         <ArrowRight />
       </button>
 
-      <div className="flex justify-center gap-2 mt-6">
+      <div className="hidden md:flex justify-center gap-2 mt-6">
         {slides.map((_, index) => (
           <button
             key={index}

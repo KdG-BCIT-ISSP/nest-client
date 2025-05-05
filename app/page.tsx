@@ -44,40 +44,82 @@ export default function Home() {
 
   return (
     <div className="flex flex-col bg-white font-[family-name:var(--font-geist-sans)]">
-      <main className="flex-grow p-8 sm:p-20">
-        {topArticle && (
-          <Container
-            section_title="Most Popular Articles"
-            top_post_image={topArticle.coverImage}
-            top_post_header={topArticle.title}
-            top_post_text={decodeAndTrim(topArticle.content)}
-            href={`/curated-articles`}
-            href2={`/curated-articles/${topArticle.id}`}
-            likes={topArticle.likesCount || 0}
-            comments={topArticle.comment?.length || 0}
-          />
-        )}
-        {remainingArticles.length > 0 && (
-          <Carousel cardsData={remainingArticles} type="curated-articles" />
-        )}
-      </main>
-      <main className="flex-grow p-8 sm:p-20">
-        {topPost && (
-          <Container
-            section_title="Most Popular Posts"
-            top_post_image={topPost.imageBase64?.[0] || ""}
-            top_post_header={topPost.title}
-            top_post_text={decodeAndTrim(topPost.content)}
-            href={`/posts`}
-            href2={`/posts/${topPost.id}`}
-            likes={topPost.likesCount || 0}
-            comments={topPost.comment?.length || 0}
-          />
-        )}
-        {remainingPosts.length > 0 && (
-          <Carousel cardsData={remainingPosts} type="posts" />
-        )}
-      </main>
+      {/* ── MOBILE VIEW ── */}
+      <div className="md:hidden bg-white overflow-hidden shadow-sm mb-6">
+        <main className="flex-grow sm:p-20 pt-10">
+          {topArticle && (
+            <Container
+              section_title="Most Popular Articles"
+              top_post_image={topArticle.coverImage}
+              top_post_header={topArticle.title}
+              top_post_text={decodeAndTrim(topArticle.content)}
+              href={`/curated-articles`}
+              href2={`/curated-articles/${topArticle.id}`}
+              likes={topArticle.likesCount || 0}
+              comments={topArticle.comment?.length || 0}
+            />
+          )}
+          {remainingArticles.length > 0 && (
+            <Carousel cardsData={remainingArticles} type="curated-articles" />
+          )}
+        </main>
+        <main className="flex-grow sm:p-20">
+          {topPost && (
+            <Container
+              section_title="Most Popular Posts"
+              top_post_image={topPost.imageBase64?.[0] || ""}
+              top_post_header={topPost.title}
+              top_post_text={decodeAndTrim(topPost.content)}
+              href={`/posts`}
+              href2={`/posts/${topPost.id}`}
+              likes={topPost.likesCount || 0}
+              comments={topPost.comment?.length || 0}
+            />
+          )}
+          {remainingPosts.length > 0 && (
+            <Carousel cardsData={remainingPosts} type="posts" />
+          )}
+        </main>
+      </div>
+      {/* ── DESKTOP VIEW ── */}
+      <div className="hidden md:block">
+
+
+        <main className="flex-grow p-8 sm:p-20">
+          {topArticle && (
+            <Container
+              section_title="Most Popular Articles"
+              top_post_image={topArticle.coverImage}
+              top_post_header={topArticle.title}
+              top_post_text={decodeAndTrim(topArticle.content)}
+              href={`/curated-articles`}
+              href2={`/curated-articles/${topArticle.id}`}
+              likes={topArticle.likesCount || 0}
+              comments={topArticle.comment?.length || 0}
+            />
+          )}
+          {remainingArticles.length > 0 && (
+            <Carousel cardsData={remainingArticles} type="curated-articles" />
+          )}
+        </main>
+        <main className="flex-grow p-8 sm:p-20">
+          {topPost && (
+            <Container
+              section_title="Most Popular Posts"
+              top_post_image={topPost.imageBase64?.[0] || ""}
+              top_post_header={topPost.title}
+              top_post_text={decodeAndTrim(topPost.content)}
+              href={`/posts`}
+              href2={`/posts/${topPost.id}`}
+              likes={topPost.likesCount || 0}
+              comments={topPost.comment?.length || 0}
+            />
+          )}
+          {remainingPosts.length > 0 && (
+            <Carousel cardsData={remainingPosts} type="posts" />
+          )}
+        </main>
+      </div>
     </div>
   );
 }
