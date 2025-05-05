@@ -211,139 +211,58 @@ export default function ArticleDetailsPage() {
   };
 
   return (
-    <div className="w-max mx-auto pt-10">
-      <div className="flex justify-between items-center p-4">
-        <button onClick={() => window.history.back()}>
-          <ArrowLeft />
-        </button>
-        <div className="relative">
+    <div>
+      {/* ───────────── MOBILE VIEW ───────────── */}
+      <div className="block md:hidden">
+        <div className="flex items-center justify-between p-4">
+          <button onClick={() => window.history.back()}>
+            <ArrowLeft />
+          </button>
+
           <button onClick={() => setShowEditMenu((prev) => !prev)}>
             <EllipsisIcon />
           </button>
-          {showEditMenu && (
-            <div className="absolute right-0 mt-1 z-10 cursor-pointer bg-white rounded-md shadow-lg border border-gray-200">
-              {isAdmin && (
-                <>
-                  <div
-                    onClick={() => setShowEditArticle((prev) => !prev)}
-                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
-                  >
-                    Edit
-                  </div>
-                  <div
-                    onClick={() => setShowDeleteWindow((prev) => !prev)}
-                    className="block w-full text-left px-4 py-2 text-red-500 hover:bg-red-100"
-                  >
-                    Delete
-                  </div>
-                </>
-              )}
-              <div
-                onClick={() => setShowReport((prev) => !prev)}
-                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
-              >
-                Report
-              </div>
-            </div>
-          )}
         </div>
-      </div>
 
-      {/* Report Modal */}
-      {showReport && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 text-black">
-          <div className="bg-white p-6 rounded-md w-1/4 flex flex-col space-y-4">
-            <div className="flex justify-between items-center">
-              <h1 className="text-xl font-bold">Submit a report</h1>
-              <button
-                onClick={() => setShowReport(false)}
-                className="text-gray-600 hover:text-gray-800 cursor-pointer"
-              >
-                <CircleXIcon />
-              </button>
-            </div>
-            <textarea
-              value={reportReason}
-              onChange={(e) => setReportReason(e.target.value)}
-              placeholder="Enter your reason for reporting this article..."
-              className="w-full p-2 border-none focus:outline-none focus:ring-0 bg-gray-200"
-              rows={8}
-            />
-            <div className="flex justify-end">
-              <button
-                onClick={handleReportSubmit}
-                className="px-4 py-2 bg-secondary font-bold text-white rounded hover:bg-secondaryPressed"
-              >
-                Submit
-              </button>
-            </div>
-          </div>
+        <h1 className="flex-1 text-lg font-semibold text-black text-center p-4">
+          {article.title}
+        </h1>
+
+        <p className="px-4 text-xs text-gray-500">
+          By <b>{article.memberUsername}</b> |{" "}
+          {formatDate(article.createdAt ?? "")}
+        </p>
+
+        <div className="mt-3 px-4">
+          <Image
+            src={article.coverImage}
+            alt="Cover image"
+            width={1000}
+            height={0}
+            className="w-full h-48 bg-gray-200 object-cover rounded-md"
+            priority
+          />
         </div>
-      )}
 
-      {/* Edit Article Modal */}
-      {showEditArticle && (
-        <Modal
-          isOpen={showEditArticle}
-          onClose={() => setShowEditArticle(false)}
-        >
-          <CreateArticle existingArticle={article} />
-        </Modal>
-      )}
+        <div className="px-4 text-sm text-gray-700" />
+        <hr className="my-4 border-gray-300" />
 
-      {/* Delete Confirmation Modal */}
-      {showDeleteWindow && (
-        <Modal
-          isOpen={showDeleteWindow}
-          onClose={() => setShowDeleteWindow(false)}
-        >
-          <div className="bg-white p-6 rounded-md flex flex-col space-y-4 justify-center items-center">
-            <h1 className="text-xl font-bold">Are you sure?</h1>
-            <p>Do you really want to delete this article?</p>
-            <div className="flex justify-end gap-4">
-              <button
-                onClick={() => setShowDeleteWindow(false)}
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => handleDelete()}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </Modal>
-      )}
-
-      {/* Article Content */}
-      <div className="max-w-3xl mx-auto p-4 pt-4 text-black">
-        <div className="mb-6">
-          <p className="text-sm text-gray-700">
-            By <b>{article.memberUsername}</b> |{" "}
-            {formatDate(article.createdAt ?? "")}
-          </p>
-          <p className="text-xs mt-2">{views} verified views</p>
-          <h1 className="text-3xl text-black font-bold mt-2 mb-2 font-serif">
-            {article.title}
-          </h1>
-          <Tags tagsList={article.tagNames ?? []} />
-          <div className="w-full max-w-screen-md mx-auto px-4">
-            <Image
-              src={article.coverImage}
-              alt="Article cover image"
-              width={1000}
-              height={0}
-              className="w-full h-auto object-contain rounded-md"
-              priority
-            />
-          </div>
+        <div className="px-4 prose prose-sm prose-green mb-4">
+          {parse(htmlContent)}
         </div>
-        <hr className="border-gray-600 p-4" />
-        <div className="prose prose-green mb-8">{parse(htmlContent)}</div>
-        <div className="flex justify-end gap-4">
+
+        <div className="px-4 flex flex-wrap gap-2 mb-4">
+          {article.tagNames?.map((t) => (
+            <span
+              key={t}
+              className="px-3 py-1 text-xs bg-yellow-200 rounded-full"
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+
+        <div className="px-4 flex justify-between items-center mt-8">
           <Like
             count={article.likes || 0}
             isLiked={article.isLiked || false}
@@ -354,22 +273,183 @@ export default function ArticleDetailsPage() {
           <Bookmark
             count={article.bookmarkCount || 0}
             isSaved={article.bookmarked || false}
-            disabled={!isAuthenticated}
             onClick={handleBookmarkToggle}
+            disabled={!isAuthenticated}
           />
           <Share onClick={handleShareClick} />
         </div>
-        <CommentsSection
-          contentData={article}
-          refetchContent={fetchArticleData}
-        />
+
+        <div className="px-4">
+          <CommentsSection
+            contentData={article}
+            refetchContent={fetchArticleData}
+          />
+        </div>
+
+        {showCopied && (
+          <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-400 text-white px-4 py-2 rounded transition-opacity duration-500">
+            URL copied to clipboard!
+          </div>
+        )}
       </div>
 
-      {showCopied && (
-        <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-400 text-white px-4 py-2 rounded transition-opacity duration-500">
-          URL copied to clipboard!
+      {/* ───────────── WEB VIEW ───────────── */}
+      <div className="hidden md:block w-max mx-auto pt-10">
+        <div className="flex justify-between items-center p-4">
+          <button onClick={() => window.history.back()}>
+            <ArrowLeft />
+          </button>
+          <div className="relative">
+            <button onClick={() => setShowEditMenu((prev) => !prev)}>
+              <EllipsisIcon />
+            </button>
+            {showEditMenu && (
+              <div className="absolute right-0 mt-1 z-10 cursor-pointer bg-white rounded-md shadow-lg border border-gray-200">
+                {isAdmin && (
+                  <>
+                    <div
+                      onClick={() => setShowEditArticle((prev) => !prev)}
+                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    >
+                      Edit
+                    </div>
+                    <div
+                      onClick={() => setShowDeleteWindow((prev) => !prev)}
+                      className="block w-full text-left px-4 py-2 text-red-500 hover:bg-red-100"
+                    >
+                      Delete
+                    </div>
+                  </>
+                )}
+                <div
+                  onClick={() => setShowReport((prev) => !prev)}
+                  className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  Report
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-      )}
+
+        {showReport && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 text-black">
+            <div className="bg-white p-6 rounded-md w-1/4 flex flex-col space-y-4">
+              <div className="flex justify-between items-center">
+                <h1 className="text-xl font-bold">Submit a report</h1>
+                <button
+                  onClick={() => setShowReport(false)}
+                  className="text-gray-600 hover:text-gray-800 cursor-pointer"
+                >
+                  <CircleXIcon />
+                </button>
+              </div>
+              <textarea
+                value={reportReason}
+                onChange={(e) => setReportReason(e.target.value)}
+                placeholder="Enter your reason for reporting this article..."
+                className="w-full p-2 border-none focus:outline-none focus:ring-0 bg-gray-200"
+                rows={8}
+              />
+              <div className="flex justify-end">
+                <button
+                  onClick={handleReportSubmit}
+                  className="px-4 py-2 bg-secondary font-bold text-white rounded hover:bg-secondaryPressed"
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showEditArticle && (
+          <Modal
+            isOpen={showEditArticle}
+            onClose={() => setShowEditArticle(false)}
+          >
+            <CreateArticle existingArticle={article} />
+          </Modal>
+        )}
+
+        {showDeleteWindow && (
+          <Modal
+            isOpen={showDeleteWindow}
+            onClose={() => setShowDeleteWindow(false)}
+          >
+            <div className="bg-white p-6 rounded-md flex flex-col space-y-4 justify-center items-center">
+              <h1 className="text-xl font-bold">Are you sure?</h1>
+              <p>Do you really want to delete this article?</p>
+              <div className="flex justify-end gap-4">
+                <button
+                  onClick={() => setShowDeleteWindow(false)}
+                  className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </Modal>
+        )}
+
+        <div className="max-w-3xl mx-auto p-4 pt-4 text-black">
+          <div className="mb-6">
+            <p className="text-sm text-gray-700">
+              By <b>{article.memberUsername}</b> |{" "}
+              {formatDate(article.createdAt ?? "")}
+            </p>
+            <p className="text-xs mt-2">{views} verified views</p>
+            <h1 className="text-3xl text-black font-bold mt-2 mb-2 font-serif">
+              {article.title}
+            </h1>
+            <Tags tagsList={article.tagNames ?? []} />
+            <div className="w-full max-w-screen-md mx-auto px-4">
+              <Image
+                src={article.coverImage}
+                alt="Article cover image"
+                width={1000}
+                height={0}
+                className="w-full h-auto object-contain rounded-md"
+                priority
+              />
+            </div>
+          </div>
+          <hr className="border-gray-600 p-4" />
+          <div className="prose prose-green mb-8">{parse(htmlContent)}</div>
+          <div className="flex justify-end gap-4">
+            <Like
+              count={article.likes || 0}
+              isLiked={article.isLiked || false}
+              onClick={handleToggleLike}
+              disabled={!isAuthenticated}
+            />
+            <Comments count={article.comment?.length ?? 0} />
+            <Bookmark
+              count={article.bookmarkCount || 0}
+              isSaved={article.bookmarked || false}
+              disabled={!isAuthenticated}
+              onClick={handleBookmarkToggle}
+            />
+            <Share onClick={handleShareClick} />
+          </div>
+          <CommentsSection
+            contentData={article}
+            refetchContent={fetchArticleData}
+          />
+        </div>
+
+        {showCopied && (
+          <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-400 text-white px-4 py-2 rounded transition-opacity duration-500">
+            URL copied to clipboard!
+          </div>
+        )}
+      </div>
     </div>
   );
 }
