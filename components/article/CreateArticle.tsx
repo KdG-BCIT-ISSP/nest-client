@@ -219,90 +219,179 @@ export default function CreateArticle({ existingArticle }: CreateArticleProps) {
   };
 
   return (
-    <div className="max-w-6xl mx-auto bg-white p-6 lg:p-12 rounded-lg shadow-md my-10">
-      <form onSubmit={handleSubmit}>
-        {/* Topic Dropdown */}
-        <div className="mb-6 flex items-center justify-between gap-6">
-          <label className="text-sm font-medium text-gray-900 block mb-2">
-            {t("article.topic")}
-          </label>
-          <TopicSelector
-            selectedTopic={selectedTopic}
-            onTopicClick={handleTopicClick}
-            topics={topics}
-          />
+    <>
+      {/* ───────────── MOBILE VIEW ───────────── */}
+      <div className="block md:hidden bg-white p-4 rounded-lg shadow-md my-4">
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1">
+              {t("article.topic")}
+            </label>
+            <TopicSelector
+              selectedTopic={selectedTopic}
+              onTopicClick={handleTopicClick}
+              topics={topics}
+            />
+          </div>
 
-          {/* Title */}
-          <label className="text-sm font-medium text-gray-900 block mb-2">
-            {t("article.title")}
-          </label>
-          <input
-            type="text"
-            value={article.title}
-            onChange={(e) => handleChange(e, "title")}
-            className="mt-1 p-3 w-full border border-gray-300 rounded-md h-12"
-            placeholder={t("article.titlePlaceholder")}
-          />
-          {errors.title && (
-            <p className="text-red-500 text-sm">{errors.title}</p>
-          )}
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1">
+              {t("article.title")}
+            </label>
+            <input
+              type="text"
+              value={article.title}
+              onChange={(e) => handleChange(e, "title")}
+              className="w-full p-2 border border-gray-300 rounded-md"
+              placeholder={t("article.titlePlaceholder")}
+            />
+            {errors.title && (
+              <p className="mt-1 text-red-500 text-sm">{errors.title}</p>
+            )}
+          </div>
 
-          {/* Image Upload */}
-          <ImageUpload
-            onImageChange={handleCoverImageChange}
-            onRemoveImage={handleCoverImageRemove}
-            imagePreviews={article.coverImage ? [article.coverImage] : []}
-            multiple={false}
-          />
-          {errors.image && (
-            <p className="text-red-500 text-sm">{errors.image}</p>
-          )}
-        </div>
-        {/* React-Quill Text Editor */}
-        <div className="mb-6">
-          <label className="block text-lg font-medium ">
-            {t("article.content")}
-          </label>
-          <ReactQuill
-            key={i18n.language}
-            value={article.content}
-            onChange={handleContentChange}
-            className="mt-2 bg-white"
-            theme="snow"
-            placeholder={t("article.contentPlaceholder")}
-            style={{ height: "400px" }}
-            modules={{
-              toolbar: [
-                [{ font: [] }],
-                [{ header: [1, 2, 3, 4, 5, 6, false] }],
-                ["bold", "italic", "underline", "strike"],
-                [{ color: [] }, { background: [] }],
-                [{ script: "sub" }, { script: "super" }],
-                ["blockquote", "code-block"],
-                [{ list: "ordered" }, { list: "bullet" }],
-                [{ indent: "-1" }, { indent: "+1" }, { align: [] }],
-                ["link", "image", "video"],
-                ["clean"],
-              ],
-            }}
-          />
-          {errors.content && (
-            <p className="text-red-500 text-sm">{errors.content}</p>
-          )}
-        </div>
-        {/* Submit Button */}
-        <div className="mt-8 border-t border-gray-200 flex justify-between pt-6">
-          <TagsSelector
-            selectedTags={selectedTags}
-            onTagClick={handleTagClick}
-          />
-          <Button
-            label={t("article.publish")}
-            onClick={handleSubmit}
-            className="text-white bg-secondary h-12 hover:bg-secondaryPressed font-medium rounded-md text-lg px-6 py-3"
-          />
-        </div>
-      </form>
-    </div>
+          <div className="mb-4">
+            <ImageUpload
+              onImageChange={handleCoverImageChange}
+              onRemoveImage={handleCoverImageRemove}
+              imagePreviews={article.coverImage ? [article.coverImage] : []}
+              multiple={false}
+            />
+            {errors.image && (
+              <p className="mt-1 text-red-500 text-sm">{errors.image}</p>
+            )}
+          </div>
+
+          <div className="pb-16">
+            <label className="block text-sm font-medium mb-1">
+              {t("article.content")}
+            </label>
+            <ReactQuill
+              key={i18n.language}
+              value={article.content}
+              onChange={handleContentChange}
+              theme="snow"
+              placeholder={t("article.contentPlaceholder")}
+              style={{ height: "200px" }}
+              modules={{
+                toolbar: [
+                  [{ font: [] }],
+                  [{ header: [1, 2, 3, false] }],
+                  ["bold", "italic", "underline"],
+                  [{ list: "ordered" }, { list: "bullet" }],
+                  ["link", "image"],
+                  ["clean"],
+                ],
+              }}
+            />
+            {errors.content && (
+              <p className="mt-1 text-red-500 text-sm">{errors.content}</p>
+            )}
+          </div>
+
+          <div className="mb-4 pt-4">
+            <TagsSelector
+              selectedTags={selectedTags}
+              onTagClick={handleTagClick}
+            />
+          </div>
+
+          <div>
+            <Button
+              label={t("article.publish")}
+              onClick={handleSubmit}
+              className="w-full bg-secondary text-white py-2 rounded-md"
+            />
+          </div>
+        </form>
+      </div>
+
+      {/* ───────────── WEB VIEW ───────────── */}
+      <div className="hidden md:block max-w-6xl mx-auto bg-white p-6 lg:p-12 rounded-lg shadow-md my-10">
+        <form onSubmit={handleSubmit}>
+          <div className="mb-6 grid grid-cols-3 gap-6 items-start">
+            <div>
+              <label className="text-sm font-medium text-gray-900 block mb-2">
+                {t("article.topic")}
+              </label>
+              <TopicSelector
+                selectedTopic={selectedTopic}
+                onTopicClick={handleTopicClick}
+                topics={topics}
+              />
+            </div>
+            <div className="col-span-2">
+              <label className="text-sm font-medium text-gray-900 block mb-2">
+                {t("article.title")}
+              </label>
+              <input
+                type="text"
+                value={article.title}
+                onChange={(e) => handleChange(e, "title")}
+                className="w-full p-3 border border-gray-300 rounded-md h-12"
+                placeholder={t("article.titlePlaceholder")}
+              />
+              {errors.title && (
+                <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+              )}
+              <div className="pt-4">
+                <ImageUpload
+                  onImageChange={handleCoverImageChange}
+                  onRemoveImage={handleCoverImageRemove}
+                  imagePreviews={article.coverImage ? [article.coverImage] : []}
+                  multiple={false}
+                />
+                {errors.image && (
+                  <p className="text-red-500 text-sm mt-1">{errors.image}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="pb-14">
+            <label className="block text-lg font-medium mb-2">
+              {t("article.content")}
+            </label>
+            <ReactQuill
+              key={i18n.language}
+              value={article.content}
+              onChange={handleContentChange}
+              className="bg-white"
+              theme="snow"
+              placeholder={t("article.contentPlaceholder")}
+              style={{ height: "400px" }}
+              modules={{
+                toolbar: [
+                  [{ font: [] }],
+                  [{ header: [1, 2, 3, false] }],
+                  ["bold", "italic", "underline"],
+                  [{ list: "ordered" }, { list: "bullet" }],
+                  ["link", "image"],
+                  ["clean"],
+                ],
+              }}
+            />
+            {errors.content && (
+              <p className="text-red-500 text-sm mt-1">{errors.content}</p>
+            )}
+          </div>
+
+          <div className="mb-10">
+            <TagsSelector
+              selectedTags={selectedTags}
+              onTagClick={handleTagClick}
+            />
+          </div>
+
+          <div className="mt-8 border-t border-gray-200 pt-6 text-right">
+            <Button
+              label={t("article.publish")}
+              onClick={handleSubmit}
+              className="bg-secondary text-white h-12 hover:bg-secondaryPressed font-medium rounded-md text-lg px-6 py-3"
+            />
+          </div>
+        </form>
+      </div>
+    </>
   );
 }
