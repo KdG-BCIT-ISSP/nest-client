@@ -21,6 +21,7 @@ export default {
         accent: "#FDF8D0", // Custom Yellow
         muted: "#FFCFCF", // Custom Pink
         container: "#F2FBF3", // Custom Yellow
+        mobileNav: "#f0efee",
         black: "#101010", // Custom Black
         darkGray: "#999999",
         lightGray: "#F2F2F2",
