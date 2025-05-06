@@ -14,7 +14,7 @@ export default function Card({
   return (
     <Link
       href={`/${type}/${id}`}
-      className="block w-200px md:w-[330px] md:h-[300px] p-6 bg-container shadow-md rounded-sm hover:bg-muted flex flex-col justify-between"
+      className="block w-[200px] md:w-[330px] md:h-[300px] p-6 bg-container shadow-md rounded-sm hover:bg-muted flex flex-col justify-between"
     >
       <div>
         <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 line-clamp-2">
