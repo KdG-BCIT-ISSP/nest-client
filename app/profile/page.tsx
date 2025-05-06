@@ -13,6 +13,7 @@ import MyPosts from "@/components/profile/MyPosts";
 import { useSearchParams } from "next/navigation";
 import { useTranslation } from "next-i18next";
 import NotificationSection from "../../components/profile/notifications/NotificationSection";
+import ResetPasswordPage from "../auth/reset-password/[uuid]/page";
 
 const ProfileContent = () => {
   const { t } = useTranslation("common");
@@ -88,6 +89,9 @@ const ProfileContent = () => {
           />
         );
         break;
+      case "reset-password":
+        setSelectedComponent(<ResetPasswordPage />);
+        break;
       case "profile":
       default:
         setSelectedComponent(<ProfileView {...userData} />);
@@ -100,29 +104,6 @@ const ProfileContent = () => {
       {/* ───────────── MOBILE VIEW ───────────── */}
       <div className="block md:hidden bg-white">
         <div className="flex items-center justify-between p-4 "></div>
-
-        <div className="flex overflow-x-auto space-x-2 px-4 py-2">
-          {profileItems.map(({ label, onClick }, idx) => (
-            <button
-              key={idx}
-              onClick={onClick}
-              className="flex-none px-3 py-1 rounded-full bg-accent text-sm shadow-sm"
-              style={{
-                scrollbarWidth: "none",
-                overflowY: "hidden",
-              }}
-              onMouseOver={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.overflowY = "auto";
-              }}
-              onMouseOut={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.overflowY =
-                  "hidden";
-              }}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
 
         <div className="p-4">
           {selectedComponent || <ProfileView {...userData} />}
