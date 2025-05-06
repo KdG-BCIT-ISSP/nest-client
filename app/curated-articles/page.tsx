@@ -56,41 +56,83 @@ export default function CuratedArticlesPage() {
   }
 
   return (
-    <div className="flex flex-col items-center md:p-6 pt-10">
-      <div className="relative w-full h-96 mb-10">
-        <HeroSection
-          img={"/images/pregnancy1.jpg"}
-          title={t("article.heroTitle")}
-          subtitle={t("article.heroSubtitle")}
-          direction="right"
-        />
-        {(userData.role === "ADMIN" || userData.role === "SUPER_ADMIN") && (
-          <div className="max-w-7xl mx-auto p-6 flex justify-end mb-6">
-            <Button
-              label={t("article.create")}
-              onClick={openModal}
-              className="bg-secondary text-white px-6 py-3 rounded-md"
-            />
-          </div>
-        )}
-      </div>
-      <div className="py-10" />
+    <>
+      {/* ───────────── MOBILE VIEW ───────────── */}
+      <div className="block md:hidden p-4 pt-6">
+        <div className="mb-6">
+          <HeroSection
+            img="/images/pregnancy1.jpg"
+            title={t("article.heroTitle")}
+            subtitle={t("article.heroSubtitle")}
+            direction="right"
+          />
 
-      <div className="w-full mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+          {(userData.role === "ADMIN" || userData.role === "SUPER_ADMIN") && (
+            <div className="mb-6 pt-6">
+              <Button
+                label={t("article.create")}
+                onClick={openModal}
+                className="w-full bg-secondary text-white py-3 rounded-md"
+              />
+            </div>
+          )}
+        </div>
+        <div className="w-full px-2 mt-8 space-y-6">
           {articles.map((article) => (
             <ArticleCard key={article.id} article={article} />
           ))}
         </div>
+
+        <div className="mt-6 ">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+          <CreateArticle />
+        </Modal>
       </div>
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-      />
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <CreateArticle />
-      </Modal>
-    </div>
+
+      {/* ───────────── WEB VIEW ───────────── */}
+      <div className="hidden md:flex flex-col items-center p-6 pt-10">
+        <div className="relative w-full h-96 mb-10">
+          <HeroSection
+            img={"/images/pregnancy1.jpg"}
+            title={t("article.heroTitle")}
+            subtitle={t("article.heroSubtitle")}
+            direction="right"
+          />
+          {(userData.role === "ADMIN" || userData.role === "SUPER_ADMIN") && (
+            <div className="max-w-7xl mx-auto p-6 flex justify-end mb-6">
+              <Button
+                label={t("article.create")}
+                onClick={openModal}
+                className="bg-secondary text-white px-6 py-3 rounded-md"
+              />
+            </div>
+          )}
+        </div>
+        <div className="py-10" />
+
+        <div className="w-full mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+            {articles.map((article) => (
+              <ArticleCard key={article.id} article={article} />
+            ))}
+          </div>
+        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+          <CreateArticle />
+        </Modal>
+      </div>
+    </>
   );
 }

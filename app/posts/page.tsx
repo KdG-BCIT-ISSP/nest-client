@@ -63,37 +63,80 @@ export default function PostsPage() {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="md:p-6">
-      <HeroSection
-        img={"/images/mom_and_baby.png"}
-        title={t("post.communityTitle")}
-        subtitle={t("post.subtitle")}
-        direction="left"
-      />
-      {isAuthenticated && (
-        <div className="max-w-7xl mx-auto p-6 flex justify-end mb-6">
-          <Button
-            label={t("post.create")}
-            onClick={openModal}
-            className="bg-secondary text-white px-6 py-3 rounded-md"
+    <>
+      {/* ───────────── MOBILE VIEW ───────────── */}
+      <div className="block md:hidden p-4">
+        <div className="mb-6">
+          <HeroSection
+            img="/images/mom_and_baby.png"
+            title={t("post.communityTitle")}
+            subtitle={t("post.subtitle")}
+            direction="left"
           />
         </div>
-      )}
-      <div className="max-w-7xl mx-auto px-6 pt-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+
+        {isAuthenticated && (
+          <div className="mb-6">
+            <Button
+              label={t("post.create")}
+              onClick={openModal}
+              className="w-full bg-secondary text-white py-3 rounded-md"
+            />
+          </div>
+        )}
+
+        <div className="space-y-4">
           {posts.map((post) => (
             <PostCard key={post.id} postData={post} onDelete={handleDelete} />
           ))}
         </div>
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+
+        <div className="mt-6">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+          <CreatePost />
+        </Modal>
       </div>
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <CreatePost />
-      </Modal>
-    </div>
+
+      {/* ───────────── WEB VIEW ───────────── */}
+      <div className="hidden md:block p-6">
+        <HeroSection
+          img={"/images/mom_and_baby.png"}
+          title={t("post.communityTitle")}
+          subtitle={t("post.subtitle")}
+          direction="left"
+        />
+        {isAuthenticated && (
+          <div className="max-w-7xl mx-auto p-6 flex justify-end mb-6">
+            <Button
+              label={t("post.create")}
+              onClick={openModal}
+              className="bg-secondary text-white px-6 py-3 rounded-md"
+            />
+          </div>
+        )}
+        <div className="max-w-7xl mx-auto px-6 pt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {posts.map((post) => (
+              <PostCard key={post.id} postData={post} onDelete={handleDelete} />
+            ))}
+          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+          <CreatePost />
+        </Modal>
+      </div>
+    </>
   );
 }
