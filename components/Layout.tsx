@@ -72,7 +72,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   ]);
 
   return (
-    <div className="antialiased min-h-screen flex flex-col p-12">
+    <div className="antialiased min-h-screen flex flex-col md:p-12">
       <main className="flex-grow" style={{ backgroundColor: "#ffffff" }}>
         {children}
       </main>

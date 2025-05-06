@@ -201,7 +201,7 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
   };
 
   return (
-    <div className="bg-white border rounded-md relative m-10 p-6">
+    <div className="bg-white border rounded-md relative sm:m-10 sm:p-6">
       <form onSubmit={handleSubmit}>
         <div className="gap-6">
           <label className="text-sm font-medium text-gray-900 block mb-2">

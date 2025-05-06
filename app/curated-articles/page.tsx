@@ -77,7 +77,6 @@ export default function CuratedArticlesPage() {
             </div>
           )}
         </div>
-
         <div className="w-full px-2 mt-8 space-y-6">
           {articles.map((article) => (
             <ArticleCard key={article.id} article={article} />
