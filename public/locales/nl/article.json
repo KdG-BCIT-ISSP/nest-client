@@ -1,0 +1,30 @@
+{
+  "article": {
+    "likes": "Vind-ik-leuks",
+    "views": "Weergaven",
+    "shares": "Gedeeld",
+    "saves": "Opgeslagen",
+    "delete": "Verwijderen",
+    "confirmDelete": "Weet u zeker dat u dit artikel wilt verwijderen?",
+    "deletedSuccess": "Artikel succesvol verwijderd!",
+    "untitled": "Artikel zonder titel",
+    "noContent": "Geen inhoud beschikbaar",
+    "viewComments": "Bekijk alle reacties",
+    "create": "Artikel aanmaken",
+    "topic": "Onderwerp",
+    "title": "Titel",
+    "titlePlaceholder": "Voer de titel van het artikel in...",
+    "content": "Inhoud",
+    "contentPlaceholder": "Schrijf hier de inhoud van uw artikel...",
+    "addCoverImage": "Omslagafbeelding toevoegen",
+    "publish": "Artikel publiceren",
+    "preview": "HTML-voorbeeld van het artikel:",
+    "titleRequired": "Titel is verplicht.",
+    "imageRequired": "Upload een afbeelding alstublieft.",
+    "contentRequired": "Inhoud is verplicht.",
+    "createSuccess": "Artikel succesvol aangemaakt!",
+    "requiredField": "{{field}} is verplicht.",
+    "heroTitle": "Meer informatie voor jou en je baby",
+    "heroSubtitle": "Medisch beoordeelde gidsen van experts, tips, echte verhalen en artikelen over vruchtbaarheid, zwangerschap, moederschap en menopauze."
+  }
+}

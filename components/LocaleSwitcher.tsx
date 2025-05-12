@@ -7,6 +7,7 @@ const languages = [
   { code: "en", label: "🇺🇸 English" },
   { code: "de", label: "🇩🇪 Deutsch" },
   { code: "fr", label: "🇫🇷 Français" },
+  { code: "nl", label: "🇳🇱 Nederlands" },
 ];
 
 export default function LocaleSwitcher() {
