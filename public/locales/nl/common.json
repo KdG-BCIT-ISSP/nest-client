@@ -1,0 +1,62 @@
+{
+  "navigation": {
+    "home": "Home",
+    "articles": "Artikelen",
+    "community": "Community",
+    "profile": "Profiel",
+    "savedPosts": "Opgeslagen Berichten",
+    "myPosts": "Mijn Berichten",
+    "notifications": "Meldingen",
+    "resetPassword": "Wachtwoord Resetten",
+    "signOut": "Uitloggen",
+    "login": "Inloggen",
+    "register": "Registreren",
+    "close": "Sluiten",
+    "searchSomething": "Zoek iets...",
+    "admin": "Beheer"
+  },
+  "profile": {
+    "uploadImage": "Afbeelding Uploaden",
+    "username": "Gebruikersnaam",
+    "email": "E-mail",
+    "region": "Regio",
+    "save": "Opslaan",
+    "usernameRequired": "Gebruikersnaam mag niet leeg zijn",
+    "usernameLength": "Gebruikersnaam moet tussen 4 en 13 tekens zijn",
+    "regionRequired": "Selecteer een regio alstublieft",
+    "updateSuccess": "Profiel succesvol bijgewerkt!",
+    "updateError": "Bijwerken van profiel mislukt!",
+    "selectRegion": "Selecteer een regio",
+    "northAmerica": "Noord-Amerika",
+    "europe": "Europa",
+    "southAmerica": "Zuid-Amerika"
+  },
+  "general": {
+    "title": "Titel",
+    "content": "Inhoud",
+    "loading": "Laden...",
+    "anonymous": "Anoniem",
+    "unknownDate": "Onbekende Datum"
+  },
+  "footer": {
+    "copyright": "Alle rechten voorbehouden."
+  },
+  "notifications": {
+    "announcement": "Aankondiging",
+    "detail": "Detail",
+    "message": "Bericht",
+    "from": "Van",
+    "timestamp": "Tijdstempel",
+    "status": "Status",
+    "read": "Gelezen",
+    "unread": "Ongelezen",
+    "close": "Sluiten",
+    "sendNotification": "Melding Verzenden",
+    "typeMessage": "Typ een bericht",
+    "send": "Verzenden",
+    "recent": "Recent",
+    "noNotifications": "Geen meldingen",
+    "prev": "Vorige",
+    "next": "Volgende"
+  }
+}

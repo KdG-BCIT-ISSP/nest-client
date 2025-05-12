@@ -1,0 +1,18 @@
+{
+  "dashboard": {
+    "profile": "Profiel",
+    "myPosts": "Mijn Berichten",
+    "savedPosts": "Opgeslagen Berichten",
+    "notifications": "Meldingen",
+    "resetPassword": "Wachtwoord Resetten",
+    "logout": "Uitloggen",
+    "userAccess": "Gebruikerstoegang",
+    "posts": "Berichten",
+    "articles": "Artikelen",
+    "reportedPosts": "Gerapporteerde Berichten",
+    "reportedArticles": "Gerapporteerde Artikelen",
+    "reportedComments": "Gerapporteerde Reacties",
+    "statistics": "Statistieken",
+    "tagManagement": "Tagbeheer"
+  }
+}

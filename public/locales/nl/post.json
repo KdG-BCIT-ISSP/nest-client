@@ -1,0 +1,29 @@
+{
+  "post": {
+    "likes": "Vind-ik-leuks",
+    "views": "Weergaven",
+    "shares": "Gedeeld",
+    "saves": "Opgeslagen",
+    "delete": "Verwijderen",
+    "confirmDelete": "Weet u zeker dat u dit bericht wilt verwijderen?",
+    "deletedSuccess": "Bericht succesvol verwijderd!",
+    "untitled": "Bericht zonder titel",
+    "noContent": "Geen inhoud beschikbaar",
+    "viewComments": "Bekijk alle reacties",
+    "create": "Bericht aanmaken",
+    "topic": "Onderwerp",
+    "title": "Titel",
+    "titlePlaceholder": "Voer de titel van het bericht in...",
+    "content": "Inhoud",
+    "contentPlaceholder": "Schrijf hier de inhoud van uw bericht...",
+    "addImage": "Afbeelding toevoegen",
+    "publish": "Plaatsen",
+    "titleRequired": "Titel is verplicht.",
+    "contentRequired": "Inhoud is verplicht.",
+    "createSuccess": "Bericht succesvol aangemaakt!",
+    "createError": "Bericht aanmaken mislukt. Probeer het opnieuw.",
+    "requiredField": "{{name}} is verplicht.",
+    "communityTitle": "Community berichten",
+    "subtitle": "Dit platform biedt een ondersteunende community voor nieuwe moeders om ervaringen te delen, handige tips te krijgen en begeleiding te vinden tijdens hun moederschapsreis."
+  }
+}
