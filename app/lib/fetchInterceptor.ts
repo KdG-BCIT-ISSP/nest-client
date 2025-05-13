@@ -2,23 +2,19 @@ import { getCookie, deleteCookie, setCookie } from "cookies-next";
 import { EventSourcePolyfill } from "event-source-polyfill";
 
 const PROXY_BASE_URL = "/api/proxy";
-const EXTERNAL_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const INVALID_TOKEN_ERROR = "Invalid token";
 const EXPIRED_TOKEN_ERROR = ["Expired token", "Token expired"];
 
 async function refreshAccessToken(refreshToken: string) {
-  const response = await fetch(
-    `${EXTERNAL_API_BASE_URL}/auth/getNewAccessToken`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${refreshToken}`,
-      },
-      body: JSON.stringify({ refreshToken }),
-    }
-  );
+  const response = await fetch(`${PROXY_BASE_URL}/auth/getNewAccessToken`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${refreshToken}`,
+    },
+    body: JSON.stringify({ refreshToken }),
+  });
   if (!response.ok) throw new Error("Failed to refresh token");
   const data = await response.json();
   return { accessToken: data.accessToken, refreshToken: data.refreshToken };

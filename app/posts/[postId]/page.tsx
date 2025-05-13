@@ -2,8 +2,7 @@
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { ArrowLeft, CircleXIcon } from "lucide-react";
-import { EllipsisIcon } from "lucide-react";
+import { ArrowLeft, CircleXIcon, EllipsisIcon } from "lucide-react";
 import Tags from "@/components/admin/Tags";
 import CommentsSection from "@/components/Comments";
 import { PostType } from "@/types/ContentType";
@@ -17,12 +16,18 @@ import { userAtom } from "@/atoms/user/atom";
 import Loader from "@/components/Loader";
 import { marked } from "marked";
 import parse from "html-react-parser";
+import { useTranslation } from "next-i18next";
+import { translateViaApi } from "@/app/lib/translate";
+
+const tCache: Map<string, { title: string; content: string }> = new Map();
 
 export default function PostDetailPage() {
   const params = useParams();
   const postId = Number(params.postId);
   const [userdata] = useAtom(userAtom);
-  // Provide an initial default with a valid "type"
+  const { i18n } = useTranslation("post");
+  const locale = i18n.language;
+
   const [userPost, setPost] = useState<PostType>({ type: "post" } as PostType);
   const [loading, setLoading] = useState(true);
   const [showReport, setShowReport] = useState(false);
@@ -32,7 +37,8 @@ export default function PostDetailPage() {
   const [showDeleteWindow, setShowDeleteWindow] = useState(false);
   const [showEditPost, setShowEditPost] = useState(false);
   const [views, setViews] = useState(0);
-  const [html, setHtml] = useState<string>("");
+  const [html, setHtml] = useState("");
+
   const isOwnerOrAdmin =
     Number(userdata.userId) === userPost?.memberId ||
     userdata.role === "ADMIN" ||
@@ -49,19 +55,39 @@ export default function PostDetailPage() {
   const fetchPostData = async () => {
     try {
       setLoading(true);
-      const [userPostData, viewsData] = await Promise.all([
+      const [rawPost, viewsData] = await Promise.all([
         get(`/api/content/id/${postId}`),
         get(`/api/content/${postId}/views`),
       ]);
-      // Ensure that the "type" property is defined, defaulting to "post" if missing.
-      setPost({
-        ...userPostData,
-        type: userPostData.type ?? "post",
-        content: userPostData.content,
-      });
+
+      let translatedPost: PostType = {
+        ...rawPost,
+        type: rawPost.type ?? "post",
+        content: rawPost.content,
+      };
+
+      if (locale !== "en") {
+        const cKey = `${postId}-${locale}`;
+        if (tCache.has(cKey)) {
+          translatedPost = { ...translatedPost, ...tCache.get(cKey)! };
+        } else {
+          const [titleTr, bodyTr] = await Promise.all([
+            translateViaApi(rawPost.title ?? "", locale),
+            translateViaApi(rawPost.content ?? "", locale),
+          ]);
+          tCache.set(cKey, { title: titleTr, content: bodyTr });
+          translatedPost = {
+            ...translatedPost,
+            title: titleTr,
+            content: bodyTr,
+          };
+        }
+      }
+
+      setPost(translatedPost);
       setViews(viewsData);
     } catch (error) {
-      console.error("Error fetching article:", error);
+      console.error("Error fetching post:", error);
     } finally {
       setLoading(false);
     }
@@ -70,7 +96,7 @@ export default function PostDetailPage() {
   useEffect(() => {
     fetchPostData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [postId, isAuthenticated]);
+  }, [postId, locale, isAuthenticated]);
 
   useEffect(() => {
     if (!userPost?.content) return;
@@ -86,7 +112,7 @@ export default function PostDetailPage() {
   if (loading) {
     return <Loader />;
   }
-  if (!userPost) return <div>Article not found</div>;
+  if (!userPost) return <div>Post not found</div>;
 
   const handleReportSubmit = async () => {
     if (!userPost || !userPost.id) return;

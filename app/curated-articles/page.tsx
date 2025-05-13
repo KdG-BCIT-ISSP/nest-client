@@ -14,10 +14,15 @@ import { userAtom } from "@/atoms/user/atom";
 import Modal from "@/components/Modal";
 import Loader from "@/components/Loader";
 import Pagination from "@/components/Pagination";
+import { translateViaApi } from "@/app/lib/translate";
+
+const tCache: Map<string, { title: string }> = new Map();
 
 export default function CuratedArticlesPage() {
   const [userData] = useAtom(userAtom);
-  const { t } = useTranslation("article");
+  const { t, i18n } = useTranslation("article");
+  const locale = i18n.language;
+
   const [loading, setLoading] = useState(true);
   const [articles, setArticles] = useState<ArticleCardType[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,13 +36,37 @@ export default function CuratedArticlesPage() {
   }, []);
 
   useEffect(() => {
-    async function fetchArticles() {
+    async function fetchAndTranslate() {
       try {
         setLoading(true);
+
+        /* 1 ▸ fetch raw articles */
         const data = await get(
           `/api/article?page=${currentPage}&size=${pageSize}`
         );
-        setArticles(data.content);
+
+        /* 2 ▸ translate titles & bodies in parallel */
+        const translatedArticles: ArticleCardType[] = await Promise.all(
+          data.content.map(async (article: ArticleCardType) => {
+            if (locale === "en") return article;
+
+            const cKey = `${article.id}-${locale}`;
+            if (tCache.has(cKey)) {
+              return { ...article, ...tCache.get(cKey)! };
+            }
+
+            const [titleTr] = await Promise.all([
+              translateViaApi(article.title || "", locale),
+            ]);
+
+            tCache.set(cKey, {
+              title: titleTr,
+            });
+            return { ...article, title: titleTr };
+          })
+        );
+
+        setArticles(translatedArticles);
         setTotalPages(data.page.totalPages);
       } catch (error) {
         console.error("Failed to fetch articles:", error);
@@ -45,8 +74,9 @@ export default function CuratedArticlesPage() {
         setLoading(false);
       }
     }
-    fetchArticles();
-  }, [currentPage]);
+
+    fetchAndTranslate();
+  }, [currentPage, locale]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);

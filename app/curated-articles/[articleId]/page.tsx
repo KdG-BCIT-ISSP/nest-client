@@ -19,6 +19,9 @@ import Modal from "@/components/Modal";
 import CreateArticle from "@/components/article/CreateArticle";
 import Loader from "@/components/Loader";
 import { fixQuillLists } from "@/utils/fixQuillLists";
+import { translateViaApi, translateLong } from "@/app/lib/translate";
+
+const tCache: Map<string, { title: string; content: string }> = new Map();
 
 export default function ArticleDetailsPage() {
   useTranslation();
@@ -34,6 +37,9 @@ export default function ArticleDetailsPage() {
   const [showEditArticle, setShowEditArticle] = useState(false);
   const [showDeleteWindow, setShowDeleteWindow] = useState(false);
   const [htmlContent, setHtmlContent] = useState<string>("");
+  const { i18n } = useTranslation("post");
+  const locale = i18n.language;
+
   const [userdata] = useAtom(userAtom);
   const isAdmin =
     userdata.role === "ADMIN" ||
@@ -50,7 +56,9 @@ export default function ArticleDetailsPage() {
   const fetchArticleData = async () => {
     try {
       setLoading(true);
-      const promises = [
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const promises: any[] = [
         get(`/api/content/id/${articleId}`),
         get(`/api/content/${articleId}/views`),
         get(`/api/content/${articleId}/likes`),
@@ -58,22 +66,42 @@ export default function ArticleDetailsPage() {
       if (isAuthenticated) {
         promises.push(get(`/api/content/${articleId}/isLiked`));
       }
-      const [articleData, views, likes, isLiked] = await Promise.all(promises);
+      const [rawArticle, rawViews, rawLikes, rawIsLiked] =
+        await Promise.all(promises);
 
-      const decoded = decodeURIComponent(articleData.content);
-      const fixed = fixQuillLists(decoded);
-      const html = await marked.parse(fixed);
+      const srcBody = fixQuillLists(
+        decodeURIComponent(rawArticle.content ?? "")
+      );
 
-      setArticle({
-        ...articleData,
-        content: fixed,
-        likes,
-        isLiked: isAuthenticated ? isLiked : false,
-      });
+      let translated: ArticleType = {
+        ...rawArticle,
+        content: srcBody,
+        likes: rawLikes,
+        isLiked: isAuthenticated ? rawIsLiked : false,
+      };
+
+      if (locale !== "en") {
+        const cKey = `${articleId}-${locale}`;
+
+        if (tCache.has(cKey)) {
+          translated = { ...translated, ...tCache.get(cKey)! };
+        } else {
+          const [titleTr, bodyTr] = await Promise.all([
+            translateViaApi(rawArticle.title ?? "", locale),
+            translateLong(srcBody, locale),
+          ]);
+          tCache.set(cKey, { title: titleTr, content: bodyTr });
+          translated = { ...translated, title: titleTr, content: bodyTr };
+        }
+      }
+
+      const html = await marked.parse(translated.content);
+
+      setArticle(translated);
       setHtmlContent(html);
-      setViews(views);
-    } catch (error) {
-      console.error("Error fetching data:", error);
+      setViews(rawViews);
+    } catch (err) {
+      console.error("Error fetching article:", err);
     } finally {
       setLoading(false);
     }
@@ -82,7 +110,7 @@ export default function ArticleDetailsPage() {
   useEffect(() => {
     fetchArticleData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [articleId, isAuthenticated]);
+  }, [articleId, locale, isAuthenticated]);
 
   const handleToggleLike = async () => {
     if (!article || !isAuthenticated) {
@@ -103,20 +131,23 @@ export default function ArticleDetailsPage() {
     });
 
     try {
-      const response = await post(`/api/content/${articleId}/toggleLike`, {
-        articleId,
-      });
-      const newIsLiked =
-        response.isLiked !== undefined ? response.isLiked : !article.isLiked;
-      const updatedLikes = await get(`/api/content/${articleId}/likes`);
-      setArticle((prev) => {
-        if (!prev) return prev;
-        return {
-          ...prev,
-          isLiked: newIsLiked,
-          likes: updatedLikes,
-        };
-      });
+      if (isAuthenticated) {
+        const response = await post(`/api/content/${articleId}/toggleLike`, {
+          articleId,
+        });
+
+        const newIsLiked =
+          response.isLiked !== undefined ? response.isLiked : !article.isLiked;
+        const updatedLikes = await get(`/api/content/${articleId}/likes`);
+        setArticle((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            isLiked: newIsLiked,
+            likes: updatedLikes,
+          };
+        });
+      }
     } catch (error) {
       console.error("Error toggling like:", error);
       setArticle((prev) => {
