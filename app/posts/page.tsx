@@ -12,24 +12,9 @@ import CreatePost from "@/components/post/CreatePost";
 import Modal from "@/components/Modal";
 import Loader from "@/components/Loader";
 import Pagination from "@/components/Pagination";
+import { translateViaApi } from "@/app/lib/translate";
 
 const tCache: Map<string, { title: string; content: string }> = new Map();
-
-async function translateViaApi(
-  text: string,
-  target: string,
-  source = "en"
-): Promise<string> {
-  if (target === source) return text;
-  const res = await fetch("/api/translate", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text, target, source }),
-  });
-  if (!res.ok) throw new Error("Local translate API failed");
-  const { translated } = await res.json();
-  return translated;
-}
 
 export default function PostsPage() {
   const isAuthenticated =

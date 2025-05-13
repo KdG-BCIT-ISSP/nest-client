@@ -8,8 +8,6 @@ export async function translate(text: string, target: string, source = "en") {
     ...(source ? { source_lang: source.toUpperCase() } : {}),
   });
 
-  console.log("Translating", text, "to", target, "from", source);
-
   const res = await fetch("https://api-free.deepl.com/v2/translate", {
     method: "POST",
     headers: {
@@ -27,4 +25,39 @@ export async function translate(text: string, target: string, source = "en") {
     translations: { text: string }[];
   };
   return translations[0].text;
+}
+
+export async function translateViaApi(
+  text: string,
+  target: string,
+  source = "en"
+): Promise<string> {
+  if (target === source) return text;
+  const res = await fetch("/api/translate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text, target, source }),
+  });
+  if (!res.ok) throw new Error("Local translate API failed");
+  const { translated } = await res.json();
+  return translated;
+}
+
+export async function translateLong(
+  text: string,
+  target: string,
+  source = "en"
+): Promise<string> {
+  if (target === source || text.length <= 4800) {
+    return translateViaApi(text, target, source);
+  }
+  const CHUNK = 4500;
+  const parts: string[] = [];
+  for (let i = 0; i < text.length; i += CHUNK) {
+    parts.push(text.slice(i, i + CHUNK));
+  }
+  const translated = await Promise.all(
+    parts.map((p) => translateViaApi(p, target, source))
+  );
+  return translated.join("");
 }

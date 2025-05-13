@@ -67,9 +67,11 @@ function CommentItem({
       }
     };
 
-    fetchCommentLikes();
-    checkIfLiked();
-  }, [comment.id]);
+    if (isAuthenticated) {
+      fetchCommentLikes();
+      checkIfLiked();
+    }
+  }, [comment.id, isAuthenticated]);
 
   const handleToggleLike = async () => {
     const previousLiked = commentLiked;
