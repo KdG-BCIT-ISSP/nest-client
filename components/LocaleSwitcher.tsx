@@ -17,6 +17,7 @@ export default function LocaleSwitcher() {
   const handleChange = (lng: string) => {
     i18n.changeLanguage(lng);
     setSelected(lng);
+    localStorage.setItem("locale", lng);
   };
 
   return (

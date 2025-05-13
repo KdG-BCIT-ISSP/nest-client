@@ -13,10 +13,29 @@ import Modal from "@/components/Modal";
 import Loader from "@/components/Loader";
 import Pagination from "@/components/Pagination";
 
+const tCache: Map<string, { title: string; content: string }> = new Map();
+
+async function translateViaApi(
+  text: string,
+  target: string,
+  source = "en"
+): Promise<string> {
+  if (target === source) return text;
+  const res = await fetch("/api/translate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text, target, source }),
+  });
+  if (!res.ok) throw new Error("Local translate API failed");
+  const { translated } = await res.json();
+  return translated;
+}
+
 export default function PostsPage() {
   const isAuthenticated =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
-  const { t } = useTranslation("post");
+  const { t, i18n } = useTranslation("post");
+  const locale = i18n.language;
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState<PostType[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -31,24 +50,52 @@ export default function PostsPage() {
   }, []);
 
   useEffect(() => {
-    async function fetchPosts() {
+    async function fetchAndTranslate() {
       try {
         setLoading(true);
+
+        /* 1 ▸ fetch raw posts */
         const data = await get(
           `/api/posts?page=${currentPage}&size=${pageSize}`
         );
-        setPosts(data.content);
+
+        /* 2 ▸ translate in parallel */
+        const translatedPosts: PostType[] = await Promise.all(
+          data.content.map(async (post: PostType) => {
+            const sourceTitle = post.title;
+            const sourceBody = post.content;
+
+            if (locale === "en") return post;
+
+            const cKey = `${post.id}-${locale}`;
+            if (tCache.has(cKey)) {
+              const hit = tCache.get(cKey)!;
+              return { ...post, ...hit };
+            }
+
+            const [titleTr, bodyTr] = await Promise.all([
+              translateViaApi(sourceTitle || "", locale),
+              translateViaApi(sourceBody || "", locale),
+            ]);
+
+            tCache.set(cKey, { title: titleTr, content: bodyTr });
+
+            return { ...post, title: titleTr, content: bodyTr };
+          })
+        );
+
+        setPosts(translatedPosts);
         setTotalPages(data.page.totalPages);
       } catch (err) {
-        console.error("Failed to fetch posts:", err);
+        console.error(err);
         setError("Failed to fetch posts. Please try again.");
       } finally {
         setLoading(false);
       }
     }
 
-    fetchPosts();
-  }, [currentPage]);
+    fetchAndTranslate();
+  }, [currentPage, locale]);
 
   const handleDelete = (id: number) => {
     setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
