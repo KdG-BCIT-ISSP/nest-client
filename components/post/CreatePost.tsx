@@ -36,7 +36,6 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
     content: "",
   });
 
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<Topic>();
   const [topics, setTopics] = useState<Topic[]>([]);
@@ -45,7 +44,6 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
     if (existingPost) {
       setUserPost(existingPost);
       setSelectedTags(existingPost.tagNames || []);
-      setImagePreviews(existingPost.imageBase64 || []);
       const selectedTopic = topics.find(
         (topic) => topic.id === existingPost.topicId
       );
@@ -54,13 +52,6 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
       }
     }
   }, [existingPost, topics]);
-
-  // Cleans up temporary object URLs created for image previews.
-  useEffect(() => {
-    return () => {
-      imagePreviews.forEach((url) => URL.revokeObjectURL(url));
-    };
-  }, [imagePreviews]);
 
   const validateForm = () => {
     let isValid = true;
@@ -124,7 +115,6 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
   };
 
   const handleRemoveImage = (index: number) => {
-    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
     setUserPost((prevPost) => ({
       ...prevPost,
       imageBase64: prevPost.imageBase64?.filter((_, i) => i !== index),
@@ -132,7 +122,6 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
   };
 
   const handleImageChange = (compressedImage: string) => {
-    setImagePreviews((prev) => [...prev, compressedImage]);
     setUserPost((prevPost) => ({
       ...prevPost,
       imageBase64: [...(prevPost.imageBase64 ?? []), compressedImage],
@@ -196,12 +185,18 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
         }
       }
     } catch (error) {
-      console.error("Failed to create userPost", error);
+      window.alert(extractErrorMessage(error as Error));
     }
   };
 
+  function extractErrorMessage(error: Error): string {
+    const parts = error.message.split('-');
+    return parts[1]?.trim() || error.message;
+  }
+
+
   return (
-    <div className="bg-white rounded-md relative sm:m-10 sm:p-6">
+    <div className="bg-white rounded-md relative md:m-10 md:p-6">
       <form onSubmit={handleSubmit}>
         <div className="gap-6">
           <label className="text-sm font-medium text-gray-900 block mb-2">
@@ -220,7 +215,7 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
             <input
               type="text"
               name="title"
-              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 md:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
               value={userPost.title}
               onChange={handleChange}
               placeholder={t("post.titlePlaceholder")}
@@ -237,7 +232,7 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
             </label>
             <textarea
               name="content"
-              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5 h-32"
+              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 md:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5 h-32"
               value={userPost.content}
               onChange={handleChange}
               placeholder={t("post.contentPlaceholder")}

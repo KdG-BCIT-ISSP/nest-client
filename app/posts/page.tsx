@@ -64,48 +64,7 @@ export default function PostsPage() {
 
   return (
     <>
-      {/* ───────────── MOBILE VIEW ───────────── */}
-      <div className="block md:hidden p-4">
-        <div className="mb-6">
-          <HeroSection
-            img="/images/mom_and_baby.png"
-            title={t("post.communityTitle")}
-            subtitle={t("post.subtitle")}
-            direction="left"
-          />
-        </div>
-
-        {isAuthenticated && (
-          <div className="mb-6">
-            <Button
-              label={t("post.create")}
-              onClick={openModal}
-              className="w-full bg-secondary text-white py-3 rounded-md"
-            />
-          </div>
-        )}
-
-        <div className="space-y-4">
-          {posts.map((post) => (
-            <PostCard key={post.id} postData={post} onDelete={handleDelete} />
-          ))}
-        </div>
-
-        <div className="mt-6">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
-        </div>
-
-        <Modal isOpen={isModalOpen} onClose={closeModal}>
-          <CreatePost />
-        </Modal>
-      </div>
-
-      {/* ───────────── WEB VIEW ───────────── */}
-      <div className="hidden md:block p-6">
+      <div className="p-6">
         <HeroSection
           img={"/images/mom_and_baby.png"}
           title={t("post.communityTitle")}

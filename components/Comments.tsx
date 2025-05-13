@@ -23,6 +23,11 @@ interface CommentItemProps {
   onDelete: (commentId: number) => Promise<void>;
 }
 
+function extractErrorMessage(error: Error): string {
+  const parts = error.message.split('-');
+  return parts[1]?.trim() || error.message;
+}
+
 function CommentItem({
   comment,
   onReply,
@@ -121,8 +126,7 @@ function CommentItem({
       comment.content = editContent;
       setIsEditing(false);
     } catch (error) {
-      console.error("Error editing comment:", error);
-      alert("Error editing comment");
+      window.alert(extractErrorMessage(error as Error));
     }
   };
 
@@ -328,6 +332,7 @@ export default function CommentsSection({
       await refetchContent();
       setNewComment("");
     } catch (error: unknown) {
+      window.alert(extractErrorMessage(error as Error));
       console.error("Error adding comment:", error);
       if (
         error instanceof Error &&
@@ -351,6 +356,7 @@ export default function CommentsSection({
       });
       await refetchContent();
     } catch (error: unknown) {
+      window.alert(extractErrorMessage(error as Error));
       console.error("Error adding reply:", error);
       if (
         error instanceof Error &&
