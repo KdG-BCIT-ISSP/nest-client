@@ -51,7 +51,6 @@ function CommentItem({
   const router = useRouter();
   const setChatMember = useSetAtom(chatMemberAtom);
 
-
   const handleReplySubmit = async () => {
     if (!replyContent.trim()) return;
     onReply(comment.id, replyContent);
@@ -151,9 +150,9 @@ function CommentItem({
 
   const handleChatClick = (memberId: string, username: string) => {
     console.log("Chat with member");
-    setChatMember({ memberId: memberId, username: username });  
+    setChatMember({ memberId: memberId, username: username });
     router.push("/chat");
-  }
+  };
 
   return (
     <div className="relative ml-4 pl-4 border-l border-gray-300 mb-4">
@@ -165,7 +164,7 @@ function CommentItem({
           >
             <button
               className="flex flex-row gap-2 text-sm w-full text-left px-4 py-2 text-gray-700"
-              onClick={() => 
+              onClick={() =>
                 handleChatClick(
                   (comment?.memberId ?? "").toString(),
                   comment.userName

@@ -271,9 +271,9 @@ export default function PostDetailPage() {
 
   const handleChatClick = (memberId: string, username: string) => {
     console.log("Chat with member");
-    setChatMember({ memberId: memberId, username: username });  
+    setChatMember({ memberId: memberId, username: username });
     router.push("/chat");
-  }
+  };
 
   return (
     <div className="max-w-2xl w-full mx-auto pt-10">
@@ -410,7 +410,7 @@ export default function PostDetailPage() {
             >
               <button
                 className="flex flex-row gap-2 text-sm w-full text-left px-4 py-2 text-gray-700"
-                onClick={() => 
+                onClick={() =>
                   handleChatClick(
                     (userPost?.memberId ?? "").toString(),
                     userPost.memberUsername

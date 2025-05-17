@@ -268,9 +268,9 @@ export default function ArticleDetailsPage() {
 
   const handleChatClick = (memberId: string, username: string) => {
     console.log("Chat with member");
-    setChatMember({ memberId: memberId, username: username });  
+    setChatMember({ memberId: memberId, username: username });
     router.push("/chat");
-  }
+  };
 
   return (
     <div>
@@ -308,7 +308,7 @@ export default function ArticleDetailsPage() {
           >
             <button
               className="flex flex-row gap-2 text-sm w-full text-left px-4 py-2 text-gray-700"
-              onClick={() => 
+              onClick={() =>
                 handleChatClick(
                   (article?.memberId ?? "").toString(),
                   article.memberUsername
@@ -505,7 +505,7 @@ export default function ArticleDetailsPage() {
               >
                 <button
                   className="flex flex-row gap-2 text-sm w-full text-left px-4 py-2 text-gray-700"
-                  onClick={() => 
+                  onClick={() =>
                     handleChatClick(
                       (article?.memberId ?? "").toString(),
                       article.memberUsername

@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { StreamChat } from 'stream-chat';
+import { StreamChat, Channel as ChannelType } from "stream-chat";
 import {
   Chat,
   Channel,
@@ -11,20 +11,22 @@ import {
   Window,
   ChannelList,
   ChannelPreviewUIComponentProps,
-} from 'stream-chat-react';
-import 'stream-chat-react/dist/css/v2/index.css';
-import { useEffect, useState } from 'react';
-import { useAtom } from 'jotai';
-import { userAtom } from '@/atoms/user/atom';
-import { chatMemberAtom } from '@/atoms/chat/atom';
-import Image from 'next/image';
+} from "stream-chat-react";
+import "stream-chat-react/dist/css/v2/index.css";
+import { useEffect, useState, useRef } from "react";
+import { useAtom } from "jotai";
+import { userAtom } from "@/atoms/user/atom";
+import { chatMemberAtom } from "@/atoms/chat/atom";
+import Image from "next/image";
 
 export default function ChatPage() {
   const [userData] = useAtom(userAtom);
   const [chatMember] = useAtom(chatMemberAtom);
   const [chatClient, setChatClient] = useState<StreamChat | null>(null);
-  const [channel, setChannel] = useState<any>(null);
+  const [channel, setChannel] = useState<ChannelType | null>(null);
+  const clientRef = useRef<StreamChat | null>(null);
   const STREAM_API_KEY = process.env.NEXT_PUBLIC_STREAM_API_KEY;
+
   if (!STREAM_API_KEY) {
     throw new Error("STREAM_API_KEY is not defined");
   }
@@ -36,43 +38,54 @@ export default function ChatPage() {
           console.error("User data is missing or incomplete");
           return;
         }
-  
-        const currentUser = { id: userData.userId.toString(), name: userData.username };
+
+        const currentUser = {
+          id: userData.userId.toString(),
+          name: userData.username,
+        };
+
         const client = StreamChat.getInstance(STREAM_API_KEY);
         const currentUserToken = client.devToken(currentUser.id);
-  
-        await client.connectUser(currentUser, currentUserToken);        
-  
+
+        await client.connectUser(currentUser, currentUserToken);
+
         if (chatMember?.memberId) {
-          const channelId = [currentUser.id, chatMember.memberId.toString()].sort().join("-");
+          const channelId = [currentUser.id, chatMember.memberId.toString()]
+            .sort()
+            .join("-");
           const channel = client.channel("messaging", channelId, {
-            members: [currentUser.id, chatMember.memberId.toString()]
+            members: [currentUser.id, chatMember.memberId.toString()],
           });
-  
+
           await channel.watch();
           setChannel(channel);
           console.log(`Channel created: ${channelId}`);
         }
-  
+
+        clientRef.current = client;
         setChatClient(client);
       } catch (error) {
         console.error("Error initializing chat client:", error);
       }
     };
-  
+
     init();
-  
+
     return () => {
-      if (chatClient) {
-        chatClient.disconnectUser();
-        console.log("User disconnected from chat");
-      }
+      clientRef.current?.disconnectUser();
+      console.log("User disconnected from chat");
     };
-  }, [userData, chatMember]);
-  
+  }, [userData, chatMember, STREAM_API_KEY]);
+
   const CustomChannelPreview = (props: ChannelPreviewUIComponentProps) => {
-    const { channel, displayImage, displayTitle, latestMessagePreview, channelUpdateCount } = props;
-  
+    const {
+      channel,
+      displayImage,
+      displayTitle,
+      latestMessagePreview,
+      channelUpdateCount,
+    } = props;
+
     const handleChannelClick = async () => {
       console.log("Selected channel:", channel.id);
       try {
@@ -82,13 +95,14 @@ export default function ChatPage() {
         console.error("Error selecting channel:", error);
       }
     };
-  
-    // Format the time for the latest message
+
     const formattedTime = channel.state.last_message_at
-      ? new Date(channel.state.last_message_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      : '';
-  
-    // Render the avatar: image or initial
+      ? new Date(channel.state.last_message_at).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : "";
+
     const renderAvatar = () => {
       if (displayImage) {
         return (
@@ -101,7 +115,7 @@ export default function ChatPage() {
           />
         );
       } else {
-        const initial = displayTitle?.charAt(0).toUpperCase() || 'C';
+        const initial = displayTitle?.charAt(0).toUpperCase() || "C";
         return (
           <div className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-500 text-white text-lg font-bold">
             {initial}
@@ -109,7 +123,7 @@ export default function ChatPage() {
         );
       }
     };
-  
+
     return (
       <div
         onClick={handleChannelClick}
@@ -123,7 +137,7 @@ export default function ChatPage() {
           </div>
           <div className="flex justify-between items-center">
             <span className="text-sm text-gray-600 truncate max-w-xs">
-              {latestMessagePreview || 'No messages yet'}
+              {latestMessagePreview || "No messages yet"}
             </span>
             {(channelUpdateCount ?? 0) > 0 && (
               <span className="ml-2 text-xs text-white bg-red-500 rounded-full px-2">
@@ -141,13 +155,15 @@ export default function ChatPage() {
   return (
     <div className="flex flex-col items-center justify-center w-full h-full pt-10">
       <h1 className="text-2xl font-bold">
-        Chat with {chatMember?.username || 'User'}
+        Chat with {chatMember?.username || "User"}
       </h1>
       <Chat client={chatClient} theme="messaging light">
-        <div style={{ display: 'flex', height: '100vh' }}>
-          <div style={{ width: '300px', borderRight: '1px solid #ccc' }}>
+        <div style={{ display: "flex", height: "100vh" }}>
+          <div style={{ width: "300px", borderRight: "1px solid #ccc" }}>
             <ChannelList
-              filters={{ members: { $in: [userData?.userId?.toString() || ''] } }}
+              filters={{
+                members: { $in: [userData?.userId?.toString() || ""] },
+              }}
               sort={{ last_message_at: -1 }}
               options={{ limit: 10 }}
               Preview={CustomChannelPreview}
