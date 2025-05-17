@@ -13,13 +13,15 @@ import Tags from "@/components/admin/Tags";
 import { del, get, post, put } from "@/app/lib/fetchInterceptor";
 import { formatDate } from "@/utils/formatDate";
 import { useTranslation } from "next-i18next";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
 import Modal from "@/components/Modal";
 import CreateArticle from "@/components/article/CreateArticle";
 import Loader from "@/components/Loader";
 import { fixQuillLists } from "@/utils/fixQuillLists";
 import { translateViaApi, translateLong } from "@/app/lib/translate";
+import { chatMemberAtom } from "@/atoms/chat/atom";
+import { useRouter } from "next/navigation";
 
 const tCache: Map<string, { title: string; content: string }> = new Map();
 
@@ -41,8 +43,11 @@ export default function ArticleDetailsPage() {
   const [showMemberPopup, setShowMemberPopup] = useState(false);
   const { i18n } = useTranslation("post");
   const locale = i18n.language;
+  const router = useRouter();
 
   const [userdata] = useAtom(userAtom);
+  const setChatMember = useSetAtom(chatMemberAtom);
+
   const isAdmin =
     userdata.role === "ADMIN" ||
     userdata.role === "SUPER_ADMIN" ||
@@ -261,6 +266,12 @@ export default function ArticleDetailsPage() {
     setShowMemberPopup((prev) => !prev);
   };
 
+  const handleChatClick = (memberId: string, username: string) => {
+    console.log("Chat with member");
+    setChatMember({ memberId: memberId, username: username });  
+    router.push("/chat");
+  }
+
   return (
     <div>
       {/* ───────────── MOBILE VIEW ───────────── */}
@@ -297,7 +308,12 @@ export default function ArticleDetailsPage() {
           >
             <button
               className="flex flex-row gap-2 text-sm w-full text-left px-4 py-2 text-gray-700"
-              onClick={() => {}} // Handle click to chat page with new chat @jasper-oh
+              onClick={() => 
+                handleChatClick(
+                  (article?.memberId ?? "").toString(),
+                  article.memberUsername
+                )
+              }
             >
               <MessageSquareText size={18} />
               Chat
@@ -489,7 +505,12 @@ export default function ArticleDetailsPage() {
               >
                 <button
                   className="flex flex-row gap-2 text-sm w-full text-left px-4 py-2 text-gray-700"
-                  onClick={() => {}} // Handle click to chat page with new chat @jasper-oh
+                  onClick={() => 
+                    handleChatClick(
+                      (article?.memberId ?? "").toString(),
+                      article.memberUsername
+                    )
+                  }
                 >
                   <MessageSquareText size={18} />
                   Chat

@@ -16,13 +16,15 @@ import { formatDate } from "@/utils/formatDate";
 import { Like, Comments, Bookmark, Share } from "@/components/Icons";
 import CreatePost from "@/components/post/CreatePost";
 import Modal from "@/components/Modal";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
 import Loader from "@/components/Loader";
 import { marked } from "marked";
 import parse from "html-react-parser";
 import { useTranslation } from "next-i18next";
 import { translateViaApi } from "@/app/lib/translate";
+import { useRouter } from "next/navigation";
+import { chatMemberAtom } from "@/atoms/chat/atom";
 
 const tCache: Map<string, { title: string; content: string }> = new Map();
 
@@ -32,6 +34,7 @@ export default function PostDetailPage() {
   const [userdata] = useAtom(userAtom);
   const { i18n } = useTranslation("post");
   const locale = i18n.language;
+  const router = useRouter();
 
   const [userPost, setPost] = useState<PostType>({ type: "post" } as PostType);
   const [loading, setLoading] = useState(true);
@@ -45,6 +48,7 @@ export default function PostDetailPage() {
   const [html, setHtml] = useState("");
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
   const [showMemberPopup, setShowMemberPopup] = useState(false);
+  const setChatMember = useSetAtom(chatMemberAtom);
 
   const isOwnerOrAdmin =
     Number(userdata.userId) === userPost?.memberId ||
@@ -265,6 +269,12 @@ export default function PostDetailPage() {
     setShowMemberPopup((prev) => !prev);
   };
 
+  const handleChatClick = (memberId: string, username: string) => {
+    console.log("Chat with member");
+    setChatMember({ memberId: memberId, username: username });  
+    router.push("/chat");
+  }
+
   return (
     <div className="max-w-2xl w-full mx-auto pt-10">
       <div className="flex justify-between items-center p-4">
@@ -400,7 +410,12 @@ export default function PostDetailPage() {
             >
               <button
                 className="flex flex-row gap-2 text-sm w-full text-left px-4 py-2 text-gray-700"
-                onClick={() => {}} // Handle click to chat page with new chat @jasper-oh
+                onClick={() => 
+                  handleChatClick(
+                    (userPost?.memberId ?? "").toString(),
+                    userPost.memberUsername
+                  )
+                }
               >
                 <MessageSquareText size={18} />
                 Chat

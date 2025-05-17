@@ -6,10 +6,12 @@ import { ContentType, Comment } from "@/types/ContentType";
 import Image from "next/image";
 import { formatDate } from "@/utils/formatDate";
 import { userAtom } from "@/atoms/user/atom";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { Like, Comments } from "@/components/Icons";
 import { EllipsisIcon, MessageSquareText } from "lucide-react";
 import Loader from "./Loader";
+import { useRouter } from "next/navigation";
+import { chatMemberAtom } from "@/atoms/chat/atom";
 
 interface CommentItemProps {
   comment: Comment;
@@ -46,6 +48,9 @@ function CommentItem({
   const [showMemberPopup, setShowMemberPopup] = useState(false);
   const isAuthenticated =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+  const router = useRouter();
+  const setChatMember = useSetAtom(chatMemberAtom);
+
 
   const handleReplySubmit = async () => {
     if (!replyContent.trim()) return;
@@ -144,6 +149,12 @@ function CommentItem({
     setShowMemberPopup((prev) => !prev);
   };
 
+  const handleChatClick = (memberId: string, username: string) => {
+    console.log("Chat with member");
+    setChatMember({ memberId: memberId, username: username });  
+    router.push("/chat");
+  }
+
   return (
     <div className="relative ml-4 pl-4 border-l border-gray-300 mb-4">
       <div className="flex items-center mb-1">
@@ -154,7 +165,12 @@ function CommentItem({
           >
             <button
               className="flex flex-row gap-2 text-sm w-full text-left px-4 py-2 text-gray-700"
-              onClick={() => {}} // Handle click to chat page with new chat @jasper-oh
+              onClick={() => 
+                handleChatClick(
+                  (comment?.memberId ?? "").toString(),
+                  comment.userName
+                )
+              }
             >
               <MessageSquareText size={18} />
               Chat
