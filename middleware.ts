@@ -6,7 +6,8 @@ export function middleware(req: NextRequest) {
 
   if (
     (url.pathname.startsWith("/admin") ||
-      url.pathname.startsWith("/profile")) &&
+      url.pathname.startsWith("/profile") ||
+      url.pathname.startsWith("/chat")) &&
     !token
   ) {
     url.pathname = "/auth/login";
@@ -17,5 +18,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/profile/:path*"],
+  matcher: ["/admin/:path*", "/profile/:path*", "/chat/:path*"],
 };

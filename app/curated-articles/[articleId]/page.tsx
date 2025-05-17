@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import { ArrowLeft, CircleXIcon } from "lucide-react";
+import { ArrowLeft, CircleXIcon, MessageSquareText } from "lucide-react";
 import { EllipsisIcon } from "lucide-react";
 import { marked } from "marked";
 import parse from "html-react-parser";
@@ -37,6 +37,8 @@ export default function ArticleDetailsPage() {
   const [showEditArticle, setShowEditArticle] = useState(false);
   const [showDeleteWindow, setShowDeleteWindow] = useState(false);
   const [htmlContent, setHtmlContent] = useState<string>("");
+  const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
+  const [showMemberPopup, setShowMemberPopup] = useState(false);
   const { i18n } = useTranslation("post");
   const locale = i18n.language;
 
@@ -241,6 +243,24 @@ export default function ArticleDetailsPage() {
     }
   };
 
+  const handleMemberClick = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const isMobile = window.innerWidth < 768;
+    const topPosition = isMobile
+      ? rect.bottom + window.scrollY
+      : rect.bottom + window.scrollY + 10;
+    const leftPosition = isMobile
+      ? rect.left + window.scrollX
+      : rect.right + window.scrollX - 150;
+
+    setPopupPosition({
+      top: topPosition,
+      left: leftPosition,
+    });
+
+    setShowMemberPopup((prev) => !prev);
+  };
+
   return (
     <div>
       {/* ───────────── MOBILE VIEW ───────────── */}
@@ -260,9 +280,30 @@ export default function ArticleDetailsPage() {
         </h1>
 
         <p className="px-4 text-xs text-gray-500">
-          By <b>{article.memberUsername}</b> |{" "}
-          {formatDate(article.createdAt ?? "")}
+          By{" "}
+          <b
+            onClick={isAuthenticated ? handleMemberClick : undefined}
+            className="cursor-pointer text-blue-500"
+          >
+            {article?.memberUsername}
+          </b>{" "}
+          | {formatDate(article?.createdAt ?? "")}
         </p>
+
+        {showMemberPopup && (
+          <div
+            className="absolute bg-white border shadow-md rounded-md p-2 z-50"
+            style={{ top: popupPosition.top, left: popupPosition.left }}
+          >
+            <button
+              className="flex flex-row gap-2 text-sm w-full text-left px-4 py-2 text-gray-700"
+              onClick={() => {}} // Handle click to chat page with new chat @jasper-oh
+            >
+              <MessageSquareText size={18} />
+              Chat
+            </button>
+          </div>
+        )}
 
         <div className="mt-3 px-4">
           <Image
@@ -432,9 +473,29 @@ export default function ArticleDetailsPage() {
         <div className="max-w-3xl mx-auto p-4 pt-4 text-black">
           <div className="mb-6">
             <p className="text-sm text-gray-700">
-              By <b>{article.memberUsername}</b> |{" "}
-              {formatDate(article.createdAt ?? "")}
+              By{" "}
+              <b
+                onClick={isAuthenticated ? handleMemberClick : undefined}
+                className="cursor-pointer text-blue-500"
+              >
+                {article?.memberUsername}
+              </b>{" "}
+              | {formatDate(article?.createdAt ?? "")}
             </p>
+            {showMemberPopup && (
+              <div
+                className="absolute bg-white border shadow-md rounded-md p-2 z-50"
+                style={{ top: popupPosition.top, left: popupPosition.left }}
+              >
+                <button
+                  className="flex flex-row gap-2 text-sm w-full text-left px-4 py-2 text-gray-700"
+                  onClick={() => {}} // Handle click to chat page with new chat @jasper-oh
+                >
+                  <MessageSquareText size={18} />
+                  Chat
+                </button>
+              </div>
+            )}
             <p className="text-xs mt-2">{views} verified views</p>
             <h1 className="text-3xl text-black font-bold mt-2 mb-2 font-serif">
               {article.title}

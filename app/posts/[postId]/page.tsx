@@ -2,7 +2,12 @@
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { ArrowLeft, CircleXIcon, EllipsisIcon } from "lucide-react";
+import {
+  ArrowLeft,
+  CircleXIcon,
+  EllipsisIcon,
+  MessageSquareText,
+} from "lucide-react";
 import Tags from "@/components/admin/Tags";
 import CommentsSection from "@/components/Comments";
 import { PostType } from "@/types/ContentType";
@@ -38,6 +43,8 @@ export default function PostDetailPage() {
   const [showEditPost, setShowEditPost] = useState(false);
   const [views, setViews] = useState(0);
   const [html, setHtml] = useState("");
+  const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
+  const [showMemberPopup, setShowMemberPopup] = useState(false);
 
   const isOwnerOrAdmin =
     Number(userdata.userId) === userPost?.memberId ||
@@ -240,6 +247,24 @@ export default function PostDetailPage() {
     }
   };
 
+  const handleMemberClick = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const isMobile = window.innerWidth < 768;
+    const topPosition = isMobile
+      ? rect.bottom + window.scrollY
+      : rect.bottom + window.scrollY + 10;
+    const leftPosition = isMobile
+      ? rect.left + window.scrollX
+      : rect.right + window.scrollX - 150;
+
+    setPopupPosition({
+      top: topPosition,
+      left: leftPosition,
+    });
+
+    setShowMemberPopup((prev) => !prev);
+  };
+
   return (
     <div className="max-w-2xl w-full mx-auto pt-10">
       <div className="flex justify-between items-center p-4">
@@ -359,9 +384,29 @@ export default function PostDetailPage() {
       <div className="max-w-2xl mx-auto p-4 pt-4 text-black">
         <div className="mb-6">
           <p className="text-sm text-gray-700">
-            By <b>{userPost.memberUsername}</b> |{" "}
-            {formatDate(userPost.createdAt ?? "Unknown date")}
+            By{" "}
+            <b
+              onClick={isAuthenticated ? handleMemberClick : undefined}
+              className="cursor-pointer text-blue-500"
+            >
+              {userPost.memberUsername}
+            </b>{" "}
+            | {formatDate(userPost.createdAt ?? "Unknown date")}
           </p>
+          {showMemberPopup && (
+            <div
+              className="absolute bg-white border shadow-md rounded-md p-2 z-50"
+              style={{ top: popupPosition.top, left: popupPosition.left }}
+            >
+              <button
+                className="flex flex-row gap-2 text-sm w-full text-left px-4 py-2 text-gray-700"
+                onClick={() => {}} // Handle click to chat page with new chat @jasper-oh
+              >
+                <MessageSquareText size={18} />
+                Chat
+              </button>
+            </div>
+          )}
           <p className="text-xs mt-2">{views} verified views</p>
           <h1 className="text-3xl text-black font-bold mt-2 mb-2 font-serif">
             {userPost.title}
