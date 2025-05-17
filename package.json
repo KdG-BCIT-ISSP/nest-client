@@ -37,7 +37,9 @@
     "react-i18next": "^15.4.0",
     "react-loader-spinner": "^6.1.6",
     "react-quill-new": "^3.3.3",
-    "sharp": "^0.33.5"
+    "sharp": "^0.33.5",
+    "stream-chat": "^9.1.1",
+    "stream-chat-react": "^13.0.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

@@ -190,10 +190,9 @@ export default function CreatePost({ existingPost }: CreatePostProps) {
   };
 
   function extractErrorMessage(error: Error): string {
-    const parts = error.message.split('-');
+    const parts = error.message.split("-");
     return parts[1]?.trim() || error.message;
   }
-
 
   return (
     <div className="bg-white rounded-md relative md:m-10 md:p-6">

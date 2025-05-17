@@ -11,6 +11,7 @@ import {
   Menu,
   Shield,
   User,
+  MessageSquareText,
   Users,
 } from "lucide-react";
 import SearchBar from "./search/SearchBar";
@@ -65,6 +66,10 @@ export default function Navbar() {
 
   const NAV_LINKS = [
     { href: "/", label: t("navigation.home") },
+    // only show chat link if user is authenticated
+    ...(isAuthenticated
+      ? [{ href: "/chat", label: t("navigation.chat") }]
+      : []),
     { href: "/curated-articles", label: t("navigation.articles") },
     { href: "/posts", label: t("navigation.community") },
   ];
@@ -122,6 +127,18 @@ export default function Navbar() {
             >
               <Home size={20} /> <span>{t("navigation.home")}</span>
             </li>
+            {isAuthenticated && (
+              <li
+                onClick={() => {
+                  router.push("/chat");
+                  setIsNavDrawerOpen(false);
+                }}
+                className="flex items-center space-x-2 cursor-pointer"
+              >
+                <MessageSquareText size={20} />
+                <span>{t("navigation.chat")}</span>
+              </li>
+            )}
             <li
               onClick={() => {
                 router.push("/curated-articles");
