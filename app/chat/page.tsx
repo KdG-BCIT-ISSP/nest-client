@@ -153,13 +153,13 @@ export default function ChatPage() {
   if (!chatClient) return <div>Loading chat...</div>;
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full pt-10">
-      <h1 className="text-2xl font-bold">
+    <div className="flex flex-col items-center justify-center w-full h-[80vh] pt-10">
+      {/* <h1 className="text-2xl font-bold">
         Chat with {chatMember?.username || "User"}
-      </h1>
+      </h1> */}
       <Chat client={chatClient} theme="messaging light">
-        <div style={{ display: "flex", height: "100vh" }}>
-          <div style={{ width: "300px", borderRight: "1px solid #ccc" }}>
+        <div className="flex h-full w-full">
+          <div className="w-1/4 h-full border-r border-gray-300">
             <ChannelList
               filters={{
                 members: { $in: [userData?.userId?.toString() || ""] },
@@ -169,8 +169,8 @@ export default function ChatPage() {
               Preview={CustomChannelPreview}
             />
           </div>
-
-          <div style={{ flex: 1 }}>
+  
+          <div className="w-3/4 h-full">
             {channel ? (
               <Channel channel={channel}>
                 <Window>
