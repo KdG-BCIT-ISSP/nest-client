@@ -44,7 +44,7 @@ export const useChatClient = (streamApiKey: string) => {
       } catch (error) {
         console.error("Error initializing chat client:", error);
       }
-    };    
+    };
 
     initChatClient();
 
