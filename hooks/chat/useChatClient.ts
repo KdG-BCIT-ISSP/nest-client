@@ -29,7 +29,6 @@ export const useChatClient = (streamApiKey: string) => {
         clientRef.current = client;
 
         client.on("notification.mark_read", (event) => {
-          console.log("Notification mark unread event:", event);
           if (event.message?.user?.id !== currentUser.id) {
             setHasUnreadMessages(true);
           }
@@ -40,7 +39,6 @@ export const useChatClient = (streamApiKey: string) => {
         });
 
         setChatClient(client);
-        console.log("Chat client initialized");
       } catch (error) {
         console.error("Error initializing chat client:", error);
       }

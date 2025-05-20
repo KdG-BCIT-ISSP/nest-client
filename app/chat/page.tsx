@@ -1,6 +1,6 @@
 "use client";
 
-import { StreamChat, Channel as ChannelType } from "stream-chat";
+import { Channel as ChannelType } from "stream-chat";
 import {
   Chat,
   Channel,
@@ -13,13 +13,14 @@ import {
   ChannelPreviewUIComponentProps,
 } from "stream-chat-react";
 import "stream-chat-react/dist/css/v2/index.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms/user/atom";
 import { chatMemberAtom } from "@/atoms/chat/atom";
 
 import Image from "next/image";
 import { useChatClient } from "@/hooks/chat/useChatClient";
+import Loader from "@/components/Loader";
 
 export default function ChatPage() {
   const [userData] = useAtom(userAtom);
@@ -33,6 +34,40 @@ export default function ChatPage() {
 
   const { chatClient } = useChatClient(STREAM_API_KEY);
 
+  useEffect(() => {
+    if (!chatClient || !chatMember?.memberId) return;
+
+    const openDirectMessage = async () => {
+      const userId = userData.userId.toString();
+      const otherId = chatMember.memberId.toString();
+      const members = [userId, otherId];
+
+      try {
+        const existingChannels = await chatClient.queryChannels(
+          { type: "messaging", members: { $eq: members } },
+          { last_message_at: -1 },
+          { limit: 1 }
+        );
+
+        let dm: ChannelType;
+        if (existingChannels.length > 0) {
+          dm = existingChannels[0];
+        } else {
+          dm = chatClient.channel("messaging", {
+            members,
+          });
+        }
+
+        await dm.watch();
+        setChannel(dm);
+      } catch (err) {
+        console.error("Could not open DM channel:", err);
+      }
+    };
+
+    openDirectMessage();
+  }, [chatClient, chatMember, userData.userId]);
+
   const CustomChannelPreview = (props: ChannelPreviewUIComponentProps) => {
     const {
       channel,
@@ -43,7 +78,6 @@ export default function ChatPage() {
     } = props;
 
     const handleChannelClick = async () => {
-      console.log("Selected channel:", channel.id);
       try {
         await channel.watch();
         setChannel(channel);
@@ -106,7 +140,7 @@ export default function ChatPage() {
     );
   };
 
-  if (!chatClient) return <div>Loading chat...</div>;
+  if (!chatClient) return <Loader />;
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-[80vh] pt-10">

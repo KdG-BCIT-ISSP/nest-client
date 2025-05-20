@@ -267,7 +267,6 @@ export default function ArticleDetailsPage() {
   };
 
   const handleChatClick = (memberId: string, username: string) => {
-    console.log("Chat with member");
     setChatMember({ memberId: memberId, username: username });
     router.push("/chat");
   };
