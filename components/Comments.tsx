@@ -6,10 +6,12 @@ import { ContentType, Comment } from "@/types/ContentType";
 import Image from "next/image";
 import { formatDate } from "@/utils/formatDate";
 import { userAtom } from "@/atoms/user/atom";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { Like, Comments } from "@/components/Icons";
-import { EllipsisIcon } from "lucide-react";
+import { EllipsisIcon, MessageSquareText } from "lucide-react";
 import Loader from "./Loader";
+import { useRouter } from "next/navigation";
+import { chatMemberAtom } from "@/atoms/chat/atom";
 
 interface CommentItemProps {
   comment: Comment;
@@ -24,7 +26,7 @@ interface CommentItemProps {
 }
 
 function extractErrorMessage(error: Error): string {
-  const parts = error.message.split('-');
+  const parts = error.message.split("-");
   return parts[1]?.trim() || error.message;
 }
 
@@ -43,8 +45,11 @@ function CommentItem({
   const [userData] = useAtom(userAtom);
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(comment.content);
+  const [showMemberPopup, setShowMemberPopup] = useState(false);
   const isAuthenticated =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+  const router = useRouter();
+  const setChatMember = useSetAtom(chatMemberAtom);
 
   const handleReplySubmit = async () => {
     if (!replyContent.trim()) return;
@@ -139,17 +144,46 @@ function CommentItem({
     userData.role === "SUPER_ADMIN" ||
     userData.role === "MODERATOR";
 
+  const handleMemberClick = () => {
+    setShowMemberPopup((prev) => !prev);
+  };
+
+  const handleChatClick = (memberId: string, username: string) => {
+    setChatMember({ memberId: memberId, username: username });
+    router.push("/chat");
+  };
+
   return (
     <div className="relative ml-4 pl-4 border-l border-gray-300 mb-4">
       <div className="flex items-center mb-1">
+        {showMemberPopup && (
+          <div
+            className="absolute bg-white border shadow-md rounded-md p-2 z-50"
+            style={{ top: 40 }}
+          >
+            <button
+              className="flex flex-row gap-2 text-sm w-full text-left px-4 py-2 text-gray-700"
+              onClick={() =>
+                handleChatClick(
+                  (comment?.memberId ?? "").toString(),
+                  comment.userName
+                )
+              }
+            >
+              <MessageSquareText size={18} />
+              Chat
+            </button>
+          </div>
+        )}
         <Image
-          className="w-8 h-8 rounded-full object-cover mr-2"
+          className="w-8 h-8 rounded-full object-cover mr-2 cursor-pointer"
           src={
             comment.memberAvatar.image || "/images/default_profile_image.png"
           }
           alt="Member avatar"
           width={8}
           height={8}
+          onClick={isAuthenticated ? handleMemberClick : undefined}
         />
         <div className="font-semibold">{comment.userName}</div>
         <span className="ml-2 text-xs text-gray-500">
